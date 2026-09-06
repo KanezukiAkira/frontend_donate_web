@@ -69,6 +69,33 @@
             </div>
           </li>
           <li>
+            <div class="bento-nav-item" data-tab="goals">
+              <span class="bento-nav-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <circle cx="12" cy="12" r="6" />
+                  <circle cx="12" cy="12" r="2" />
+                </svg>
+              </span>
+              <span>Mục tiêu Donate</span>
+            </div>
+          </li>
+          <li>
+            <div class="bento-nav-item" data-tab="gacha">
+              <span class="bento-nav-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 3v18" />
+                  <path d="M3 12h18" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              </span>
+              <span>Vòng Quay Gacha</span>
+            </div>
+          </li>
+          <li>
             <div class="bento-nav-item" data-tab="users">
               <span class="bento-nav-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
@@ -140,7 +167,7 @@
                 </span>
                 Thiết lập OBS Studio Browser Source
               </h2>
-              <p class="bento-card-desc">Sao chép đường dẫn và dán vào <strong>Add Source → Browser</strong> trong OBS
+              <p class="bento-card-desc">Sao chép đường dẫn và dán vào <strong>Add Source &rarr; Browser</strong> trong OBS
                 Studio.</p>
             </div>
             <span class="tag-badge">OBS Overlays</span>
@@ -172,14 +199,12 @@
                 </div>
                 <div class="btn-group-row">
                   <button id="testDonateAlertBtn" class="btn btn-ghost btn-test-alert"
-                    title="Phát thử thông báo donate thông thường">Test Donate</button>
-                  <button id="testGachaOverlayBtn" class="btn btn-amber"
-                    title="Phát thử Vòng quay thời gian Subathon và giọng đọc kết quả">Test Vòng Quay</button>
+                    title="Phát thử thông báo donate thông thường">Test Donate Alert</button>
                 </div>
               </div>
             </div>
-            <span class="form-hint" style="color:#fef08a;margin-top:6px;display:block;">
-              <strong>1 Link duy nhất cho cả hai:</strong> Donate thường sẽ hiện thông báo donate; Donate đúng mốc kích hoạt sẽ hiện Vòng Quay Thời Gian, quay và đọc giọng nói TTS (tên người tặng, tiền donate và số giây cộng/trừ vào Subathon).
+            <span class="form-hint">
+              Thêm link trên làm Browser Source trong OBS (khuyến nghị 600x260px) để hiển thị thông báo popup kèm âm thanh và giọng đọc TTS khi có donate.
             </span>
 
             <div class="obs-specs-accordion" style="margin-top:12px;">
@@ -214,17 +239,17 @@
                   <div class="obs-checkbox-hints">
                     <div class="obs-check-heading">Tích chọn trong thuộc tính OBS:</div>
                     <div class="obs-check-item">
-                      <span class="obs-check-icon">☑</span>
+                      <span class="obs-check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><rect x="3" y="3" width="18" height="18" rx="4"/><polyline points="9 11 12 14 22 4"/></svg></span>
                       <span><strong>Tắt nguồn khi không hiển thị</strong> <em>(Shutdown source when not
                           visible)</em></span>
                     </div>
                     <div class="obs-check-item">
-                      <span class="obs-check-icon">☑</span>
+                      <span class="obs-check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><rect x="3" y="3" width="18" height="18" rx="4"/><polyline points="9 11 12 14 22 4"/></svg></span>
                       <span><strong>Làm mới trình duyệt khi cảnh hoạt động</strong> <em>(Refresh browser when scene
                           becomes active)</em></span>
                     </div>
                     <div class="obs-check-item">
-                      <span class="obs-check-icon">🔊</span>
+                      <span class="obs-check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></span>
                       <span><strong>Điều khiển âm thanh qua OBS</strong> <em>(Control audio via OBS)</em>: Tích chọn để
                         điều chỉnh âm lượng chuông & giọng đọc TTS trong Audio Mixer của OBS.</span>
                     </div>
@@ -257,6 +282,44 @@
             </div>
             <span id="subathonWidgetHint" class="form-hint">Khuyến nghị: 450×220px. Nền trong suốt, đặt ở góc màn hình
               OBS.</span>
+          </div>
+
+          <div class="bento-form-group" style="margin-top:20px;">
+            <label class="bento-label">3. Goal Bar Overlay (Thanh mục tiêu nhận donate livestream)</label>
+            <div class="widget-link-box">
+              <input type="text" id="goalOverviewWidgetUrl" class="widget-link-input" readonly value="">
+              <div class="widget-link-actions">
+                <div class="btn-group-row">
+                  <button class="btn btn-gold copy-widget-btn" data-target="goalOverviewWidgetUrl">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round" width="14" height="14">
+                      <rect x="9" y="9" width="13" height="13" rx="2" />
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                    </svg>
+                    Sao chép Link
+                  </button>
+                  <button id="copyPreviewGoalOverviewBtn" class="btn btn-ghost"
+                    title="Sao chép link ghim xem thử để căn chỉnh trong OBS">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round" width="14" height="14">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                    Link Xem trước
+                  </button>
+                </div>
+                <button id="goalOverviewActionBtn" type="button" class="btn btn-gold goto-goal-btn" data-jump-tab="goals">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" width="14" height="14">
+                    <circle cx="12" cy="12" r="10" />
+                    <circle cx="12" cy="12" r="6" />
+                    <circle cx="12" cy="12" r="2" />
+                  </svg>
+                  <span>Mục tiêu</span>
+                </button>
+              </div>
+            </div>
+            <span id="goalOverviewHint" class="form-hint">Khuyến nghị: 540×120px. Nền kính trong suốt, đặt ở trên hoặc dưới màn hình OBS.</span>
           </div>
         </div>
       </section>
@@ -501,133 +564,432 @@
             </div>
           </div>
         </div>
+      </section>
 
-        <!-- CARD CẤU HÌNH VÒNG QUAY -->
-        <div id="gachaCardContainer" class="bento-card gacha-card-container" style="margin-top:20px;max-width:100%;box-sizing:border-box;overflow:hidden;">
-          <div class="bento-card-header"
-            style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;margin-bottom:16px;">
-            <div style="flex:1 1 300px;min-width:0;">
-              <h3 class="bento-card-title">Cấu hình Vòng Quay</h3>
-              <p class="bento-card-desc">Khi người xem donate đúng số tiền được cấu hình, OBS sẽ tự động kích hoạt Vòng Quay để cộng hoặc trừ giây vào đồng hồ Subathon.</p>
-            </div>
-            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex-shrink:0;">
-              <button type="button" id="testGachaBtn" class="btn btn-amber" style="white-space:nowrap;">Quay thử trên OBS</button>
-              <button type="button" id="saveGachaBtn" class="btn btn-gold" style="white-space:nowrap;">Lưu cấu hình</button>
+      <section id="tab-goals" class="admin-tab-content">
+        <!-- Khi chưa có mục tiêu active -->
+        <div id="noGoalView" class="bento-card" style="display:none;">
+          <div class="bento-card-header">
+            <div>
+              <h2 class="bento-card-title">
+                <span class="card-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <circle cx="12" cy="12" r="6" />
+                    <circle cx="12" cy="12" r="2" />
+                  </svg>
+                </span>
+                Khởi tạo Mục tiêu Donate Mới
+              </h2>
+              <p class="bento-card-desc">Chưa có mục tiêu nào đang chạy. Thiết lập thông số mục tiêu để hiển thị thanh tiến độ trên stream.</p>
             </div>
           </div>
 
-          <!-- Ghi chú tích hợp Overlay - Dạng xổ xuống (Accordion giống OBS Specs) -->
-          <div class="obs-specs-accordion" style="margin-top:14px;margin-bottom:20px;">
-            <button type="button" id="toggleGachaNoticeBtn" class="btn-obs-specs-toggle" aria-expanded="false">
-              <span class="toggle-title">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="16" x2="12" y2="12" />
-                  <line x1="12" y1="8" x2="12.01" y2="8" />
-                </svg>
-                Ghi chú tích hợp Vòng Quay vào Donate Alert Overlay
-              </span>
-              <span class="toggle-chevron">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="14" height="14">
-                  <polyline points="6 9 12 15 18 9" />
-                </svg>
-              </span>
-            </button>
+          <form id="createGoalForm" style="margin-top:20px;">
+            <div class="bento-form-group">
+              <label class="bento-label" for="createGoalTitle">Tiêu đề mục tiêu (Goal Title)</label>
+              <input type="text" id="createGoalTitle" class="bento-input" placeholder="Ví dụ: Nâng cấp PC Stream mới" required>
+            </div>
 
-            <div id="gachaNoticeCollapse" class="obs-specs-collapse">
-              <div class="obs-specs-guide">
-                <p style="font-size:0.84rem;color:#cbd5e1;margin:0 0 10px 0;line-height:1.6;">
-                  Hệ thống đã tự động gộp Vòng Quay Thời Gian vào chung widget <code style="color:#fef08a;background:rgba(255,255,255,0.08);padding:2px 6px;border-radius:4px;">widgets/donate-alert.html</code>. Bạn chỉ cần dùng 1 Browser Source duy nhất với link này trên OBS. Khi người xem donate đúng mốc tiền cấu hình bên dưới, vòng quay sẽ tự động kích hoạt và đọc kèm thời gian được cộng/trừ.
-                </p>
-                <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-                  <input type="text" id="gachaCardWidgetUrl" class="bento-input" readonly
-                    style="flex:1 1 240px;min-width:0;font-size:0.82rem;padding:8px 12px;background:rgba(0,0,0,0.45);font-family:monospace;" value="">
-                  <button type="button" class="btn btn-gold copy-widget-btn" data-target="gachaCardWidgetUrl"
-                    style="flex-shrink:0;padding:8px 14px;font-size:0.82rem;white-space:nowrap;">Sao chép link Alert</button>
+            <div class="bento-form-group">
+              <label class="bento-label" for="createGoalDesc">Mô tả / Lời nhắn tới người xem (Tùy chọn)</label>
+              <input type="text" id="createGoalDesc" class="bento-input" placeholder="Ví dụ: Cùng Tani Kami nâng cấp màn hình 240Hz...">
+            </div>
+
+            <div class="bento-grid-2">
+              <div class="bento-form-group">
+                <label class="bento-label" for="createGoalTarget">Số tiền mục tiêu (VNĐ)</label>
+                <input type="number" id="createGoalTarget" class="bento-input" value="5000000" min="10000" step="10000" required>
+              </div>
+              <div class="bento-form-group">
+                <label class="bento-label" for="createGoalStarting">Số tiền ban đầu nếu có (VNĐ)</label>
+                <input type="number" id="createGoalStarting" class="bento-input" value="0" min="0" step="10000">
+              </div>
+            </div>
+
+            <div class="bento-form-group">
+              <label class="bento-label" for="createGoalEndDate">Hạn chót mục tiêu (Tùy chọn)</label>
+              <input type="datetime-local" id="createGoalEndDate" class="bento-input">
+            </div>
+
+            <button type="submit" class="btn btn-gold btn-lg" style="width:100%;margin-top:16px;justify-content:center;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                <circle cx="12" cy="12" r="10" />
+                <circle cx="12" cy="12" r="6" />
+                <circle cx="12" cy="12" r="2" />
+              </svg>
+              Bắt đầu kích hoạt mục tiêu
+            </button>
+          </form>
+        </div>
+
+        <!-- Khi đang có mục tiêu active -->
+        <div id="activeGoalView" style="display:none;">
+          <div class="subathon-digital-box mb-6">
+            <div class="session-header">
+              <div>
+                <h2 id="activeGoalTitle" class="text-gold session-title">MỤC TIÊU DONATE</h2>
+                <div id="activeGoalDesc" class="text-muted" style="font-size:0.85rem;margin-top:2px;"></div>
+              </div>
+              <span id="activeGoalStatusBadge" class="status-badge status-live">LIVE</span>
+            </div>
+
+            <!-- Progress Bar Preview -->
+            <div style="margin: 20px 0;">
+              <div style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); border-radius: 14px; height: 28px; overflow: hidden; position: relative;">
+                <div id="activeGoalProgressBar" style="height: 100%; width: 0%; background: linear-gradient(90deg, #f59e0b, #fbbf24); border-radius: 14px; transition: width 0.6s ease;"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-weight: 700;">
+                <div style="font-size: 1.25rem; color: #fbbf24;">
+                  <span id="activeGoalCurrentText">0 ₫</span>
+                  <span style="color: rgba(255,255,255,0.4); font-size: 1rem; margin: 0 4px;">/</span>
+                  <span id="activeGoalTargetText" style="color: rgba(255,255,255,0.7); font-size: 1rem;">0 ₫</span>
+                </div>
+                <div id="activeGoalPctBadge" style="font-size: 1.1rem; color: #fef08a; background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 12px; padding: 2px 12px;">
+                  0%
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- Danh sách các mốc tiền kích hoạt -->
-          <div style="margin-top:16px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
-              <div id="gachaTierTabs" style="display:flex;gap:8px;flex-wrap:wrap;flex:1 1 auto;min-width:0;">
-                <!-- Dynamic tier tabs -->
-              </div>
-              <button type="button" id="addTierBtn" class="btn btn-ghost" style="padding:6px 14px;font-size:0.85rem;flex-shrink:0;white-space:nowrap;">
-                Thêm mốc tiền mới
+            <div class="controls-row">
+              <button id="pauseGoalBtn" class="btn btn-amber btn-lg">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                  <rect x="6" y="4" width="4" height="16" />
+                  <rect x="14" y="4" width="4" height="16" />
+                </svg>
+                Tạm dừng
+              </button>
+              <button id="resumeGoalBtn" class="btn btn-green btn-lg" style="display:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                  <polygon points="5 3 19 12 5 21 5 3" />
+                </svg>
+                Tiếp tục
+              </button>
+              <button id="endGoalBtn" class="btn btn-red btn-lg">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                </svg>
+                Kết thúc mục tiêu
+              </button>
+              <button id="resetGoalBtn" class="btn btn-ghost btn-lg">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                  <polyline points="1 4 1 10 7 10" />
+                  <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+                </svg>
+                Đặt lại (Reset)
+              </button>
+              <button id="newGoalBtn" class="btn btn-gold btn-lg" style="display:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                Tạo mục tiêu mới
               </button>
             </div>
+          </div>
 
-            <!-- Khung trống khi chưa có mốc nào -->
-            <div id="tierEmptyBox" style="display:none;padding:36px 20px;text-align:center;background:rgba(255,255,255,0.02);border:1px dashed rgba(255,255,255,0.12);border-radius:16px;box-sizing:border-box;">
-              <p style="font-size:0.92rem;color:#94a3b8;margin-bottom:14px;line-height:1.5;">Hiện chưa có mốc tiền nào được thiết lập. Hãy bấm nút bên dưới để tạo mốc quay đầu tiên.</p>
-              <button type="button" id="emptyAddTierBtn" class="btn btn-gold" style="padding:8px 18px;font-size:0.88rem;">Tạo mốc tiền mới</button>
+          <div class="bento-grid-2">
+            <!-- Điều chỉnh nhanh -->
+            <div class="bento-card">
+              <h3 class="bento-card-title">
+                <span class="card-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                </span>
+                Điều chỉnh số tiền nhanh
+              </h3>
+              <p class="bento-card-desc">Cộng hoặc trừ số tiền trực tiếp vào thanh mục tiêu</p>
+              <div class="adjust-pill-grid">
+                <button type="button" class="adjust-pill positive goal-adjust-pill" data-delta="20000">+20K</button>
+                <button type="button" class="adjust-pill positive goal-adjust-pill" data-delta="50000">+50K</button>
+                <button type="button" class="adjust-pill positive goal-adjust-pill" data-delta="100000">+100K</button>
+                <button type="button" class="adjust-pill positive goal-adjust-pill" data-delta="500000">+500K</button>
+                <button type="button" class="adjust-pill negative goal-adjust-pill" data-delta="-20000">-20K</button>
+                <button type="button" class="adjust-pill negative goal-adjust-pill" data-delta="-50000">-50K</button>
+                <button type="button" class="adjust-pill negative goal-adjust-pill" data-delta="-100000">-100K</button>
+                <button type="button" class="adjust-pill negative goal-adjust-pill" data-delta="-500000">-500K</button>
+              </div>
             </div>
 
-            <!-- Chi tiết mốc đang chọn -->
-            <div id="tierDetailBox"
-              style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:18px;box-sizing:border-box;max-width:100%;overflow:hidden;">
-              
-              <!-- Header của mốc: Tiêu đề phụ + Nút Xóa mốc riêng biệt tránh bị tràn -->
-              <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.06);">
-                <div style="font-size:0.92rem;font-weight:700;color:#fef08a;">Thiết lập thông số mốc quay</div>
-                <button type="button" id="deleteTierBtn" class="btn btn-red"
-                  style="padding:6px 14px;font-size:0.82rem;white-space:nowrap;flex-shrink:0;">Xóa mốc này</button>
-              </div>
-
-              <!-- Form nhập liệu 3 cột responsive tự co giãn -->
-              <div class="gacha-tier-grid" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:16px;margin-bottom:20px;">
-                <div class="bento-form-group">
-                  <label class="bento-label" for="tierAmountInput">Số tiền kích hoạt (VNĐ)</label>
-                  <input type="number" id="tierAmountInput" class="bento-input" placeholder="20000" min="1000"
-                    step="1000">
-                </div>
-                <div class="bento-form-group">
-                  <label class="bento-label" for="tierNameInput">Tên vòng quay</label>
-                  <input type="text" id="tierNameInput" class="bento-input" placeholder="Vòng Quay Thời Gian 20K">
-                </div>
-                <div class="bento-form-group" style="display:flex;flex-direction:column;justify-content:flex-end;">
-                  <label class="bento-label">Trạng thái kích hoạt</label>
-                  <div style="min-height:42px;display:flex;align-items:center;">
-                    <label
-                      style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:600;font-size:0.88rem;color:var(--text-1);user-select:none;">
-                      <input type="checkbox" id="tierEnabledInput" checked
-                        style="width:18px;height:18px;accent-color:#f59e0b;cursor:pointer;">
-                      Cho phép kích hoạt mốc này
-                    </label>
+            <!-- Điều chỉnh thủ công -->
+            <div class="bento-card">
+              <h3 class="bento-card-title">
+                <span class="card-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                  </svg>
+                </span>
+                Điều chỉnh số tiền tùy chọn
+              </h3>
+              <form id="customAdjustGoalForm" style="margin-top:12px;">
+                <div class="bento-grid-2">
+                  <div class="bento-form-group">
+                    <label class="bento-label" for="adjustGoalAmount">Số tiền (+/- VNĐ)</label>
+                    <input type="number" id="adjustGoalAmount" class="bento-input" placeholder="Ví dụ: 100000 hoặc -50000" step="1000" required>
+                  </div>
+                  <div class="bento-form-group">
+                    <label class="bento-label" for="adjustGoalNote">Lý do</label>
+                    <input type="text" id="adjustGoalNote" class="bento-input" placeholder="Nhận tiền mặt / Bù thêm">
                   </div>
                 </div>
+                <button type="submit" class="btn btn-ghost" style="width:100%;justify-content:center;">Xác nhận điều chỉnh</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- OBS Overlay Link Card -->
+          <div class="bento-card" style="margin-top:20px;">
+            <h3 class="bento-card-title">
+              <span class="card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="3" width="20" height="14" rx="2" />
+                  <polyline points="8 21 12 17 16 21" />
+                </svg>
+              </span>
+              OBS Overlay Link — Goal Bar
+            </h3>
+            <p class="bento-card-desc">Sao chép đường dẫn bên dưới dán vào Browser Source trong OBS Studio (Khuyến nghị kích thước: <strong>540×120px</strong>, nền kính trong suốt).</p>
+
+            <div class="widget-link-box" style="margin-top:16px;">
+              <input type="text" id="goalObsUrl" class="widget-link-input" readonly value="">
+              <div class="widget-link-actions">
+                <div class="btn-group-row">
+                  <button class="btn btn-gold copy-widget-btn" data-target="goalObsUrl">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+                      <rect x="9" y="9" width="13" height="13" rx="2" />
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                    </svg>
+                    Sao chép Link
+                  </button>
+                  <button id="copyPreviewGoalBtn" class="btn btn-ghost" title="Sao chép link ghim xem thử để căn chỉnh trong OBS">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                    Link Xem trước
+                  </button>
+                </div>
+                <div class="btn-group-row">
+                  <button id="testGoalOverlayBtn" class="btn btn-amber" title="Phát thử nạp tiến độ +50K lên OBS">Test Nạp +50K</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lịch sử các mục tiêu -->
+        <div class="bento-card" style="margin-top:20px;">
+          <div class="bento-card-header">
+            <h3 class="bento-card-title">
+              <span class="card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+              </span>
+              Lịch sử các Mục tiêu Donate
+            </h3>
+          </div>
+          <div class="bento-table-wrapper">
+            <table class="bento-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Tiêu đề mục tiêu</th>
+                  <th>Số tiền đạt được</th>
+                  <th>Mục tiêu</th>
+                  <th>Tỷ lệ %</th>
+                  <th>Trạng thái</th>
+                  <th>Ngày tạo</th>
+                </tr>
+              </thead>
+              <tbody id="goalHistoryTableBody">
+                <tr>
+                  <td colspan="7" class="text-center text-muted">Đang tải lịch sử mục tiêu...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB GACHA WHEELS -->
+      <section id="tab-gacha" class="admin-tab-content">
+        <!-- Banner Tiêu Đề & Hành Động Chính -->
+        <div class="bento-card">
+          <div class="bento-card-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;">
+            <div>
+              <h2 class="bento-card-title">
+                <span class="card-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M12 3v18" />
+                    <path d="M3 12h18" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                </span>
+                Quản Lý Vòng Quay Gacha (Time & Reward)
+              </h2>
+              <p class="bento-card-desc">Thiết lập các mốc tiền kích hoạt vòng quay tự động khi nhận donate. Hỗ trợ <strong>Vòng quay Thời Gian</strong> (cộng/trừ giờ Subathon) và <strong>Vòng quay Phần Thưởng</strong> (minigame, thử thách, quà tặng).</p>
+            </div>
+            <button id="openCreateGachaModalBtn" class="btn btn-gold" style="white-space:nowrap;padding:9px 18px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              Tạo Vòng Quay Mới
+            </button>
+          </div>
+
+          <!-- Bộ lọc loại vòng quay -->
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;">
+            <button class="btn btn-gold gacha-filter-btn active" data-filter="all">Tất cả vòng quay</button>
+            <button class="btn btn-ghost gacha-filter-btn" data-filter="time" style="display:inline-flex;align-items:center;gap:6px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5"/><path d="M9.5 3h5M12 3v2"/></svg>Vòng quay Thời gian (Time)</button>
+            <button class="btn btn-ghost gacha-filter-btn" data-filter="reward" style="display:inline-flex;align-items:center;gap:6px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>Vòng quay Phần thưởng (Reward)</button>
+          </div>
+        </div>
+
+        <!-- Khung trống khi chưa có vòng quay nào -->
+        <div id="gachaEmptyView" class="bento-card" style="display:none;padding:48px 24px;text-align:center;margin-top:20px;">
+          <div style="display:flex;justify-content:center;margin-bottom:14px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#facc15" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="48" height="48">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 2v20"/>
+              <path d="M2 12h20"/>
+              <path d="m4.93 4.93 14.14 14.14"/>
+              <path d="m19.07 4.93-14.14 14.14"/>
+              <circle cx="12" cy="12" r="3" fill="#facc15"/>
+            </svg>
+          </div>
+          <h3 style="font-size:1.15rem;font-weight:700;color:#ffffff;margin-bottom:8px;">Chưa có vòng quay nào</h3>
+          <p style="font-size:0.9rem;color:#94a3b8;max-width:480px;margin:0 auto 20px auto;line-height:1.6;">
+            Hãy tạo vòng quay đầu tiên với mốc tiền donate mong muốn để OBS tự động bật vòng quay khi có khán giả donate!
+          </p>
+          <button id="emptyCreateGachaBtn" class="btn btn-gold" style="padding:8px 20px;">Tạo vòng quay đầu tiên</button>
+        </div>
+
+        <!-- Danh sách Grid các Vòng quay -->
+        <div id="gachaWheelsGrid" class="gacha-wheels-grid">
+          <!-- Dynamic wheel cards inserted by JS -->
+        </div>
+
+        <!-- Lịch sử quay thưởng Gacha -->
+        <div class="bento-card" style="margin-top:24px;">
+          <div class="bento-card-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+            <h3 class="bento-card-title">
+              <span class="card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+              </span>
+              Lịch Sử Quay Thưởng Gacha Gần Đây
+            </h3>
+            <button id="refreshGachaHistoryBtn" class="btn btn-ghost" style="padding:6px 12px;font-size:0.82rem;">Làm mới</button>
+          </div>
+          <div class="bento-table-wrapper">
+            <table class="bento-table">
+              <thead>
+                <tr>
+                  <th>Thời gian</th>
+                  <th>Người tặng</th>
+                  <th>Mốc tiền</th>
+                  <th>Vòng quay</th>
+                  <th>Loại</th>
+                  <th>Kết quả trúng</th>
+                  <th>Tác vụ đã áp dụng</th>
+                </tr>
+              </thead>
+              <tbody id="gachaHistoryTableBody">
+                <tr>
+                  <td colspan="7" class="text-center text-muted">Đang tải lịch sử quay...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- MODAL TẠO / CHỈNH SỬA VÒNG QUAY GACHA -->
+      <div id="gachaModal" class="gacha-modal-backdrop">
+        <div class="gacha-modal-dialog">
+          <div class="gacha-modal-header">
+            <h3 class="gacha-modal-title" id="gachaModalTitle">Tạo Vòng Quay Gacha Mới</h3>
+            <button type="button" id="gachaModalCloseX" class="btn btn-ghost" style="padding:6px 10px;display:inline-flex;align-items:center;justify-content:center;" title="Đóng">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </div>
+          <div class="gacha-modal-body">
+            <input type="hidden" id="gachaFormId" value="">
+
+            <div class="bento-grid-2" style="margin-bottom:16px;">
+              <div class="bento-form-group">
+                <label class="bento-label" for="gachaFormName">Tên vòng quay <span style="color:#ef4444;">*</span></label>
+                <input type="text" id="gachaFormName" class="bento-input" placeholder="Ví dụ: Vòng Quay May Mắn 20K" required>
+              </div>
+              <div class="bento-form-group">
+                <label class="bento-label" for="gachaFormType">Loại vòng quay <span style="color:#ef4444;">*</span></label>
+                <select id="gachaFormType" class="bento-select">
+                  <option value="time">Vòng quay Thời Gian (Cộng/Trừ giây Subathon)</option>
+                  <option value="reward">Vòng quay Phần Thưởng (Minigame / Thử thách)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="bento-grid-2" style="margin-bottom:16px;">
+              <div class="bento-form-group">
+                <label class="bento-label" for="gachaFormAmount">Mốc tiền kích hoạt (VNĐ) <span style="color:#ef4444;">*</span></label>
+                <input type="number" id="gachaFormAmount" class="bento-input" placeholder="20000" min="1000" step="1000" required>
+                <span class="form-hint" style="font-size:0.78rem;">Khán giả donate chính xác số tiền này sẽ kích hoạt vòng quay.</span>
+              </div>
+              <div class="bento-form-group">
+                <label class="bento-label">Trạng thái kích hoạt</label>
+                <div style="min-height:42px;display:flex;align-items:center;">
+                  <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:600;font-size:0.88rem;color:var(--text-1);">
+                    <input type="checkbox" id="gachaFormActive" checked style="width:18px;height:18px;accent-color:#f59e0b;cursor:pointer;">
+                    Cho phép kích hoạt vòng quay này
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bảng danh sách nan quạt / ô thưởng -->
+            <div style="margin-top:20px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                <h4 style="font-size:0.92rem;font-weight:700;color:#fef08a;margin:0;">Các ô thưởng trên Vòng Quay (Tối thiểu 2 ô)</h4>
+                <button type="button" id="gachaFormAddItemBtn" class="btn btn-ghost" style="padding:5px 12px;font-size:0.8rem;">+ Thêm ô thưởng</button>
               </div>
 
-              <!-- Bảng các mốc thời gian trên vòng quay -->
-              <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
-                <h4 style="font-size:0.92rem;font-weight:700;color:#fef08a;margin:0;">Các ô thời gian trên Vòng Quay</h4>
-                <button type="button" id="addRewardRowBtn" class="btn btn-ghost"
-                  style="padding:6px 12px;font-size:0.8rem;white-space:nowrap;flex-shrink:0;">Thêm ô thời gian</button>
-              </div>
-
-              <div class="bento-table-wrapper" style="max-width:100%;overflow-x:auto;">
-                <table class="bento-table" id="gachaRewardsTable" style="width:100%;min-width:540px;">
+              <div class="bento-table-wrapper" style="max-height:260px;overflow-y:auto;">
+                <table class="bento-table" style="width:100%;">
                   <thead>
                     <tr>
-                      <th style="width:28%;">Tên hiển thị</th>
-                      <th style="width:24%;">Số giây (+/- giây)</th>
-                      <th style="width:18%;">Trọng số (Tỉ lệ)</th>
-                      <th style="width:18%;">Màu sắc</th>
-                      <th style="width:12%;text-align:center;">Thao tác</th>
+                      <th style="width:30%;">Tên hiển thị (Label)</th>
+                      <th style="width:25%;" id="gachaFormValueHeader">Giá trị (Giây +/-)</th>
+                      <th style="width:18%;">Trọng số</th>
+                      <th style="width:15%;">Màu sắc</th>
+                      <th style="width:12%;text-align:center;">Xóa</th>
                     </tr>
                   </thead>
-                  <tbody id="gachaRewardsTableBody">
+                  <tbody id="gachaFormItemsTableBody">
                     <!-- Dynamic rows -->
                   </tbody>
                 </table>
               </div>
             </div>
           </div>
+          <div class="gacha-modal-footer">
+            <button type="button" id="gachaModalCancelBtn" class="btn btn-ghost">Hủy bỏ</button>
+            <button type="button" id="gachaModalSaveBtn" class="btn btn-gold">Lưu vòng quay</button>
+          </div>
         </div>
-      </section>
+      </div>
 
       <section id="tab-users" class="admin-tab-content">
         <div class="bento-card">
@@ -827,10 +1189,13 @@
   <script src="../assets/js/core/api-client.js?v=20260905_1"></script>
   <script src="../assets/js/utils/formatters.js?v=20260905_1"></script>
   <script src="../assets/js/utils/parallax.js?v=20260905_1"></script>
+  <script src="../assets/js/utils/confirm-modal.js?v=20260906_1"></script>
   <script src="../assets/js/services/auth.service.js?v=20260905_1"></script>
   <script src="../assets/js/services/user.service.js?v=20260905_1"></script>
   <script src="../assets/js/services/donate.service.js?v=20260905_1"></script>
   <script src="../assets/js/services/subathon.service.js?v=20260905_1"></script>
+  <script src="../assets/js/services/goal.service.js?v=20260905_1"></script>
+  <script src="../assets/js/services/gacha.service.js?v=20260905_1"></script>
   <script src="../assets/js/pages/admin-unified.js?v=20260905_1"></script>
 </body>
 

@@ -7,10 +7,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const user = AuthService.getCurrentUser() || Storage.getUser();
   const role = (user?.role || '').toLowerCase();
   if (role !== 'admin') {
-    Toast.error('Bạn không có quyền quản trị viên!');
-    setTimeout(() => {
-      window.location.href = '../index.html';
-    }, 1200);
+    window.location.href = '../index.html';
     return;
   }
 
@@ -57,34 +54,50 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   rebuildCacheBtn?.addEventListener('click', async () => {
-    if (!confirm('Bạn có chắc muốn tái tạo toàn bộ cache Leaderboard Redis từ MySQL?')) return;
+    if (typeof ConfirmModal !== 'undefined') {
+      const confirmed = await ConfirmModal.show({
+        title: 'Tái tạo Leaderboard Cache',
+        message: 'Bạn có chắc chắn muốn tái tạo toàn bộ cache Leaderboard Redis từ MySQL? Hệ thống sẽ quét lại dữ liệu donate và đồng bộ xếp hạng.',
+        confirmText: 'Tái tạo ngay',
+        cancelText: 'Hủy bỏ',
+        type: 'warning'
+      });
+      if (!confirmed) return;
+    }
     rebuildCacheBtn.disabled = true;
     rebuildCacheBtn.textContent = 'Đang tái tạo...';
 
     try {
-      const res = await DonateService.rebuildLeaderboard();
-      Toast.success('Đã tái tạo toàn bộ cache Leaderboard Redis thành công!');
+      await DonateService.rebuildLeaderboard();
     } catch (err) {
-      Toast.error(err.message || 'Lỗi khi tái tạo cache');
+      console.error('Lỗi khi tái tạo cache:', err);
     } finally {
       rebuildCacheBtn.disabled = false;
-      rebuildCacheBtn.textContent = '🔄 Rebuild Cache Leaderboard';
+      rebuildCacheBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" style="vertical-align:middle;margin-right:6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>Rebuild Cache Leaderboard';
     }
   });
 
   cleanupPendingBtn?.addEventListener('click', async () => {
-    if (!confirm('Xóa tất cả các bản ghi donate pending quá 30 phút?')) return;
+    if (typeof ConfirmModal !== 'undefined') {
+      const confirmed = await ConfirmModal.show({
+        title: 'Dọn dẹp đơn Pending',
+        message: 'Bạn có chắc chắn muốn xóa tất cả các bản ghi donate ở trạng thái pending quá 30 phút? Hành động này không thể hoàn tác.',
+        confirmText: 'Xóa đơn hết hạn',
+        cancelText: 'Hủy bỏ',
+        type: 'danger'
+      });
+      if (!confirmed) return;
+    }
     cleanupPendingBtn.disabled = true;
     cleanupPendingBtn.textContent = 'Đang dọn dẹp...';
 
     try {
       await DonateService.cleanupExpired();
-      Toast.success('Đã dọn dẹp các đơn donate pending hết hạn!');
     } catch (err) {
-      Toast.error(err.message || 'Lỗi dọn dẹp');
+      console.error('Lỗi dọn dẹp:', err);
     } finally {
       cleanupPendingBtn.disabled = false;
-      cleanupPendingBtn.textContent = '🗑️ Dọn dẹp đơn Pending quá hạn';
+      cleanupPendingBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" style="vertical-align:middle;margin-right:6px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Dọn dẹp đơn Pending quá hạn';
     }
   });
 
@@ -92,12 +105,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (logoutBtn) {
     logoutBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      if (typeof Toast !== 'undefined') {
-        Toast.info('Đang đăng xuất...');
-      }
       setTimeout(() => {
         AuthService.logout('../index.html');
-      }, 300);
+      }, 100);
     });
   }
 

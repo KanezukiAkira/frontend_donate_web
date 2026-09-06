@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="referrer" content="no-referrer">
-  <title>Donate & Gacha Alert OBS Overlay</title>
+  <title>Donate Alert OBS Overlay</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,13 +13,14 @@
     href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;0,800;0,900;1,400&family=Outfit:wght@600;700;800;900&family=Orbitron:wght@700;900&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/widgets/donate-alert.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 
 <body>
-  <!-- OBS Status Pill -->
+  <!-- OBS Connection Status Pill (Hiển thị 7 giây khi mở widget trên OBS) -->
   <div class="obs-status-pill" id="obsStatusPill">
-    <span class="status-dot"></span>
-    <span id="obsStatusText">Donate & Gacha Alert OBS • Đã sẵn sàng</span>
+    <div class="status-dot"></div>
+    <span id="obsStatusText">Donate Alert OBS • Đã sẵn sàng</span>
   </div>
 
   <!-- THÔNG BÁO DONATE TIÊU CHUẨN (ALERT BOX) -->
@@ -43,66 +44,6 @@
     </div>
   </div>
 
-  <!-- VÒNG QUAY MAY MẮN GACHA (HIỂN THỊ GIỮA MÀN HÌNH KHI DONATE GACHA) -->
-  <div id="gachaWheelContainer" class="gacha-wheel-container">
-    <div class="gacha-wheel-card">
-      <div class="gacha-ambient-glow"></div>
-
-      <!-- Header: Thông tin người donate kích hoạt vòng quay thời gian -->
-      <div class="gacha-donor-card">
-        <div class="gacha-donor-header">
-          <span class="gacha-wheel-badge">VÒNG QUAY</span>
-          <span class="gacha-tier-badge" id="gachaTierBadge">GÓI 20K</span>
-        </div>
-        <div class="gacha-donor-body">
-          <span class="donor-name" id="gachaDonorName">Khán giả</span>
-          <span class="donor-action">vừa kích hoạt</span>
-          <span class="donor-amount" id="gachaDonorAmount">20.000 ₫</span>
-        </div>
-        <div class="gacha-message-wrap" id="gachaMessageWrap" style="display:none;">
-          <div class="donor-message" id="gachaDonorMessage">Lời nhắn...</div>
-        </div>
-      </div>
-
-      <!-- Sân khấu Vòng Quay Canvas -->
-      <div class="wheel-stage">
-        <!-- Kim chỉ thưởng ở đỉnh 12 giờ -->
-        <div class="wheel-pointer" id="wheelPointer">
-          <svg viewBox="0 0 32 42" width="36" height="46">
-            <defs>
-              <linearGradient id="pointerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#ef4444" />
-                <stop offset="50%" stop-color="#f87171" />
-                <stop offset="100%" stop-color="#b91c1c" />
-              </linearGradient>
-              <filter id="pointerShadow" x="-20%" y="-20%" width="140%" height="140%">
-                <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity="0.8" />
-              </filter>
-            </defs>
-            <path d="M16 42 L3 8 C3 4, 8 1, 16 1 C24 1, 29 4, 29 8 Z" fill="url(#pointerGrad)" stroke="#ffffff"
-              stroke-width="2" filter="url(#pointerShadow)" />
-            <circle cx="16" cy="11" r="4" fill="#ffffff" />
-          </svg>
-        </div>
-
-        <canvas id="wheelCanvas" width="380" height="380"></canvas>
-
-        <div class="wheel-center-cap" id="wheelCenterCap">
-          <div class="cap-inner">
-            <span class="cap-star">⏱</span>
-            <span class="cap-label">TIME</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Banner công bố kết quả sau khi quay xong -->
-      <div class="gacha-result-banner" id="gachaResultBanner">
-        <div class="result-main-title" id="gachaResultTitle">+300 GIÂY</div>
-        <div class="result-sub-note" id="gachaResultSubtitle">+300 giây thời gian</div>
-      </div>
-    </div>
-  </div>
-
   <!-- Particle / Confetti Canvas -->
   <canvas id="fxCanvas" class="fx-canvas"></canvas>
 
@@ -113,7 +54,6 @@
   <script src="../assets/js/utils/formatters.js"></script>
   <script src="../assets/js/utils/sound.js"></script>
   <script src="../assets/js/services/donate.service.js"></script>
-  <script src="../assets/js/services/subathon.service.js"></script>
   <script src="../assets/js/widgets/donate-alert.js"></script>
 </body>
 

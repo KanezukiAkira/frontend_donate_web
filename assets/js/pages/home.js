@@ -130,13 +130,12 @@ document.addEventListener('DOMContentLoaded', () => {
           loginError.textContent = msg;
           loginError.style.display = 'block';
         }
-        if (typeof Toast !== 'undefined') Toast.warning(msg);
         return;
       }
 
       if (btnDoLogin) {
         btnDoLogin.disabled = true;
-        btnDoLogin.innerHTML = '<icon class="autorenew"></icon> <span>Đang đăng nhập...</span>';
+        btnDoLogin.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18"><circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="12"/></svg> <span>Đang đăng nhập...</span>';
       }
 
       try {
@@ -145,18 +144,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const role = (currentUser?.role || '').toLowerCase();
 
         if (role === 'admin') {
-          if (typeof Toast !== 'undefined') {
-            Toast.success('Đăng nhập thành công với quyền Quản trị viên! Đang chuyển sang trang quản lý...');
-          }
           setTimeout(() => {
             window.location.href = './page-admin/index.html';
-          }, 500);
+          }, 400);
           return;
-        }
-
-        const displayName = currentUser?.full_name || email;
-        if (typeof Toast !== 'undefined') {
-          Toast.success(`Đăng nhập thành công! Chào mừng ${displayName}`);
         }
 
         if (loginPassword) loginPassword.value = '';
@@ -168,13 +159,10 @@ document.addEventListener('DOMContentLoaded', () => {
           loginError.textContent = errorMsg;
           loginError.style.display = 'block';
         }
-        if (typeof Toast !== 'undefined') {
-          Toast.error(errorMsg);
-        }
       } finally {
         if (btnDoLogin) {
           btnDoLogin.disabled = false;
-          btnDoLogin.innerHTML = '<icon class="login"></icon> <span>Đăng nhập</span>';
+          btnDoLogin.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> <span>Đăng nhập</span>';
         }
       }
     });
@@ -198,7 +186,6 @@ document.addEventListener('DOMContentLoaded', () => {
           registerError.textContent = msg;
           registerError.style.display = 'block';
         }
-        if (typeof Toast !== 'undefined') Toast.warning(msg);
         return;
       }
 
@@ -208,13 +195,12 @@ document.addEventListener('DOMContentLoaded', () => {
           registerError.textContent = msg;
           registerError.style.display = 'block';
         }
-        if (typeof Toast !== 'undefined') Toast.warning(msg);
         return;
       }
 
       if (btnDoRegister) {
         btnDoRegister.disabled = true;
-        btnDoRegister.innerHTML = '<icon class="autorenew"></icon> <span>Đang tạo tài khoản...</span>';
+        btnDoRegister.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18"><circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="12"/></svg> <span>Đang tạo tài khoản...</span>';
       }
 
       try {
@@ -223,10 +209,6 @@ document.addEventListener('DOMContentLoaded', () => {
           password: password,
           full_name: fullName
         });
-
-        if (typeof Toast !== 'undefined') {
-          Toast.success('Tạo tài khoản thành công! Vui lòng đăng nhập.');
-        }
 
         if (registerSection) registerSection.style.display = 'none';
         if (loginSection) loginSection.style.display = 'block';
@@ -246,13 +228,10 @@ document.addEventListener('DOMContentLoaded', () => {
           registerError.textContent = errorMsg;
           registerError.style.display = 'block';
         }
-        if (typeof Toast !== 'undefined') {
-          Toast.error(errorMsg);
-        }
       } finally {
         if (btnDoRegister) {
           btnDoRegister.disabled = false;
-          btnDoRegister.innerHTML = '<icon class="check_circle"></icon> <span>Đăng ký ngay</span>';
+          btnDoRegister.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> <span>Đăng ký ngay</span>';
         }
       }
     });
@@ -274,9 +253,6 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
 
       if (!AuthService.isLoggedIn()) {
-        if (typeof Toast !== 'undefined') {
-          Toast.warning('Vui lòng đăng nhập trước khi tiến hành ủng hộ');
-        }
         updateAuthUI();
         return;
       }
@@ -287,16 +263,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const message = messageInput ? messageInput.value.trim() : '';
 
       if (amount < 5) {
-        if (typeof Toast !== 'undefined') {
-          Toast.warning('Số tiền ủng hộ tối thiểu là 5k (5.000 VNĐ)');
-        }
         return;
       }
 
       const submitBtn = donateForm.querySelector('button[type="submit"]');
       if (submitBtn) {
         submitBtn.disabled = true;
-        submitBtn.innerHTML = '<icon class="autorenew"></icon> <span>Đang tạo mã thanh toán...</span>';
+        submitBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18"><circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="12"/></svg> <span>Đang tạo mã thanh toán...</span>';
       }
 
       try {
@@ -321,19 +294,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (donateSection) donateSection.style.display = 'none';
         if (qrSection) qrSection.style.display = 'block';
-
-        if (typeof Toast !== 'undefined') {
-          Toast.success(`Mã thanh toán ${paymentCode} đã được khởi tạo!`);
-        }
       } catch (err) {
         console.error('Lỗi khi tạo mã donate:', err);
-        if (typeof Toast !== 'undefined') {
-          Toast.error(err.message || 'Không thể khởi tạo mã thanh toán');
-        }
       } finally {
         if (submitBtn) {
           submitBtn.disabled = false;
-          submitBtn.innerHTML = '<icon class="send"></icon> <span>Tiến hành Donate</span>';
+          submitBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> <span>Tiến hành Donate</span>';
         }
       }
     });
@@ -415,7 +381,15 @@ document.addEventListener('DOMContentLoaded', () => {
           const rank = idx + 1;
           const rankClass = rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : '';
           const badgeClass = rank <= 3 ? '' : 'rank-other';
-          const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
+          
+          let medal = `#${rank}`;
+          if (rank === 1) {
+            medal = `<svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg>`;
+          } else if (rank === 2) {
+            medal = `<svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><circle cx="12" cy="9" r="6"/><path d="M8.5 14.5L7 22l5-3 5 3-1.5-7.5"/></svg>`;
+          } else if (rank === 3) {
+            medal = `<svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><circle cx="12" cy="9" r="6"/><path d="M8.5 14.5L7 22l5-3 5 3-1.5-7.5"/></svg>`;
+          }
           const initial = (user.full_name || 'A').charAt(0).toUpperCase();
 
           return `

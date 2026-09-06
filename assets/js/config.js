@@ -1,8 +1,8 @@
 const CONFIG = {
-  BACKEND_URL: 'https://backend-donate-web.onrender.com',
-  API_BASE_URL: 'https://backend-donate-web.onrender.com/api',
-  // BACKEND_URL: "http://127.0.0.1:8000",
-  // API_BASE_URL: "http://127.0.0.1:8000/api",
+  // BACKEND_URL: 'https://backend-donate-web.onrender.com',
+  // API_BASE_URL: 'https://backend-donate-web.onrender.com/api',
+  BACKEND_URL: "http://127.0.0.1:8000",
+  API_BASE_URL: "http://127.0.0.1:8000/api",
   
   ENDPOINTS: {
     AUTH: {
@@ -36,8 +36,29 @@ const CONFIG = {
       LOGS: (id) => `/subathon/${id}/logs`,
       WIDGET_JSON: (token) => `/subathon/widget/${token}`,
       WIDGET_VIEW: (token) => `/subathon/widget/${token}/view`,
-      GACHA_CONFIG: (id) => `/subathon/${id}/gacha-config`,
-      GACHA_TEST: (id) => `/subathon/${id}/gacha-test`,
+    },
+    GOALS: {
+      CREATE: '/goals',
+      ACTIVE: '/goals/active',
+      HISTORY: '/goals/history',
+      DETAIL: (id) => `/goals/${id}`,
+      UPDATE: (id) => `/goals/${id}`,
+      ADJUST: (id) => `/goals/${id}/adjust`,
+      STATUS: (id) => `/goals/${id}/status`,
+      RESET: (id) => `/goals/${id}/reset`,
+      TEST: (id) => `/goals/${id}/test`,
+      WIDGET_JSON: (token) => `/goals/widget/${token}`,
+    },
+    GACHA: {
+      LIST: '/gacha',
+      CREATE: '/gacha',
+      DETAIL: (id) => `/gacha/${id}`,
+      UPDATE: (id) => `/gacha/${id}`,
+      DELETE: (id) => `/gacha/${id}`,
+      TOGGLE: (id) => `/gacha/${id}/toggle`,
+      TEST: (id) => `/gacha/${id}/test`,
+      HISTORY: '/gacha/history',
+      WIDGET_JSON: (token) => `/gacha/widget/${token}`,
     }
   },
 
@@ -63,8 +84,8 @@ const CONFIG = {
 Object.freeze(CONFIG);
 
 window.Toast = window.Toast || {
-  success: (msg) => console.log('[Toast:success]', msg),
-  error: (msg) => console.error('[Toast:error]', msg),
-  warning: (msg) => console.warn('[Toast:warning]', msg),
-  info: (msg) => console.info('[Toast:info]', msg)
+  success: () => {},
+  error: () => {},
+  warning: () => {},
+  info: () => {}
 };

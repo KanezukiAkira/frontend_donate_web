@@ -360,10 +360,12 @@ body.is-logged-in #loginSection,
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
 }
 
-.donate-form-title icon {
+.donate-form-title icon,
+.donate-form-title svg {
     width: 22px;
     height: 22px;
     opacity: 0.9;
+    flex-shrink: 0;
 }
 
 .donate-section form {
@@ -434,7 +436,8 @@ body.is-logged-in #loginSection,
     box-shadow: 0 0 18px rgba(255, 255, 255, 0.16);
 }
 
-.input-box icon {
+.input-box icon,
+.input-box svg {
     position: absolute;
     left: 18px;
     width: 20px;
@@ -446,7 +449,8 @@ body.is-logged-in #loginSection,
     z-index: 2;
 }
 
-.input-box:focus-within icon {
+.input-box:focus-within icon,
+.input-box:focus-within svg {
     opacity: 1;
 }
 
@@ -522,7 +526,8 @@ body.is-logged-in #loginSection,
     box-shadow: 0 0 18px rgba(255, 255, 255, 0.16);
 }
 
-.resizeable icon {
+.resizeable icon,
+.resizeable svg {
     position: absolute;
     top: 14px;
     left: 18px;
@@ -533,7 +538,8 @@ body.is-logged-in #loginSection,
     z-index: 2;
 }
 
-.resizeable:focus-within icon {
+.resizeable:focus-within icon,
+.resizeable:focus-within svg {
     opacity: 1;
 }
 
@@ -583,9 +589,11 @@ body.is-logged-in #loginSection,
     margin-top: 4px;
 }
 
-.donate-btn-submit icon {
+.donate-btn-submit icon,
+.donate-btn-submit svg {
     width: 20px;
     height: 20px;
+    flex-shrink: 0;
 }
 
 .donate-btn-submit:hover {
@@ -645,6 +653,12 @@ body.is-logged-in #loginSection,
     justify-content: center;
     gap: 8px;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.donate-qr-title svg {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
 }
 
 .donate-qr-box {

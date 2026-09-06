@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donation Goal OBS Overlay</title>
+  
+  <link rel="stylesheet" href="../assets/css/widgets/goal-bar.css">
+</head>
+<body>
+
+  <div class="goal-overlay-card" id="goalCard">
+    <div id="deltaPill" class="delta-pill">+50,000đ</div>
+
+    <div class="goal-header">
+      <div class="goal-title-group">
+        <svg class="goal-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <circle cx="12" cy="12" r="6" />
+          <circle cx="12" cy="12" r="2" />
+        </svg>
+        <span class="goal-title" id="goalTitle">MỤC TIÊU DONATE</span>
+      </div>
+      <span class="goal-status status-live" id="statusBadge">LIVE</span>
+    </div>
+
+    <div class="goal-track-container">
+      <div class="goal-track">
+        <div class="goal-fill" id="goalFill"></div>
+      </div>
+    </div>
+
+    <div class="goal-info-row">
+      <div class="goal-amounts">
+        <span class="current-amount" id="currentAmount">0 ₫</span>
+        <span class="amount-separator">/</span>
+        <span class="target-amount" id="targetAmount">0 ₫</span>
+      </div>
+      <span class="goal-pct-badge" id="pctBadge">0%</span>
+    </div>
+  </div>
+
+  <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/core/storage.js"></script>
+  <script src="../assets/js/core/api-client.js"></script>
+  <script src="../assets/js/utils/formatters.js"></script>
+  <script src="../assets/js/services/goal.service.js"></script>
+  <script src="../assets/js/widgets/goal-bar.js"></script>
+</body>
+</html>

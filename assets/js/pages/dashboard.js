@@ -8,12 +8,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const role = (user?.role || '').toLowerCase();
 
   if (role !== 'admin') {
-    if (typeof Toast !== 'undefined') {
-      Toast.error('Bạn không có quyền truy cập trang quản trị!');
-    }
-    setTimeout(() => {
-      window.location.href = '../index.html';
-    }, 1200);
+    window.location.href = '../index.html';
     return;
   }
 
@@ -61,18 +56,12 @@ document.addEventListener('DOMContentLoaded', async () => {
           await navigator.clipboard.writeText(inputEl.value);
           const originalText = btn.textContent;
           btn.textContent = 'Đã sao chép!';
-          if (typeof Toast !== 'undefined') {
-            Toast.success('Đã sao chép liên kết vào bộ nhớ tạm');
-          }
           setTimeout(() => {
             btn.textContent = originalText;
           }, 2000);
         } catch {
           inputEl.select();
           document.execCommand('copy');
-          if (typeof Toast !== 'undefined') {
-            Toast.success('Đã sao chép liên kết');
-          }
         }
       }
     });
@@ -81,12 +70,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (logoutBtn) {
     logoutBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      if (typeof Toast !== 'undefined') {
-        Toast.info('Đang đăng xuất...');
-      }
       setTimeout(() => {
         AuthService.logout('../index.html');
-      }, 300);
+      }, 100);
     });
   }
 });

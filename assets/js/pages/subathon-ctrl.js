@@ -7,12 +7,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const user = AuthService.getCurrentUser() || Storage.getUser();
   const role = (user?.role || '').toLowerCase();
   if (role !== 'admin') {
-    if (typeof Toast !== 'undefined') {
-      Toast.error('Bạn không có quyền truy cập trang điều khiển Subathon!');
-    }
-    setTimeout(() => {
-      window.location.href = '../index.html';
-    }, 1200);
+    window.location.href = '../index.html';
     return;
   }
 
@@ -167,10 +162,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
       currentSession = await SubathonService.createSession(data);
-      if (typeof Toast !== 'undefined') Toast.success('Đã tạo phiên Subathon thành công!');
       showActiveView();
     } catch (err) {
-      if (typeof Toast !== 'undefined') Toast.error(err.message || 'Lỗi khi khởi tạo Subathon');
+      console.error('Lỗi khi khởi tạo Subathon:', err);
     }
   });
 
@@ -179,10 +173,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       currentSession = await SubathonService.start(currentSession.id);
       localRemainingSeconds = currentSession.remaining_seconds;
       updateStatusUI();
-      if (typeof Toast !== 'undefined') Toast.success('Đã kích hoạt đếm ngược Subathon!');
       loadAuditLogs();
     } catch (err) {
-      if (typeof Toast !== 'undefined') Toast.error(err.message || 'Lỗi khi kích hoạt');
+      console.error('Lỗi khi kích hoạt:', err);
     }
   });
 
@@ -191,10 +184,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       currentSession = await SubathonService.pause(currentSession.id);
       localRemainingSeconds = currentSession.remaining_seconds;
       updateStatusUI();
-      if (typeof Toast !== 'undefined') Toast.warning('Đã tạm dừng đếm ngược');
       loadAuditLogs();
     } catch (err) {
-      if (typeof Toast !== 'undefined') Toast.error(err.message || 'Lỗi khi tạm dừng');
+      console.error('Lỗi khi tạm dừng:', err);
     }
   });
 
@@ -203,23 +195,32 @@ document.addEventListener('DOMContentLoaded', async () => {
       currentSession = await SubathonService.resume(currentSession.id);
       localRemainingSeconds = currentSession.remaining_seconds;
       updateStatusUI();
-      if (typeof Toast !== 'undefined') Toast.success('Đã tiếp tục đếm ngược');
       loadAuditLogs();
     } catch (err) {
-      if (typeof Toast !== 'undefined') Toast.error(err.message || 'Lỗi khi tiếp tục');
+      console.error('Lỗi khi tiếp tục:', err);
     }
   });
 
   endBtn?.addEventListener('click', async () => {
     if (!currentSession || !currentSession.id) {
-      if (typeof Toast !== 'undefined') Toast.warning('Không tìm thấy phiên Subathon nào đang hoạt động.');
       showCreateView();
       return;
     }
 
+    if (typeof ConfirmModal !== 'undefined') {
+      const confirmed = await ConfirmModal.show({
+        title: 'Kết thúc phiên Subathon',
+        message: 'Bạn có chắc chắn muốn kết thúc phiên đếm ngược Subathon hiện tại không?',
+        confirmText: 'Kết thúc phiên',
+        cancelText: 'Hủy bỏ',
+        type: 'danger'
+      });
+      if (!confirmed) return;
+    }
+
     endBtn.disabled = true;
     const origHtml = endBtn.innerHTML;
-    endBtn.innerHTML = '<span>⏳ Đang kết thúc...</span>';
+    endBtn.innerHTML = '<span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14" style="vertical-align:middle;margin-right:6px;"><circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="12"/></svg>Đang kết thúc...</span>';
 
     try {
       await SubathonService.end(currentSession.id);
@@ -229,7 +230,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         currentSession.status = 'ended';
       }
       updateStatusUI();
-      if (typeof Toast !== 'undefined') Toast.success('Đã kết thúc phiên Subathon thành công!');
       loadAuditLogs();
     } catch (err) {
       console.error('Lỗi khi kết thúc Subathon:', err);
@@ -239,10 +239,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         localRemainingSeconds = 0;
         if (currentSession) currentSession.status = 'ended';
         updateStatusUI();
-        if (typeof Toast !== 'undefined') Toast.info('Phiên Subathon này đã được kết thúc trước đó.');
         loadAuditLogs();
-      } else {
-        if (typeof Toast !== 'undefined') Toast.error(msg || 'Lỗi khi kết thúc phiên');
       }
     } finally {
       endBtn.disabled = false;
@@ -267,10 +264,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
         localRemainingSeconds = currentSession.remaining_seconds;
         updateStatusUI();
-        if (typeof Toast !== 'undefined') Toast.success(`Đã điều chỉnh: ${Formatters.secondsDelta(delta)}`);
         loadAuditLogs();
       } catch (err) {
-        if (typeof Toast !== 'undefined') Toast.error(err.message || 'Lỗi điều chỉnh thời gian');
+        console.error('Lỗi điều chỉnh thời gian:', err);
       }
     });
   });
@@ -290,17 +286,15 @@ document.addEventListener('DOMContentLoaded', async () => {
       updateStatusUI();
       adjustSecondsInput.value = '';
       adjustNoteInput.value = '';
-      if (typeof Toast !== 'undefined') Toast.success(`Đã điều chỉnh ${Formatters.secondsDelta(delta)}`);
       loadAuditLogs();
     } catch (err) {
-      if (typeof Toast !== 'undefined') Toast.error(err.message || 'Lỗi khi điều chỉnh');
+      console.error('Lỗi khi điều chỉnh:', err);
     }
   });
 
   document.getElementById('copySubathonLinkBtn')?.addEventListener('click', () => {
     if (subathonObsLink?.value) {
       navigator.clipboard.writeText(subathonObsLink.value);
-      if (typeof Toast !== 'undefined') Toast.success('Đã copy link Widget OBS vào clipboard!');
     }
   });
 
@@ -308,12 +302,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (logoutBtn) {
     logoutBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      if (typeof Toast !== 'undefined') {
-        Toast.info('Đang đăng xuất...');
-      }
       setTimeout(() => {
         AuthService.logout('../index.html');
-      }, 300);
+      }, 100);
     });
   }
 
