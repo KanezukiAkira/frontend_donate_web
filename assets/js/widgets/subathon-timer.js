@@ -144,11 +144,24 @@ document.addEventListener('DOMContentLoaded', () => {
         updateUI();
       });
 
+      // LẮNG NGHE SỰ KIỆN QUAY THƯỞNG GACHA TIME ĐỂ ĐỒNG BỘ ĐỒNG HỒ
+      channel.bind('subathon-gacha-roll', (data) => {
+        if (data.status) currentStatus = data.status;
+        if (typeof data.remaining_seconds === 'number') {
+          remainingSeconds = data.remaining_seconds;
+        }
+        if (data.added_seconds) {
+          showDeltaAnimation(data.added_seconds);
+        }
+        updateUI();
+      });
+
       console.log(`Đã kết nối Pusher Realtime (obs-subathon-${token}) cho Subathon Widget.`);
     } catch (err) {
       console.warn('Lỗi kết nối Pusher cho Subathon Widget:', err);
     }
   }
+
 
   if (CONFIG.POLL_INTERVALS?.SUBATHON_SYNC) {
     setInterval(fetchState, CONFIG.POLL_INTERVALS.SUBATHON_SYNC);

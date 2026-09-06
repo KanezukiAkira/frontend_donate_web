@@ -258,6 +258,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  const btnGachaPick = document.getElementById('btnGachaPick');
+  if (btnGachaPick) {
+    btnGachaPick.addEventListener('click', () => {
+      const amountInput = document.getElementById('amount');
+      if (amountInput) {
+        amountInput.value = 20000;
+        amountInput.focus();
+      }
+    });
+  }
+
   if (donateForm) {
     donateForm.addEventListener('submit', async (e) => {
       e.preventDefault();

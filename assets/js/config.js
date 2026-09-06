@@ -1,7 +1,9 @@
 const CONFIG = {
   BACKEND_URL: 'https://backend-donate-web.onrender.com',
   API_BASE_URL: 'https://backend-donate-web.onrender.com/api',
-
+  // BACKEND_URL: "http://127.0.0.1:8000",
+  // API_BASE_URL: "http://127.0.0.1:8000/api",
+  
   ENDPOINTS: {
     AUTH: {
       REGISTER: '/auth/register',
@@ -34,6 +36,8 @@ const CONFIG = {
       LOGS: (id) => `/subathon/${id}/logs`,
       WIDGET_JSON: (token) => `/subathon/widget/${token}`,
       WIDGET_VIEW: (token) => `/subathon/widget/${token}/view`,
+      GACHA_CONFIG: (id) => `/subathon/${id}/gacha-config`,
+      GACHA_TEST: (id) => `/subathon/${id}/gacha-test`,
     }
   },
 

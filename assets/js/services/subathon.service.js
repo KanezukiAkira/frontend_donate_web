@@ -80,5 +80,32 @@ const SubathonService = {
 
   getWidgetViewUrl(widgetToken) {
     return `${CONFIG.API_BASE_URL}${CONFIG.ENDPOINTS.SUBATHON.WIDGET_VIEW(widgetToken)}`;
+  },
+
+  async getGachaConfig(id) {
+    const response = await apiClient.get(
+      CONFIG.ENDPOINTS.SUBATHON.GACHA_CONFIG(id),
+      { requiresAuth: true }
+    );
+    return response ? (response.data !== undefined ? response.data : response) : {};
+  },
+
+  async saveGachaConfig(id, config) {
+    const response = await apiClient.post(
+      CONFIG.ENDPOINTS.SUBATHON.GACHA_CONFIG(id),
+      config,
+      { requiresAuth: true }
+    );
+    return response ? (response.data !== undefined ? response.data : response) : null;
+  },
+
+  async testGachaRoll(id, data = {}) {
+    const response = await apiClient.post(
+      CONFIG.ENDPOINTS.SUBATHON.GACHA_TEST(id),
+      data,
+      { requiresAuth: true }
+    );
+    return response ? (response.data !== undefined ? response.data : response) : null;
   }
 };
+

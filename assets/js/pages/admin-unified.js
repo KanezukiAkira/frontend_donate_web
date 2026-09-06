@@ -127,6 +127,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const sidebarUserEmail = document.getElementById('sidebarUserEmail');
   const alertWidgetUrl = document.getElementById('alertWidgetUrl');
   const subathonWidgetUrl = document.getElementById('subathonWidgetUrl');
+  const gachaCardWidgetUrl = document.getElementById('gachaCardWidgetUrl');
+  const testGachaOverlayBtn = document.getElementById('testGachaOverlayBtn');
   const logoutBtn = document.getElementById('logoutBtn');
 
   const fullName = currentUser.full_name || 'Admin';
@@ -152,7 +154,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     return `${origin}/widgets/subathon-timer.html?token=${token}${subParam}`;
   }
 
+  function updateGachaOverviewWidget(token) {
+    const unifiedAlertUrl = token ? `${origin}/widgets/donate-alert.html?token=${token}` : `${origin}/widgets/donate-alert.html`;
+    if (gachaCardWidgetUrl) gachaCardWidgetUrl.value = unifiedAlertUrl;
+  }
+
   function updateSubathonOverviewWidget(token) {
+    updateGachaOverviewWidget(token);
     if (!subathonWidgetUrl || !subathonWidgetBtn) return;
 
     if (token) {
@@ -165,7 +173,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         <span>Sao chép</span>
       `;
       if (subathonWidgetHint) {
-        subathonWidgetHint.innerHTML = 'Khuyến nghị: 450×220px. Nền trong suốt, cập nhật realtime theo phiên đang chạy.';
+        subathonWidgetHint.innerHTML = 'Khuyến nghị: 450×220px. Nền trong suốt, đặt ở góc màn hình.';
       }
     } else {
       subathonWidgetUrl.value = `${origin}/widgets/subathon-timer.html`;
@@ -261,6 +269,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       setTimeout(() => { copyPreviewAlertBtn.innerHTML = origHTML; }, 2000);
     });
   }
+
+  testGachaOverlayBtn?.addEventListener('click', () => {
+    if (testGachaBtn) {
+      testGachaBtn.click();
+    }
+  });
 
   const toggleObsSpecsBtn = document.getElementById('toggleObsSpecsBtn');
   const obsSpecsCollapse = document.getElementById('obsSpecsCollapse');
@@ -361,6 +375,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const logsTableBody = document.getElementById('logsTableBody');
 
   async function loadSubathonSession() {
+    loadGachaConfig();
     try {
       const res = await SubathonService.getCurrentSession();
       currentSession = (res && res.id) ? res : (res && res.data ? res.data : res);
@@ -383,6 +398,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (activeSessionView) activeSessionView.style.display = 'none';
     clearInterval(timerInterval);
     updateSubathonOverviewWidget(null);
+    loadGachaConfig();
+
 
     const subtitleInput = document.getElementById('createSubtitle');
     if (subtitleInput && !subtitleInput.value) {
@@ -421,6 +438,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     startLocalCountdown();
     loadAuditLogs();
+    loadGachaConfig();
 
     if (activeSessionView) {
       activeSessionView.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -737,6 +755,401 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.warn('Lỗi tải audit logs:', err);
     }
   }
+
+  // ==========================================
+  // GACHA TIME MANAGEMENT (VÒNG QUAY MAY MẮN)
+  // ==========================================
+  const gachaTierTabs = document.getElementById('gachaTierTabs');
+  const addTierBtn = document.getElementById('addTierBtn');
+  const emptyAddTierBtn = document.getElementById('emptyAddTierBtn');
+  const tierEmptyBox = document.getElementById('tierEmptyBox');
+  const tierDetailBox = document.getElementById('tierDetailBox');
+  const tierAmountInput = document.getElementById('tierAmountInput');
+  const tierNameInput = document.getElementById('tierNameInput');
+  const tierEnabledInput = document.getElementById('tierEnabledInput');
+  const deleteTierBtn = document.getElementById('deleteTierBtn');
+  const addRewardRowBtn = document.getElementById('addRewardRowBtn');
+  const gachaRewardsTableBody = document.getElementById('gachaRewardsTableBody');
+  const testGachaBtn = document.getElementById('testGachaBtn');
+  const saveGachaBtn = document.getElementById('saveGachaBtn');
+
+  // Accordion toggle cho ghi chú overlay (hiệu ứng giống thông số OBS Specs)
+  const toggleGachaNoticeBtn = document.getElementById('toggleGachaNoticeBtn');
+  const gachaNoticeCollapse = document.getElementById('gachaNoticeCollapse');
+
+  if (toggleGachaNoticeBtn && gachaNoticeCollapse) {
+    toggleGachaNoticeBtn.addEventListener('click', () => {
+      const isOpen = gachaNoticeCollapse.classList.toggle('open');
+      toggleGachaNoticeBtn.classList.toggle('active', isOpen);
+      toggleGachaNoticeBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+  }
+
+  let gachaConfig = {};
+  let activeGachaTierKey = null;
+
+  async function loadGachaConfig() {
+    if (!gachaTierTabs) return;
+    try {
+      const sessionId = currentSession ? currentSession.id : 0;
+      const res = await SubathonService.getGachaConfig(sessionId);
+      gachaConfig = (res && Object.keys(res).length > 0) ? res : {
+        "20000": {
+          "name": "Vòng Quay Thời Gian 20K",
+          "enabled": true,
+          "rewards": [
+            {"id": "1", "label": "+300s", "seconds": 300, "weight": 5, "color": "#f59e0b"},
+            {"id": "2", "label": "+120s", "seconds": 120, "weight": 20, "color": "#8b5cf6"},
+            {"id": "3", "label": "+60s", "seconds": 60, "weight": 45, "color": "#10b981"},
+            {"id": "4", "label": "+15s", "seconds": 15, "weight": 20, "color": "#3b82f6"},
+            {"id": "5", "label": "-30s", "seconds": -30, "weight": 10, "color": "#ef4444"}
+          ]
+        }
+      };
+
+      renderGachaTabs();
+    } catch (err) {
+      console.warn('Lỗi khi tải cấu hình Gacha:', err);
+      gachaConfig = {
+        "20000": {
+          "name": "Vòng Quay Thời Gian 20K",
+          "enabled": true,
+          "rewards": [
+            {"id": "1", "label": "+300s", "seconds": 300, "weight": 5, "color": "#f59e0b"},
+            {"id": "2", "label": "+120s", "seconds": 120, "weight": 20, "color": "#8b5cf6"},
+            {"id": "3", "label": "+60s", "seconds": 60, "weight": 45, "color": "#10b981"},
+            {"id": "4", "label": "+15s", "seconds": 15, "weight": 20, "color": "#3b82f6"},
+            {"id": "5", "label": "-30s", "seconds": -30, "weight": 10, "color": "#ef4444"}
+          ]
+        }
+      };
+      renderGachaTabs();
+    }
+  }
+
+  function renderGachaTabs() {
+    if (!gachaTierTabs) return;
+    const tierKeys = Object.keys(gachaConfig);
+
+    // Khi xóa hết mốc: Ẩn bảng cấu hình, hiện thông báo trống
+    if (tierKeys.length === 0) {
+      gachaTierTabs.innerHTML = '';
+      if (tierDetailBox) tierDetailBox.style.display = 'none';
+      if (tierEmptyBox) tierEmptyBox.style.display = 'block';
+      activeGachaTierKey = null;
+      return;
+    }
+
+    // Khi có mốc: Hiện bảng cấu hình, ẩn thông báo trống
+    if (tierEmptyBox) tierEmptyBox.style.display = 'none';
+    if (tierDetailBox) tierDetailBox.style.display = 'block';
+
+    if (!activeGachaTierKey || !gachaConfig[activeGachaTierKey]) {
+      activeGachaTierKey = tierKeys[0];
+    }
+
+    gachaTierTabs.innerHTML = tierKeys.map(key => {
+      const tier = gachaConfig[key];
+      const isActive = key === activeGachaTierKey;
+      const formattedAmount = Number(key).toLocaleString('vi-VN') + 'đ';
+      const disabledTag = tier.enabled === false ? ' [Tắt]' : '';
+      return `
+        <button type="button" class="btn ${isActive ? 'btn-gold' : 'btn-ghost'} gacha-tab-btn" data-key="${key}" style="padding:6px 14px;font-size:0.85rem;white-space:nowrap;">
+          ${formattedAmount} - ${tier.name || 'Mốc quay'}${disabledTag}
+        </button>
+      `;
+    }).join('');
+
+    gachaTierTabs.querySelectorAll('.gacha-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        saveCurrentTierFormToState();
+        activeGachaTierKey = btn.getAttribute('data-key');
+        renderGachaTabs();
+        renderActiveTierDetail();
+      });
+    });
+
+    renderActiveTierDetail();
+  }
+
+  function renderActiveTierDetail() {
+    if (!activeGachaTierKey || !gachaConfig[activeGachaTierKey]) {
+      if (tierDetailBox) tierDetailBox.style.display = 'none';
+      if (tierEmptyBox) tierEmptyBox.style.display = 'block';
+      return;
+    }
+    if (tierDetailBox) tierDetailBox.style.display = 'block';
+    if (tierEmptyBox) tierEmptyBox.style.display = 'none';
+
+    const tier = gachaConfig[activeGachaTierKey];
+
+    if (tierAmountInput) tierAmountInput.value = activeGachaTierKey;
+    if (tierNameInput) tierNameInput.value = tier.name || '';
+    if (tierEnabledInput) tierEnabledInput.checked = tier.enabled !== false;
+
+    renderRewardsTable(tier.rewards || []);
+  }
+
+  function renderRewardsTable(rewards) {
+    if (!gachaRewardsTableBody) return;
+    if (!rewards || rewards.length === 0) {
+      gachaRewardsTableBody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">Chưa có ô thời gian nào. Hãy bấm "Thêm ô thời gian".</td></tr>';
+      return;
+    }
+
+    gachaRewardsTableBody.innerHTML = rewards.map((item, idx) => {
+      const sec = item.seconds ?? 60;
+      const defLabel = item.label || (sec >= 0 ? `+${sec}s` : `${sec}s`);
+      const itemColor = item.color || '#f59e0b';
+      return `
+      <tr data-index="${idx}">
+        <td>
+          <input type="text" class="bento-input reward-label" value="${defLabel}" placeholder="Ví dụ: +60s" style="padding:6px 10px;font-size:0.85rem;width:100%;box-sizing:border-box;">
+        </td>
+        <td>
+          <input type="number" class="bento-input reward-seconds" value="${sec}" placeholder="+60 hoặc -30" style="padding:6px 10px;font-size:0.85rem;width:100%;box-sizing:border-box;">
+        </td>
+        <td>
+          <input type="number" class="bento-input reward-weight" value="${item.weight ?? 10}" min="1" placeholder="Trọng số" style="padding:6px 10px;font-size:0.85rem;width:100%;box-sizing:border-box;">
+        </td>
+        <td>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <input type="color" class="reward-color" value="${itemColor}" style="width:34px;height:28px;border:none;background:transparent;cursor:pointer;padding:0;flex-shrink:0;">
+            <span class="reward-color-hex" style="font-size:0.75rem;color:#94a3b8;font-family:monospace;">${itemColor}</span>
+          </div>
+        </td>
+        <td style="text-align:center;">
+          <button type="button" class="btn btn-red btn-delete-reward" data-index="${idx}" style="padding:4px 10px;font-size:0.78rem;white-space:nowrap;">Xóa</button>
+        </td>
+      </tr>
+      `;
+    }).join('');
+
+    gachaRewardsTableBody.querySelectorAll('.reward-color').forEach(picker => {
+      picker.addEventListener('input', (e) => {
+        const hexSpan = picker.parentElement?.querySelector('.reward-color-hex');
+        if (hexSpan) hexSpan.textContent = e.target.value;
+      });
+    });
+
+    gachaRewardsTableBody.querySelectorAll('.btn-delete-reward').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const index = Number(btn.getAttribute('data-index'));
+        saveCurrentTierFormToState();
+        if (gachaConfig[activeGachaTierKey]?.rewards) {
+          gachaConfig[activeGachaTierKey].rewards.splice(index, 1);
+          renderActiveTierDetail();
+        }
+      });
+    });
+  }
+
+  function saveCurrentTierFormToState() {
+    if (!activeGachaTierKey || !gachaConfig[activeGachaTierKey]) return;
+
+    const name = tierNameInput?.value.trim() || 'Vòng Quay Thời Gian';
+    const enabled = tierEnabledInput?.checked ?? true;
+    const newAmountStr = String(tierAmountInput?.value || activeGachaTierKey).trim();
+
+    const rewards = [];
+    if (gachaRewardsTableBody) {
+      gachaRewardsTableBody.querySelectorAll('tr[data-index]').forEach(row => {
+        const seconds = Number(row.querySelector('.reward-seconds')?.value || 0);
+        let label = row.querySelector('.reward-label')?.value.trim();
+        if (!label) {
+          label = seconds >= 0 ? `+${seconds}s` : `${seconds}s`;
+        }
+        const weight = Number(row.querySelector('.reward-weight')?.value || 1);
+        const color = row.querySelector('.reward-color')?.value || '#f59e0b';
+        rewards.push({ id: String(Date.now() + Math.random()), label, seconds, weight, color });
+      });
+    }
+
+    const currentTierData = {
+      name,
+      enabled,
+      rewards
+    };
+
+    if (newAmountStr && newAmountStr !== activeGachaTierKey) {
+      delete gachaConfig[activeGachaTierKey];
+      gachaConfig[newAmountStr] = currentTierData;
+      activeGachaTierKey = newAmountStr;
+    } else {
+      gachaConfig[activeGachaTierKey] = currentTierData;
+    }
+  }
+
+  // Tự động tạo mốc mới mà không dùng prompt hay confirm
+  function createNewTier() {
+    saveCurrentTierFormToState();
+    const defaults = [20000, 50000, 100000, 200000, 500000, 1000000];
+    let chosenAmount = 20000;
+    for (const d of defaults) {
+      if (!gachaConfig[String(d)]) {
+        chosenAmount = d;
+        break;
+      }
+    }
+    if (gachaConfig[String(chosenAmount)]) {
+      const existing = Object.keys(gachaConfig).map(Number);
+      const maxVal = existing.length > 0 ? Math.max(...existing) : 0;
+      chosenAmount = maxVal + 50000;
+    }
+
+    const key = String(chosenAmount);
+    gachaConfig[key] = {
+      name: `Vòng Quay ${chosenAmount.toLocaleString('vi-VN')}đ`,
+      enabled: true,
+      rewards: [
+        {"id": "1", "label": "+300s", "seconds": 300, "weight": 10, "color": "#f59e0b"},
+        {"id": "2", "label": "+120s", "seconds": 120, "weight": 20, "color": "#8b5cf6"},
+        {"id": "3", "label": "+60s", "seconds": 60, "weight": 40, "color": "#10b981"},
+        {"id": "4", "label": "+15s", "seconds": 15, "weight": 20, "color": "#3b82f6"},
+        {"id": "5", "label": "-30s", "seconds": -30, "weight": 10, "color": "#ef4444"}
+      ]
+    };
+
+    activeGachaTierKey = key;
+    renderGachaTabs();
+    renderActiveTierDetail();
+    if (tierAmountInput) {
+      tierAmountInput.focus();
+      tierAmountInput.select();
+    }
+  }
+
+  addTierBtn?.addEventListener('click', createNewTier);
+  emptyAddTierBtn?.addEventListener('click', createNewTier);
+
+  // Xóa mốc trực tiếp không dùng confirm
+  deleteTierBtn?.addEventListener('click', () => {
+    if (!activeGachaTierKey) return;
+    delete gachaConfig[activeGachaTierKey];
+    const remainingKeys = Object.keys(gachaConfig);
+    if (remainingKeys.length > 0) {
+      activeGachaTierKey = remainingKeys[0];
+    } else {
+      activeGachaTierKey = null;
+    }
+    renderGachaTabs();
+  });
+
+  addRewardRowBtn?.addEventListener('click', () => {
+    if (!activeGachaTierKey || !gachaConfig[activeGachaTierKey]) return;
+    saveCurrentTierFormToState();
+    if (!gachaConfig[activeGachaTierKey].rewards) {
+      gachaConfig[activeGachaTierKey].rewards = [];
+    }
+    gachaConfig[activeGachaTierKey].rewards.push({
+      id: String(Date.now()),
+      label: '+60s',
+      seconds: 60,
+      weight: 20,
+      color: '#10b981'
+    });
+    renderActiveTierDetail();
+  });
+
+  // Tự động cập nhật tiêu đề tab khi người dùng sửa số tiền hoặc tên vòng quay
+  tierAmountInput?.addEventListener('blur', () => {
+    if (!activeGachaTierKey) return;
+    const newAmountStr = String(tierAmountInput.value || '').trim();
+    if (!newAmountStr || isNaN(Number(newAmountStr)) || Number(newAmountStr) <= 0) {
+      tierAmountInput.value = activeGachaTierKey;
+      return;
+    }
+    if (newAmountStr !== activeGachaTierKey) {
+      if (gachaConfig[newAmountStr]) {
+        activeGachaTierKey = newAmountStr;
+      } else {
+        const currentData = gachaConfig[activeGachaTierKey];
+        delete gachaConfig[activeGachaTierKey];
+        gachaConfig[newAmountStr] = currentData;
+        activeGachaTierKey = newAmountStr;
+      }
+      renderGachaTabs();
+    }
+  });
+
+  tierNameInput?.addEventListener('input', () => {
+    if (activeGachaTierKey && gachaConfig[activeGachaTierKey]) {
+      gachaConfig[activeGachaTierKey].name = tierNameInput.value.trim() || 'Mốc quay';
+      const activeBtn = gachaTierTabs?.querySelector(`.gacha-tab-btn[data-key="${activeGachaTierKey}"]`);
+      if (activeBtn) {
+        const formattedAmount = Number(activeGachaTierKey).toLocaleString('vi-VN') + 'đ';
+        const disabledTag = tierEnabledInput?.checked === false ? ' [Tắt]' : '';
+        activeBtn.textContent = `${formattedAmount} - ${gachaConfig[activeGachaTierKey].name}${disabledTag}`;
+      }
+    }
+  });
+
+  tierEnabledInput?.addEventListener('change', () => {
+    if (activeGachaTierKey && gachaConfig[activeGachaTierKey]) {
+      gachaConfig[activeGachaTierKey].enabled = tierEnabledInput.checked;
+      const activeBtn = gachaTierTabs?.querySelector(`.gacha-tab-btn[data-key="${activeGachaTierKey}"]`);
+      if (activeBtn) {
+        const formattedAmount = Number(activeGachaTierKey).toLocaleString('vi-VN') + 'đ';
+        const disabledTag = tierEnabledInput.checked ? '' : ' [Tắt]';
+        activeBtn.textContent = `${formattedAmount} - ${gachaConfig[activeGachaTierKey].name}${disabledTag}`;
+      }
+    }
+  });
+
+  saveGachaBtn?.addEventListener('click', async () => {
+    saveCurrentTierFormToState();
+    const origHTML = saveGachaBtn.innerHTML;
+    saveGachaBtn.innerHTML = 'Đang lưu...';
+    try {
+      const sessionId = currentSession ? currentSession.id : 0;
+      await SubathonService.saveGachaConfig(sessionId, gachaConfig);
+      if (typeof Toast !== 'undefined') {
+        Toast.success('Đã lưu cấu hình Vòng Quay thành công!');
+      } else {
+        saveGachaBtn.innerHTML = 'Đã lưu thành công!';
+        setTimeout(() => { saveGachaBtn.innerHTML = origHTML; }, 2000);
+      }
+    } catch (err) {
+      console.error('Lỗi khi lưu cấu hình Vòng Quay:', err);
+      if (typeof Toast !== 'undefined') {
+        Toast.error('Lỗi lưu cấu hình: ' + (err.message || err));
+      }
+    } finally {
+      if (typeof Toast !== 'undefined') {
+        saveGachaBtn.innerHTML = origHTML;
+      }
+    }
+  });
+
+  testGachaBtn?.addEventListener('click', async () => {
+    saveCurrentTierFormToState();
+    const origHTML = testGachaBtn.innerHTML;
+    testGachaBtn.innerHTML = 'Đang quay...';
+    try {
+      const sessionId = currentSession ? currentSession.id : 0;
+      const res = await SubathonService.testGachaRoll(sessionId, {
+        amount: activeGachaTierKey || "20000",
+        donor_name: "Streamer Thử Nghiệm"
+      });
+
+      if (typeof BroadcastChannel !== 'undefined' && res) {
+        const gachaChannel = new BroadcastChannel('gacha-test');
+        gachaChannel.postMessage({ _type: 'gacha-roll', payload: res });
+      }
+
+      if (typeof Toast !== 'undefined') {
+        Toast.success('Đã kích hoạt Vòng Quay sang OBS Studio!');
+      }
+    } catch (err) {
+      console.error('Lỗi khi test vòng quay:', err);
+      if (typeof Toast !== 'undefined') {
+        Toast.error('Lỗi quay thử: ' + (err.message || err));
+      }
+    } finally {
+      testGachaBtn.innerHTML = origHTML;
+    }
+  });
+
 
   const userTableBody = document.getElementById('userTableBody');
   const searchFilterForm = document.getElementById('searchFilterForm');

@@ -940,3 +940,21 @@ body.bento-admin-body {
     text-align: center;
   }
 }
+
+/* ===================================================
+   GACHA TIME BENTO CARD LAYOUT CONTAINMENT
+   =================================================== */
+.gacha-card-container {
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.gacha-tier-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+

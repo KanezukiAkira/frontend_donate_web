@@ -5,7 +5,7 @@ const SoundManager = {
   init() {
     try {
       this.getAudioContext();
-    } catch {}
+    } catch { }
   },
 
   getAudioContext() {
@@ -16,7 +16,7 @@ const SoundManager = {
       }
     }
     if (this.audioCtx && this.audioCtx.state === 'suspended') {
-      this.audioCtx.resume().catch(() => {});
+      this.audioCtx.resume().catch(() => { });
     }
     return this.audioCtx;
   },
@@ -103,12 +103,12 @@ const SoundManager = {
         this.currentAudio.pause();
         this.currentAudio.src = '';
         this.currentAudio = null;
-      } catch {}
+      } catch { }
     }
     if ('speechSynthesis' in window) {
       try {
         window.speechSynthesis.cancel();
-      } catch {}
+      } catch { }
     }
   },
 
@@ -118,8 +118,8 @@ const SoundManager = {
       if (!trimmed) return resolve();
 
       const encoded = encodeURIComponent(trimmed);
-      const backendBase = (typeof CONFIG !== 'undefined' && CONFIG.API_BASE_URL) 
-        ? CONFIG.API_BASE_URL.replace(/\/+$/, '') 
+      const backendBase = (typeof CONFIG !== 'undefined' && CONFIG.API_BASE_URL)
+        ? CONFIG.API_BASE_URL.replace(/\/+$/, '')
         : 'http://127.0.0.1:8000/api';
       const backendTtsUrl = `${backendBase}/tts?text=${encoded}`;
       const googleTtsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=vi&client=tw-ob&total=1&idx=0&textlen=${trimmed.length}&q=${encoded}`;
@@ -220,6 +220,84 @@ const SoundManager = {
     if (cleanMsg) {
       await new Promise(resolve => setTimeout(resolve, 1000));
       await this.speakSinglePhrase(cleanMsg, volume);
+    }
+  },
+
+  playTickSound() {
+    try {
+      const ctx = this.getAudioContext();
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(880, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(260, ctx.currentTime + 0.028);
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.005, ctx.currentTime + 0.028);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.028);
+    } catch (_) { }
+  },
+
+  playWheelWinSound(isPenalty) {
+    try {
+      const ctx = this.getAudioContext();
+      if (!ctx) return;
+      if (isPenalty) {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(160, ctx.currentTime);
+        osc.frequency.linearRampToValueAtTime(85, ctx.currentTime + 0.45);
+        gain.gain.setValueAtTime(0.25, ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.45);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.45);
+      } else {
+        const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+        notes.forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.08);
+          gain.gain.setValueAtTime(0.25, ctx.currentTime + i * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.008, ctx.currentTime + i * 0.08 + 0.45);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + i * 0.08);
+          osc.stop(ctx.currentTime + i * 0.08 + 0.45);
+        });
+      }
+    } catch (_) { }
+  },
+
+  async speakGachaReward({ name, amount, rewardLabel, seconds, message, volume = 1.0 }) {
+    this.stopTTS();
+
+    const donorName = (name || 'Khán giả').trim();
+    const spokenAmount = this.formatAmountForSpeech(amount);
+    const sec = Number(seconds || 0);
+
+    let timePhrase = '';
+    if (sec > 0) {
+      timePhrase = `được cộng thêm ${sec} giây`;
+    } else if (sec < 0) {
+      timePhrase = `bị trừ ${Math.abs(sec)} giây`;
+    } else {
+      timePhrase = `thời gian giữ nguyên`;
+    }
+
+    const phase1Text = `${donorName} đã donate ${spokenAmount}, ${timePhrase}!`;
+    await this.speakSinglePhrase(phase1Text, volume);
+
+    const cleanMsg = this.sanitizeTTSText(message);
+    if (cleanMsg) {
+      await new Promise(resolve => setTimeout(resolve, 600));
+      await this.speakSinglePhrase(`Lời nhắn: ${cleanMsg}`, volume);
     }
   }
 };
