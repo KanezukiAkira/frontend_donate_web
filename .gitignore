@@ -6,3 +6,5 @@ test*.wav
 # IDE cá nhân
 .vscode/
 .idea/
+# Tài liệu kế hoạch nội bộ
+implementation_plan.md
