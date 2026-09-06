@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donate - Tani Kami</title>
+    <link rel="icon" type="image/x-icon" href="./assets/img/logo_tani.png">
+    <link rel="stylesheet" href="./main.css">
+</head>
+<body>
+    <header>
+        <div id="header">
+            <div class="logo">
+                <img src="./assets/img/logo_tani.png" alt="logo" width="20" height="20">
+            </div>
+            <button id="mobileMenuBtn" class="mobile-menu-btn" aria-label="Toggle navigation menu" aria-expanded="false">
+                <span class="menu-icon">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </span>
+                <span class="menu-text">Menu</span>
+            </button>
+
+            <nav id="mainNav">
+                <a href="#home" id="navHomeLink" class="nav-tab-link active">Ủng hộ</a>
+                <a href="#leaderboard" id="navLeaderboardLink" class="nav-tab-link">Bảng xếp hạng</a>
+                <a href="#history" id="navHistoryLink" class="nav-tab-link">Lịch Sử Donate</a>
+                <div id="btn-bento-logout" class="nav-logout-btn" style="display: none;">
+                    Đăng Xuất
+                </div>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <div class="donate-page">
+            <div class="home">
+                <div class="overlay"></div>
+                <div class="move">
+                    <img src="./assets/img/background_Tani.jpg" class="background-video donate-bg-video" alt="Background Akira Halloween">
+                </div>
+            </div>
+            <section class="donate-card">
+                <div class="ui-item">
+                    <img src="./assets/img/s-F3nzRh_400x400.jpg" alt="Avatar" class="first firstimg">
+                    <div class="info donate-profile-info">
+                        <span class="donate-profile-name">Tani Kami</span>
+                        <span class="description donate-profile-handle">@tani_kami</span>
+                    </div>
+                </div>
+                <p class="donate-greeting">Vtuber Tani Kami dayooo~🐹Hamster God/ Chuột Hói, Lõm. Mình thích chơi game, cosplay, lồng tiếng động vật vô tri. Hãy theo dõi mình trên con đường sắp tới nhé!!</p>
+            </section>
+
+            <div id="donateSection" class="donate-section">
+                <form id="donateForm">
+                    <div class="donate-form-title">
+                        <icon class="coffee"></icon> <span>Gửi ủng hộ (Donate)</span>
+                    </div>
+                    <div id="statusMsg" class="donate-status-msg"></div>
+                    <div class="input-box">
+                        <icon class="bank"></icon>
+                        <input type="number" id="amount" placeholder="Nhập số tiền ủng hộ (tối thiểu 5k)" min="5" required>
+                    </div>
+                    <div class="resizeable">
+                        <icon class="chat"></icon>
+                        <textarea id="message" placeholder="Lời nhắn gửi đến Tani..." rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="donate-btn-submit">
+                        <icon class="send"></icon>
+                        <span>Tiến hành Donate</span>
+                    </button>
+                </form>
+            </div>
+
+            <div id="loginSection" class="donate-section">
+                <form id="customLoginForm">
+                    <div class="donate-form-title">
+                        <icon class="lock"></icon> <span>Đăng nhập để Lưu lịch sử donate</span>
+                    </div>
+                    <div id="loginError" class="donate-error-msg"></div>
+                    <div class="input-box">
+                        <icon class="person"></icon>
+                        <input type="email" id="loginUsername" placeholder="Email đăng nhập" autocomplete="email" spellcheck="false" required>
+                    </div>
+                    <div class="input-box">
+                        <icon class="password"></icon>
+                        <input type="password" id="loginPassword" placeholder="Mật khẩu" autocomplete="current-password" spellcheck="false" required>
+                    </div>
+                    <button type="submit" id="btnDoLogin" class="donate-btn-submit">
+                        <icon class="login"></icon> <span>Đăng nhập</span>
+                    </button>
+                    <div class="donate-auth-switch">
+                        <span>Bạn chưa có tài khoản?</span> <a href="#" id="showRegisterLink" class="donate-auth-link">Đăng ký</a>
+                    </div>
+                </form>
+            </div>
+
+            <div id="registerSection" class="donate-section">
+                <form id="customRegisterForm">
+                    <div class="donate-form-title">
+                        <icon class="person_add"></icon> <span>Tạo tài khoản mới</span>
+                    </div>
+                    <div id="registerError" class="donate-error-msg"></div>
+                    <div class="input-box">
+                        <icon class="person"></icon>
+                        <input type="text" id="regUsername" placeholder="Tên hiển thị (Họ và tên)" autocomplete="name" spellcheck="false" required>
+                    </div>
+                    <div class="input-box">
+                        <icon class="mail"></icon>
+                        <input type="email" id="regEmail" placeholder="Email đăng nhập" autocomplete="email" spellcheck="false" required>
+                    </div>
+                    <div class="input-box">
+                        <icon class="password"></icon>
+                        <input type="password" id="regPassword" placeholder="Mật khẩu (tối thiểu 6 ký tự)" autocomplete="new-password" minlength="6" spellcheck="false" required>
+                    </div>
+                    <button type="submit" id="btnDoRegister" class="donate-btn-submit">
+                        <icon class="check_circle"></icon> <span>Đăng ký ngay</span>
+                    </button>
+                    <div class="donate-auth-switch">
+                        <span>Bạn đã có tài khoản?</span> <a href="#" id="showLoginLink" class="donate-auth-link">Đăng nhập</a>
+                    </div>
+                </form>
+            </div>
+
+            <div id="qrSection" class="donate-section">
+                <section class="pad donate-qr-card">
+                    <div class="donate-qr-title">
+                        <icon class="qr_code_scanner"></icon> Quét mã QR để thanh toán
+                    </div>
+                    <div class="donate-qr-box">
+                        <img id="qrImage" src="" alt="Mã QR Thanh Toán" class="donate-qr-img">
+                    </div>
+                    <p class="donate-qr-info">
+                        <span>Số tiền:</span> <strong id="qrAmountDisplay" class="donate-qr-amount">0 ₫</strong>
+                    </p>
+                    <button id="btnBackToDonate" class="btn-secondary donate-btn-back">
+                        <icon class="undo"></icon> Quay lại
+                    </button>
+                </section>
+            </div>
+
+            <div id="leaderboardSection" class="donate-section" style="display: none;">
+                <div class="donate-form-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#ffff00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
+                        <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
+                        <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+                        <path d="M4 22h16"/>
+                        <path d="M10 14.66V17c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-2.34"/>
+                        <path d="M18 14.66V17c0 .55-.45 1-1 1h-2c-.55 0-1-.45-1-1v-2.34"/>
+                        <path d="M6 2h12v7a6 6 0 0 1-12 0V2z"/>
+                    </svg>
+                    <span>Bảng Xếp Hạng Người Ủng Hộ</span>
+                </div>
+
+                <div class="lb-period-switch">
+                    <button type="button" id="lbBtnAllTime" class="lb-period-btn active">Toàn thời gian</button>
+                    <button type="button" id="lbBtnMonthly" class="lb-period-btn">Tháng này</button>
+                </div>
+
+                <div id="leaderboardList" class="lb-list-container">
+                    <div class="lb-loading">Đang tải bảng xếp hạng...</div>
+                </div>
+
+                <div id="currentUserRankBox" class="current-user-rank-box"></div>
+            </div>
+
+            <div id="historySection" class="donate-section" style="display: none;">
+                <div class="donate-form-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#ffff00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                    <span>Lịch Sử Donate Gần Nhất</span>
+                </div>
+                <p class="donate-section-subtitle">50 lần donate thành công mới nhất qua hệ thống</p>
+
+                <div id="donationHistoryList" class="history-list-container">
+                    <div class="history-loading">Đang tải lịch sử donate...</div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="./assets/js/config.js?v=20260905_1"></script>
+    <script src="./assets/js/core/storage.js?v=20260905_1"></script>
+    <script src="./assets/js/core/api-client.js?v=20260905_1"></script>
+    <script src="./assets/js/utils/formatters.js?v=20260905_1"></script>
+    <script src="./assets/js/utils/parallax.js?v=20260905_1"></script>
+    <script src="./assets/js/services/user.service.js?v=20260905_1"></script>
+    <script src="./assets/js/services/auth.service.js?v=20260905_1"></script>
+    <script src="./assets/js/services/donate.service.js?v=20260905_1"></script>
+    <script src="./assets/js/pages/home.js?v=20260905_1"></script>
+</body>
+</html>

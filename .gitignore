@@ -1,0 +1,8 @@
+Thumbs.db
+.DS_Store
+# File âm thanh / tài nguyên test tạm thời
+test*.mp3
+test*.wav
+# IDE cá nhân
+.vscode/
+.idea/

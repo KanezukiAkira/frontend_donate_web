@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — Tani Kami</title>
+  <link rel="icon" type="image/x-icon" href="../assets/img/logo_tani.png">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/pages/admin-bento.css">
+</head>
+<body class="bento-admin-body">
+  <div class="home">
+    <div class="overlay"></div>
+    <div class="move">
+      <img src="../assets/img/background_Tani.jpg" class="donate-bg-video" alt="Background Tani Kami">
+    </div>
+  </div>
+
+  <div class="bento-layout">
+    <aside id="bentoSidebar" class="bento-sidebar">
+      <div class="sidebar-brand-box">
+        <div class="sidebar-brand-info" data-tab="overview">
+          <img src="../assets/img/logo_tani.png" alt="Logo" class="brand-avatar">
+          <div class="brand-title-group">
+            <span class="brand-title">DONATE<span class="brand-accent">HUB</span></span>
+            <span class="brand-subtitle">Tani Kami Admin</span>
+          </div>
+        </div>
+
+        <button id="adminMobileMenuBtn" class="bento-mobile-menu-btn" aria-label="Toggle navigation menu" aria-expanded="false">
+          <span class="menu-icon">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+          </span>
+          <span class="menu-text">Menu</span>
+        </button>
+      </div>
+
+      <div id="bentoSidebarBody" class="bento-sidebar-body">
+        <ul class="bento-nav-list">
+          <li>
+            <div class="bento-nav-item active" data-tab="overview">
+              <span class="bento-nav-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/>
+                </svg>
+              </span>
+              <span>Tổng quan & Widget</span>
+            </div>
+          </li>
+          <li>
+            <div class="bento-nav-item" data-tab="subathon">
+              <span class="bento-nav-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5"/><path d="M9.5 3h5M12 3v2"/>
+                </svg>
+              </span>
+              <span>Điều khiển Subathon</span>
+            </div>
+          </li>
+          <li>
+            <div class="bento-nav-item" data-tab="users">
+              <span class="bento-nav-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+              </span>
+              <span>Quản trị & Hệ thống</span>
+            </div>
+          </li>
+          <li>
+            <div class="bento-nav-item" data-tab="donations">
+              <span class="bento-nav-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                </svg>
+              </span>
+              <span>Lịch sử nhận Donate</span>
+            </div>
+          </li>
+        </ul>
+
+        <div class="bento-sidebar-footer">
+          <div class="bento-user-mini">
+            <div class="bento-user-info">
+              <span id="sidebarUserName" class="bento-user-name">Streamer</span>
+              <span id="sidebarUserEmail" class="bento-user-email">admin@example.com</span>
+            </div>
+            <span class="badge-admin-pill">ADMIN</span>
+          </div>
+          <button id="logoutBtn" class="btn-bento-logout">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            <span>Đăng xuất</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="bento-main-content">
+      <header class="bento-header">
+        <div class="bento-header-left">
+          <h1>Xin chào, <span id="streamerName" class="text-gold">Streamer</span></h1>
+          <p id="streamerEmail">admin@example.com</p>
+        </div>
+        <span id="userRole" class="bento-role-badge">QUẢN TRỊ VIÊN</span>
+      </header>
+
+      <section id="tab-overview" class="admin-tab-content active">
+        <div class="bento-card mb-6">
+          <div class="bento-card-header">
+            <div>
+              <h2 class="bento-card-title">
+                <span class="card-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>
+                  </svg>
+                </span>
+                Thiết lập OBS Studio Browser Source
+              </h2>
+              <p class="bento-card-desc">Sao chép đường dẫn và dán vào <strong>Add Source → Browser</strong> trong OBS Studio.</p>
+            </div>
+            <span class="tag-badge">OBS Overlays</span>
+          </div>
+
+          <div class="bento-form-group">
+            <label class="bento-label">1. Donate Alert Overlay</label>
+            <div class="widget-link-box">
+              <input type="text" id="alertWidgetUrl" class="widget-link-input" readonly value="">
+              <div class="widget-link-actions">
+                <div class="btn-group-row">
+                  <button class="btn btn-gold copy-widget-btn" data-target="alertWidgetUrl">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Sao chép
+                  </button>
+                  <button id="copyPreviewAlertBtn" class="btn btn-ghost" title="Sao chép link ghim xem thử để căn chỉnh trong OBS">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    Link Xem trước
+                  </button>
+                </div>
+                <button id="testDonateAlertBtn" class="btn btn-ghost btn-test-alert">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  Test Alert
+                </button>
+              </div>
+            </div>
+
+            <div class="obs-specs-accordion">
+              <button type="button" id="toggleObsSpecsBtn" class="btn-obs-specs-toggle" aria-expanded="false">
+                <span class="toggle-title">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  Thông số thiết lập khuyên dùng trong OBS Studio
+                </span>
+                <span class="toggle-chevron">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+                </span>
+              </button>
+
+              <div id="obsSpecsCollapse" class="obs-specs-collapse">
+                <div class="obs-specs-guide">
+                  <div class="obs-specs-grid">
+                    <div class="obs-spec-item">
+                      <span class="obs-spec-label">Rộng (Width):</span>
+                      <span class="obs-spec-val">800</span>
+                    </div>
+                    <div class="obs-spec-item">
+                      <span class="obs-spec-label">Cao (Height):</span>
+                      <span class="obs-spec-val">500 hoặc 600</span>
+                    </div>
+                  </div>
+                  <div class="obs-checkbox-hints">
+                    <div class="obs-check-heading">Tích chọn trong thuộc tính OBS:</div>
+                    <div class="obs-check-item">
+                      <span class="obs-check-icon">☑</span>
+                      <span><strong>Tắt nguồn khi không hiển thị</strong> <em>(Shutdown source when not visible)</em></span>
+                    </div>
+                    <div class="obs-check-item">
+                      <span class="obs-check-icon">☑</span>
+                      <span><strong>Làm mới trình duyệt khi cảnh hoạt động</strong> <em>(Refresh browser when scene becomes active)</em></span>
+                    </div>
+                    <div class="obs-check-item">
+                      <span class="obs-check-icon">🔊</span>
+                      <span><strong>Điều khiển âm thanh qua OBS</strong> <em>(Control audio via OBS)</em>: Tích chọn để điều chỉnh âm lượng chuông & giọng đọc TTS trong Audio Mixer của OBS.</span>
+                    </div>
+                  </div>
+                  <div class="obs-specs-footer">
+                    <span class="tip-badge">Mẹo</span>
+                    <span>Dùng nút <strong>Link Xem trước</strong> (hoặc thêm <code>?preview=1</code>) để <strong>ghim khung alert</strong> khi căn chỉnh vị trí trên OBS, hoặc bấm <strong>Test Alert</strong> để phát thử nghiệm trực tiếp.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bento-form-group" style="margin-top:20px;">
+            <label class="bento-label">2. Subathon Countdown Overlay</label>
+            <div class="widget-link-box">
+              <input type="text" id="subathonWidgetUrl" class="widget-link-input" readonly value="">
+              <div class="widget-link-actions">
+                <button id="subathonWidgetActionBtn" type="button" class="btn btn-gold goto-subathon-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                  <span>Tạo phiên</span>
+                </button>
+              </div>
+            </div>
+            <span id="subathonWidgetHint" class="form-hint">Khuyến nghị: 450×220px. Nền trong suốt, cập nhật realtime.</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="tab-subathon" class="admin-tab-content">
+        <div id="noSessionView" class="bento-card" style="display:none;">
+          <div class="bento-card-header">
+            <div>
+              <h2 class="bento-card-title">
+                <span class="card-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                </span>
+                Khởi tạo Phiên Subathon Mới
+              </h2>
+              <p class="bento-card-desc">Chưa có phiên nào đang hoạt động. Thiết lập thông số để bắt đầu ca live.</p>
+            </div>
+          </div>
+
+          <form id="createSubathonForm" style="margin-top:20px;">
+            <div class="bento-form-group">
+              <label class="bento-label" for="createTitle">Tiêu đề buổi Subathon</label>
+              <input type="text" id="createTitle" class="bento-input" placeholder="Ví dụ: Subathon 24H cùng Tani Kami" required>
+            </div>
+
+            <div class="bento-form-group">
+              <label class="bento-label" for="createSubtitle">Tiêu đề phụ / Slogan / Mục tiêu (hiển thị trên Widget OBS)</label>
+              <input type="text" id="createSubtitle" class="bento-input" placeholder="Ví dụ: Mục tiêu 100K Sub, Đạt mốc tặng quà... (để trống sẽ hiện tên Streamer)">
+            </div>
+
+            <div class="bento-grid-2">
+              <div class="bento-form-group">
+                <label class="bento-label" for="createDuration">Thời lượng khởi đầu (Phút)</label>
+                <input type="number" id="createDuration" class="bento-input" value="60" min="1" required>
+              </div>
+              <div class="bento-form-group">
+                <label class="bento-label" for="createMaxCap">Giới hạn tối đa (Giờ)</label>
+                <input type="number" id="createMaxCap" class="bento-input" value="24" min="1" required>
+              </div>
+            </div>
+
+            <div class="bento-grid-3">
+              <div class="bento-form-group">
+                <label class="bento-label" for="createUnitAmount">Mỗi mốc tiền (VNĐ)</label>
+                <input type="number" id="createUnitAmount" class="bento-input" value="10000" min="1000" required>
+              </div>
+              <div class="bento-form-group">
+                <label class="bento-label" for="createSecondsPerUnit">Giây cộng / mốc</label>
+                <input type="number" id="createSecondsPerUnit" class="bento-input" value="60" min="1" required>
+              </div>
+              <div class="bento-form-group">
+                <label class="bento-label" for="createMinAmount">Tối thiểu cộng giờ (VNĐ)</label>
+                <input type="number" id="createMinAmount" class="bento-input" value="10000" min="1000" required>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-gold btn-lg" style="width:100%;margin-top:16px;justify-content:center;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Bắt đầu tạo phiên Subathon
+            </button>
+          </form>
+        </div>
+
+        <div id="activeSessionView" style="display:none;">
+          <div class="subathon-digital-box">
+            <div class="session-header">
+              <div>
+                <h2 id="sessionTitle" class="text-gold session-title">SUBATHON LIVE</h2>
+                <div id="sessionSubtitle" class="text-muted" style="font-size:0.85rem;margin-top:2px;display:none;"></div>
+              </div>
+              <span id="sessionStatusBadge" class="status-badge status-live">LIVE</span>
+            </div>
+
+            <div class="bento-countdown-display" id="countdownDisplay">00:00:00</div>
+
+            <div class="controls-row">
+              <button id="startBtn" class="btn btn-green btn-lg" style="display:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Kích hoạt
+              </button>
+              <button id="pauseBtn" class="btn btn-amber btn-lg" style="display:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                Tạm dừng
+              </button>
+              <button id="resumeBtn" class="btn btn-green btn-lg" style="display:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Tiếp tục
+              </button>
+              <button id="endBtn" class="btn btn-red btn-lg">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+                Kết thúc phiên
+              </button>
+              <button id="newSessionBtn" class="btn btn-gold btn-lg" style="display:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Khởi tạo phiên mới
+              </button>
+            </div>
+          </div>
+
+          <div class="bento-grid-2">
+            <div class="bento-card">
+              <h3 class="bento-card-title">
+                <span class="card-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </span>
+                Điều chỉnh thời gian nhanh
+              </h3>
+              <p class="bento-card-desc">Cộng hoặc trừ thời gian ngay lập tức vào đồng hồ</p>
+              <div class="adjust-pill-grid">
+                <button type="button" class="adjust-pill positive" data-delta="60">+60s</button>
+                <button type="button" class="adjust-pill positive" data-delta="300">+5 Phút</button>
+                <button type="button" class="adjust-pill positive" data-delta="600">+10 Phút</button>
+                <button type="button" class="adjust-pill positive" data-delta="1800">+30 Phút</button>
+                <button type="button" class="adjust-pill negative" data-delta="-60">-60s</button>
+                <button type="button" class="adjust-pill negative" data-delta="-300">-5 Phút</button>
+                <button type="button" class="adjust-pill negative" data-delta="-600">-10 Phút</button>
+                <button type="button" class="adjust-pill negative" data-delta="-1800">-30 Phút</button>
+              </div>
+            </div>
+
+            <div class="bento-card">
+              <h3 class="bento-card-title">
+                <span class="card-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                </span>
+                Điều chỉnh thủ công
+              </h3>
+              <form id="customAdjustForm" style="margin-top:12px;">
+                <div class="bento-grid-2">
+                  <div class="bento-form-group">
+                    <label class="bento-label" for="adjustSeconds">Số giây (+/-)</label>
+                    <input type="number" id="adjustSeconds" class="bento-input" placeholder="120 hoặc -60" required>
+                  </div>
+                  <div class="bento-form-group">
+                    <label class="bento-label" for="adjustNote">Lý do</label>
+                    <input type="text" id="adjustNote" class="bento-input" placeholder="Thưởng minigame">
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-ghost" style="width:100%;justify-content:center;">Xác nhận điều chỉnh</button>
+              </form>
+            </div>
+          </div>
+
+          <div class="bento-card">
+            <h3 class="bento-card-title">
+              <span class="card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="8 21 12 17 16 21"/></svg>
+              </span>
+              OBS Overlay Link — Subathon
+            </h3>
+            <div class="widget-link-box" style="margin-top:12px;">
+              <input type="text" id="subathonObsLink" class="widget-link-input" readonly value="">
+              <div class="widget-link-actions">
+                <button class="btn btn-gold copy-widget-btn" data-target="subathonObsLink">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  Sao chép
+                </button>
+              </div>
+            </div>
+            <span class="form-hint">Dán vào OBS Browser Source để hiển thị đồng hồ cho khán giả.</span>
+          </div>
+
+          <div class="bento-card">
+            <div class="bento-card-header">
+              <h3 class="bento-card-title">
+                <span class="card-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                </span>
+                Nhật ký biến động thời gian
+              </h3>
+            </div>
+            <div class="bento-table-wrapper">
+              <table class="bento-table">
+                <thead>
+                  <tr>
+                    <th>Thời gian</th>
+                    <th>Loại</th>
+                    <th>Thay đổi</th>
+                    <th>Còn lại</th>
+                    <th>Ghi chú</th>
+                  </tr>
+                </thead>
+                <tbody id="logsTableBody">
+                  <tr><td colspan="5" class="text-center text-muted">Đang tải nhật ký...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="tab-users" class="admin-tab-content">
+        <div class="bento-card">
+          <div class="bento-card-header">
+            <div>
+              <h2 class="bento-card-title">
+                <span class="card-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </span>
+                Quản Lý Thành Viên & Cache Redis
+              </h2>
+              <p class="bento-card-desc">Dành riêng cho Admin — truy vấn tài khoản, quản lý thành viên và đồng bộ dữ liệu.</p>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button id="rebuildCacheBtn" class="btn btn-gold">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                Rebuild Cache
+              </button>
+              <button id="cleanupPendingBtn" class="btn btn-ghost">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                Dọn Pending
+              </button>
+            </div>
+          </div>
+
+          <form id="searchFilterForm" class="bento-grid-3" style="margin-top:20px;gap:16px;">
+            <div class="bento-form-group" style="margin-bottom:0;">
+              <label class="bento-label" for="filterName">Tìm theo Họ và tên</label>
+              <input type="text" id="filterName" class="bento-input" placeholder="Nhập tên...">
+            </div>
+            <div class="bento-form-group" style="margin-bottom:0;">
+              <label class="bento-label" for="filterEmail">Tìm theo Email</label>
+              <input type="text" id="filterEmail" class="bento-input" placeholder="Nhập email...">
+            </div>
+            <div class="bento-form-group" style="margin-bottom:0;">
+              <label class="bento-label" for="filterStatus">Trạng thái</label>
+              <div style="display:flex;gap:10px;">
+                <select id="filterStatus" class="bento-select">
+                  <option value="">Tất cả</option>
+                  <option value="true">Hoạt động</option>
+                  <option value="false">Bị khóa</option>
+                </select>
+                <button type="submit" class="btn btn-gold" style="flex-shrink:0;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  Tìm
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="bento-card">
+          <div class="bento-card-header">
+            <h3 class="bento-card-title">
+              <span class="card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </span>
+              Danh sách người dùng hệ thống
+            </h3>
+          </div>
+          <div class="bento-table-wrapper">
+            <table class="bento-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Họ và tên</th>
+                  <th>Email</th>
+                  <th>Vai trò</th>
+                  <th>Trạng thái</th>
+                  <th>Tổng donate (VNĐ)</th>
+                  <th>Ngày tham gia</th>
+                </tr>
+              </thead>
+              <tbody id="userTableBody">
+                <tr><td colspan="7" class="text-center text-muted">Đang tải danh sách...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="tab-donations" class="admin-tab-content">
+        <div class="bento-card">
+          <div class="bento-card-header">
+            <div>
+              <h2 class="bento-card-title">
+                <span class="card-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                  </svg>
+                </span>
+                Lịch sử nhận ủng hộ
+              </h2>
+              <p class="bento-card-desc">Danh sách các khoản donate thành công gần nhất qua hệ thống SePay Gateway.</p>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <button id="rebuildLeaderboardBtn" class="btn btn-ghost" title="Tái tạo lại bộ nhớ cache xếp hạng từ MySQL lên Redis">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                Rebuild Cache
+              </button>
+              <button id="refreshDonationsBtn" class="btn btn-gold">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                Làm mới
+              </button>
+            </div>
+          </div>
+
+          <div class="bento-grid-2" style="margin-top:20px;gap:16px;">
+            <div class="bento-stat-card">
+              <span class="bento-stat-label">Tổng lượt donate hiển thị</span>
+              <span id="donationsCountStat" class="bento-stat-value text-gold">0</span>
+            </div>
+            <div class="bento-stat-card">
+              <span class="bento-stat-label">Tổng tiền đã nhận (VNĐ)</span>
+              <span id="donationsTotalStat" class="bento-stat-value stat-gold">0 ₫</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bento-card">
+          <div class="bento-card-header">
+            <h3 class="bento-card-title">
+              <span class="card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+              </span>
+              Danh sách chi tiết các lần ủng hộ
+            </h3>
+          </div>
+          <div class="bento-table-wrapper">
+            <table class="bento-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Người ủng hộ</th>
+                  <th>Số tiền (VNĐ)</th>
+                  <th>Lời nhắn gửi</th>
+                  <th>Thời gian nhận</th>
+                </tr>
+              </thead>
+              <tbody id="donationTableBody">
+                <tr><td colspan="5" class="text-center text-muted">Đang tải lịch sử...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="../assets/js/config.js?v=20260905_1"></script>
+  <script src="../assets/js/core/storage.js?v=20260905_1"></script>
+  <script src="../assets/js/core/api-client.js?v=20260905_1"></script>
+  <script src="../assets/js/utils/formatters.js?v=20260905_1"></script>
+  <script src="../assets/js/utils/parallax.js?v=20260905_1"></script>
+  <script src="../assets/js/services/auth.service.js?v=20260905_1"></script>
+  <script src="../assets/js/services/user.service.js?v=20260905_1"></script>
+  <script src="../assets/js/services/donate.service.js?v=20260905_1"></script>
+  <script src="../assets/js/services/subathon.service.js?v=20260905_1"></script>
+  <script src="../assets/js/pages/admin-unified.js?v=20260905_1"></script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="no-referrer">
+  <title>Donate Alert OBS Overlay</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/widgets/donate-alert.css">
+</head>
+<body>
+  <div class="obs-status-pill" id="obsStatusPill">
+    <span class="status-dot"></span>
+    <span id="obsStatusText">Donate Alert OBS • Đã sẵn sàng</span>
+  </div>
+
+  <div id="alertBox" class="alert-container">
+    <img src="../assets/img/logo_tani.png" 
+         class="alert-image" 
+         id="alert-image" 
+         alt="Alert Character"
+         onerror="this.onerror=null; this.src='../assets/img/logo_tani.png';">
+    
+    <div class="widget-box">
+      <div class="alert-text" id="alert-text">
+        <div class="alert-header-row">
+          <span class="donor-name" id="donorName">Kanezuki Akira</span>
+          <span class="donor-action">vừa donate</span>
+        </div>
+        <div class="alert-amount-row">
+          <span class="alert-amount" id="amount">50.000 ₫</span>
+        </div>
+      </div>
+      <div class="alert-message-wrap">
+        <div class="alert-message" id="message">abc</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/core/storage.js"></script>
+  <script src="../assets/js/core/api-client.js"></script>
+  <script src="../assets/js/utils/formatters.js"></script>
+  <script src="../assets/js/utils/sound.js"></script>
+  <script src="../assets/js/services/donate.service.js"></script>
+  <script src="../assets/js/widgets/donate-alert.js"></script>
+</body>
+</html>

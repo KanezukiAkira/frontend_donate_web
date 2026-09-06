@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subathon Timer OBS Overlay</title>
+  
+  <link rel="stylesheet" href="../assets/css/widgets/subathon-timer.css">
+</head>
+<body>
+
+  <div class="subathon-overlay-card">
+    <div id="deltaPill" class="delta-pill">+60s</div>
+
+    <div class="overlay-header">
+      <span class="overlay-title" id="sessionTitle">SUBATHON TIMER</span>
+      <span class="overlay-status status-live" id="statusBadge">LIVE</span>
+    </div>
+
+    <div class="timer-digits" id="timerDisplay">00:00:00</div>
+
+    <div class="overlay-streamer" id="streamerName">Loading...</div>
+  </div>
+
+  <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/core/storage.js"></script>
+  <script src="../assets/js/core/api-client.js"></script>
+  <script src="../assets/js/utils/formatters.js"></script>
+  <script src="../assets/js/services/subathon.service.js"></script>
+  <script src="../assets/js/widgets/subathon-timer.js"></script>
+</body>
+</html>
