@@ -1477,8 +1477,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     gachaWheelsGrid.querySelectorAll('.btn-delete-wheel').forEach(btn => {
       btn.addEventListener('click', async () => {
         const id = Number(btn.getAttribute('data-id'));
-        const wheel = allWheels.find(w => w.id === id);
-        const wheelTitle = wheel ? `"${wheel.title}"` : 'vòng quay này';
+        const wheelTitle = 'vòng quay này';
 
         if (typeof ConfirmModal !== 'undefined') {
           const confirmed = await ConfirmModal.show({
