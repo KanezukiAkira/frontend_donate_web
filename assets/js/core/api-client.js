@@ -122,12 +122,24 @@ class ApiClient {
         throw new Error('Thao tác quá nhanh! Bạn đã vượt quá giới hạn lượt gọi API, vui lòng chờ 1 phút.');
       }
 
+      // Xử lý các phản hồi không có body (204 No Content, 205 Reset Content)
+      if (response.status === 204 || response.status === 205) {
+        return null;
+      }
+
       let data = null;
       const contentType = response.headers.get('content-type') || '';
-      if (contentType.includes('application/json')) {
-        data = await response.json();
-      } else {
-        data = await response.text();
+      const text = await response.text();
+      if (text && text.trim().length > 0) {
+        if (contentType.includes('application/json')) {
+          try {
+            data = JSON.parse(text);
+          } catch {
+            data = text;
+          }
+        } else {
+          data = text;
+        }
       }
 
       if (!response.ok) {
@@ -153,6 +165,10 @@ class ApiClient {
 
   post(endpoint, body, options = {}) {
     return this.request(endpoint, { ...options, method: 'POST', body });
+  }
+
+  put(endpoint, body, options = {}) {
+    return this.request(endpoint, { ...options, method: 'PUT', body });
   }
 
   patch(endpoint, body, options = {}) {

@@ -1753,6 +1753,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       loadGachaWheels();
     } catch (err) {
       console.error('Lỗi lưu vòng quay:', err);
+      alert('Lỗi lưu vòng quay: ' + (err.message || 'Vui lòng kiểm tra lại'));
     } finally {
       gachaModalSaveBtn.innerHTML = origHTML;
       gachaModalSaveBtn.disabled = false;
