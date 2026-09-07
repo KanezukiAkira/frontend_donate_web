@@ -609,7 +609,7 @@
 
             <div class="bento-form-group">
               <label class="bento-label" for="createGoalEndDate">Hạn chót mục tiêu (Tùy chọn)</label>
-              <input type="datetime-local" id="createGoalEndDate" class="bento-input">
+              <input type="datetime-local" id="createGoalEndDate" class="bento-input" onclick="if(typeof this.showPicker === 'function'){ try{ this.showPicker(); }catch(e){} }">
             </div>
 
             <button type="submit" class="btn btn-gold btn-lg" style="width:100%;margin-top:16px;justify-content:center;">
