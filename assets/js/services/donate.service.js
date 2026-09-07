@@ -57,13 +57,16 @@ const DonateService = {
     );
   },
 
-  async getHistory(limit = 50) {
+  async getHistory(limit = 50, cursor = null) {
     const endpoint = CONFIG.ENDPOINTS?.DONATE?.HISTORY || '/donate/history';
+    const params = new URLSearchParams();
+    if (limit) params.append('limit', limit);
+    if (cursor) params.append('cursor', cursor);
     const response = await apiClient.get(
-      `${endpoint}?limit=${limit}`,
+      `${endpoint}?${params.toString()}`,
       { requiresAuth: false }
     );
-    return response.data || [];
+    return response.data || { items: [], next_cursor: null, has_more: false };
   }
 };
 

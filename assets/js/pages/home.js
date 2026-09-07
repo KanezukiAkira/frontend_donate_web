@@ -465,9 +465,10 @@ document.addEventListener('DOMContentLoaded', () => {
     donationHistoryList.innerHTML = '<div class="history-loading">Đang tải 50 lần donate gần nhất...</div>';
 
     try {
-      const history = (typeof DonateService !== 'undefined' && typeof DonateService.getHistory === 'function')
+      const historyRes = (typeof DonateService !== 'undefined' && typeof DonateService.getHistory === 'function')
         ? await DonateService.getHistory(50)
         : (await apiClient.get(`${CONFIG.ENDPOINTS?.DONATE?.HISTORY || '/donate/history'}?limit=50`, { requiresAuth: false })).data || [];
+      const history = Array.isArray(historyRes) ? historyRes : (historyRes?.items || []);
       if (!history || history.length === 0) {
         donationHistoryList.innerHTML = '<div class="history-empty">Chưa có giao dịch donate nào thành công</div>';
         return;

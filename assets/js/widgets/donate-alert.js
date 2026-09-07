@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const donorName = current.full_name || current.name || 'Kanezuki Akira';
     if (donorNameEl) donorNameEl.textContent = donorName;
 
-    let amountText = '';
+    let amountText;
     if (current.amount_text) {
       amountText = current.amount_text;
     } else if (current.currency_name || current.unit) {
@@ -90,9 +90,9 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // TTS đọc nội dung donate thường
+    // TTS đọc nội dung donate theo hàng đợi FIFO
     if (isTtsEnabled && typeof SoundManager !== 'undefined' && SoundManager.speakDonation) {
-      await new Promise(r => setTimeout(r, 700));
+      await new Promise(r => setTimeout(r, 600));
       try {
         await SoundManager.speakDonation({
           name: donorName,
@@ -103,9 +103,9 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (err) {
         console.warn('Lỗi TTS donate:', err);
       }
-      await new Promise(r => setTimeout(r, 1600));
+      await new Promise(r => setTimeout(r, 800));
     } else {
-      await new Promise(r => setTimeout(r, 6500));
+      await new Promise(r => setTimeout(r, 5500));
     }
 
     if (alertBox) alertBox.classList.remove('show');

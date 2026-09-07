@@ -1,0 +1,14 @@
+{
+  "name": "fornend-donate-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Frontend Donate Web - Admin & OBS Overlays",
+  "scripts": {
+    "lint": "npx eslint assets/js/pages/admin/ assets/js/pages/admin-unified.js"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.10.0",
+    "globals": "^17.12.0"
+  }
+}

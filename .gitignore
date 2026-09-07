@@ -6,5 +6,9 @@ test*.wav
 # IDE cá nhân
 .vscode/
 .idea/
+# Dependencies
+node_modules/
+package-lock.json
+
 # Tài liệu kế hoạch nội bộ
 implementation_plan.md

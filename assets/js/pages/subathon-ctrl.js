@@ -168,12 +168,52 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
+  function broadcastSubathonUpdate(action, payload = {}) {
+    const data = {
+      event: action,
+      action: action,
+      _type: action,
+      timestamp: Date.now(),
+      widget_token: currentSession?.widget_token,
+      session_id: currentSession?.id,
+      remaining_seconds: typeof payload.remaining_seconds === 'number'
+        ? payload.remaining_seconds
+        : localRemainingSeconds,
+      status: payload.status || currentSession?.status,
+      ...payload
+    };
+
+    if (typeof BroadcastChannel !== 'undefined') {
+      try {
+        const bc = new BroadcastChannel('obs_subathon_channel');
+        bc.postMessage(data);
+        bc.close();
+      } catch (err) {
+        console.warn('Lỗi gửi BroadcastChannel subathon:', err);
+      }
+    }
+
+    try {
+      localStorage.setItem('subathon_sync_event', JSON.stringify({
+        event: action,
+        payload: data,
+        _ts: Date.now()
+      }));
+    } catch (err) {
+      console.warn('Lỗi ghi subathon_sync_event vào storage:', err);
+    }
+  }
+
   startBtn?.addEventListener('click', async () => {
     try {
       currentSession = await SubathonService.start(currentSession.id);
       localRemainingSeconds = currentSession.remaining_seconds;
       updateStatusUI();
       loadAuditLogs();
+      broadcastSubathonUpdate('subathon-started', {
+        remaining_seconds: currentSession.remaining_seconds,
+        status: 'active'
+      });
     } catch (err) {
       console.error('Lỗi khi kích hoạt:', err);
     }
@@ -185,6 +225,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       localRemainingSeconds = currentSession.remaining_seconds;
       updateStatusUI();
       loadAuditLogs();
+      broadcastSubathonUpdate('subathon-paused', {
+        remaining_seconds: currentSession.remaining_seconds,
+        status: 'paused'
+      });
     } catch (err) {
       console.error('Lỗi khi tạm dừng:', err);
     }
@@ -196,6 +240,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       localRemainingSeconds = currentSession.remaining_seconds;
       updateStatusUI();
       loadAuditLogs();
+      broadcastSubathonUpdate('subathon-resumed', {
+        remaining_seconds: currentSession.remaining_seconds,
+        status: 'active'
+      });
     } catch (err) {
       console.error('Lỗi khi tiếp tục:', err);
     }
@@ -231,6 +279,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
       updateStatusUI();
       loadAuditLogs();
+      broadcastSubathonUpdate('subathon-ended', {
+        remaining_seconds: 0,
+        status: 'ended'
+      });
     } catch (err) {
       console.error('Lỗi khi kết thúc Subathon:', err);
       const msg = err.message || '';
@@ -240,6 +292,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (currentSession) currentSession.status = 'ended';
         updateStatusUI();
         loadAuditLogs();
+        broadcastSubathonUpdate('subathon-ended', {
+          remaining_seconds: 0,
+          status: 'ended'
+        });
       }
     } finally {
       endBtn.disabled = false;
@@ -265,6 +321,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         localRemainingSeconds = currentSession.remaining_seconds;
         updateStatusUI();
         loadAuditLogs();
+        broadcastSubathonUpdate('subathon-time-adjusted', {
+          remaining_seconds: currentSession.remaining_seconds,
+          seconds_delta: delta,
+          status: currentSession.status
+        });
       } catch (err) {
         console.error('Lỗi điều chỉnh thời gian:', err);
       }
@@ -287,6 +348,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       adjustSecondsInput.value = '';
       adjustNoteInput.value = '';
       loadAuditLogs();
+      broadcastSubathonUpdate('subathon-time-adjusted', {
+        remaining_seconds: currentSession.remaining_seconds,
+        seconds_delta: delta,
+        status: currentSession.status
+      });
     } catch (err) {
       console.error('Lỗi khi điều chỉnh:', err);
     }

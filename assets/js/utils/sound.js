@@ -5,7 +5,9 @@ const SoundManager = {
   init() {
     try {
       this.getAudioContext();
-    } catch { }
+    } catch {
+      // AudioContext init error ignored
+    }
   },
 
   getAudioContext() {
@@ -97,25 +99,47 @@ const SoundManager = {
     return cleaned;
   },
 
-  stopTTS() {
+  _ttsQueue: [],
+  _isTtsProcessing: false,
+  _googleBlockedUntil: 0, // Circuit Breaker: nếu Google chặn (429/403), tự ngắt chuyển sang Web Speech trong 15 phút
+
+  stopTTS(clearQueue = false) {
+    if (clearQueue) {
+      this._ttsQueue = [];
+    }
     if (this.currentAudio) {
       try {
         this.currentAudio.pause();
         this.currentAudio.src = '';
         this.currentAudio = null;
-      } catch { }
+      } catch {
+        // Audio pause error ignored
+      }
     }
     if ('speechSynthesis' in window) {
       try {
         window.speechSynthesis.cancel();
-      } catch { }
+      } catch {
+        // SpeechSynthesis cancel error ignored
+      }
     }
   },
 
+  /**
+   * Phát một câu đơn với cơ chế Circuit Breaker:
+   * Nếu Google TTS đang bị chặn hoặc lỗi mạng, chuyển ngay sang Web Speech API bản địa không độ trễ.
+   */
   speakSinglePhrase(text, volume = 1.0) {
     return new Promise((resolve) => {
       const trimmed = (text || '').trim();
       if (!trimmed) return resolve();
+
+      // Kiểm tra Circuit Breaker: Nếu Google đang bị block, dùng Web Speech API bản địa ngay lập tức
+      const now = Date.now();
+      if (now < this._googleBlockedUntil) {
+        this.speakWebSpeech(trimmed, volume).then(resolve);
+        return;
+      }
 
       const encoded = encodeURIComponent(trimmed);
       const backendBase = (typeof CONFIG !== 'undefined' && CONFIG.API_BASE_URL)
@@ -137,13 +161,22 @@ const SoundManager = {
         }
       };
 
+      // Giới hạn thời gian tối đa để không bao giờ bị treo
       const timeoutTimer = setTimeout(() => {
         finish();
-      }, 15000);
+      }, 14000);
 
       audio.onended = () => {
         clearTimeout(timeoutTimer);
         finish();
+      };
+
+      const tripCircuitBreakerAndFallback = () => {
+        clearTimeout(timeoutTimer);
+        // Khóa Google TTS trong 15 phút để tránh bị phạt IP 429
+        this._googleBlockedUntil = Date.now() + 15 * 60 * 1000;
+        console.warn('[SoundManager TTS] Kích hoạt Circuit Breaker: Chuyển toàn bộ TTS sang Web Speech API bản địa.');
+        this.speakWebSpeech(trimmed, volume).then(finish);
       };
 
       let triedDirectGoogle = false;
@@ -152,12 +185,10 @@ const SoundManager = {
           triedDirectGoogle = true;
           audio.src = googleTtsUrl;
           audio.play().catch(() => {
-            clearTimeout(timeoutTimer);
-            this.speakWebSpeech(trimmed, volume).then(finish);
+            tripCircuitBreakerAndFallback();
           });
         } else {
-          clearTimeout(timeoutTimer);
-          this.speakWebSpeech(trimmed, volume).then(finish);
+          tripCircuitBreakerAndFallback();
         }
       };
 
@@ -167,17 +198,18 @@ const SoundManager = {
           triedDirectGoogle = true;
           audio.src = googleTtsUrl;
           audio.play().catch(() => {
-            clearTimeout(timeoutTimer);
-            this.speakWebSpeech(trimmed, volume).then(finish);
+            tripCircuitBreakerAndFallback();
           });
         } else {
-          clearTimeout(timeoutTimer);
-          this.speakWebSpeech(trimmed, volume).then(finish);
+          tripCircuitBreakerAndFallback();
         }
       });
     });
   },
 
+  /**
+   * Phát giọng đọc Web Speech API bản địa của hệ điều hành (100% Offline, không phụ thuộc Google / Internet)
+   */
   speakWebSpeech(text, volume = 1.0) {
     return new Promise((resolve) => {
       if (!('speechSynthesis' in window)) return resolve();
@@ -186,40 +218,88 @@ const SoundManager = {
         window.speechSynthesis.cancel();
         const voices = window.speechSynthesis.getVoices();
         const viVoice = voices.find(v => v.lang && (v.lang.toLowerCase().includes('vi') || v.lang.includes('VI')));
-        if (!viVoice) {
-          return resolve();
-        }
 
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.voice = viVoice;
+        if (viVoice) {
+          utterance.voice = viVoice;
+        }
         utterance.lang = 'vi-VN';
         utterance.volume = Math.max(0, Math.min(1, volume));
         utterance.rate = 1.0;
 
-        utterance.onend = () => resolve();
-        utterance.onerror = () => resolve();
+        let done = false;
+        const doneHandler = () => {
+          if (!done) {
+            done = true;
+            resolve();
+          }
+        };
+
+        utterance.onend = doneHandler;
+        utterance.onerror = doneHandler;
 
         window.speechSynthesis.speak(utterance);
-        setTimeout(resolve, 10000);
+        setTimeout(doneHandler, 12000);
       } catch {
         resolve();
       }
     });
   },
 
-  async speakDonation({ name, amount, message, volume = 1.0 }) {
-    this.stopTTS();
+  /**
+   * Hàng đợi TTS Audio Queue (FIFO):
+   * Đưa request đọc donate vào hàng đợi tuần tự. Đảm bảo nếu nhận 5 donate cùng lúc,
+   * từng giọng đọc sẽ phát lần lượt, không bao giờ bị đè hay cắt ngang lời nhau.
+   */
+  speakDonation({ name, amount, message, volume = 1.0 }) {
+    return new Promise((resolve, reject) => {
+      this._ttsQueue.push({
+        name,
+        amount,
+        message,
+        volume,
+        resolve,
+        reject
+      });
+      this._processTtsQueue();
+    });
+  },
 
-    const donorName = (name || 'Kanezuki Akira').trim();
-    const spokenAmount = this.formatAmountForSpeech(amount);
+  async _processTtsQueue() {
+    if (this._isTtsProcessing || this._ttsQueue.length === 0) return;
+    this._isTtsProcessing = true;
 
-    const phase1Text = `${donorName} đã donate ${spokenAmount}!`;
-    await this.speakSinglePhrase(phase1Text, volume);
+    const item = this._ttsQueue.shift();
 
-    const cleanMsg = this.sanitizeTTSText(message);
-    if (cleanMsg) {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      await this.speakSinglePhrase(cleanMsg, volume);
+    try {
+      this.stopTTS(false);
+
+      const donorName = (item.name || 'Kanezuki Akira').trim();
+      const spokenAmount = this.formatAmountForSpeech(item.amount);
+
+      // Giai đoạn 1: Đọc tên người tặng và số tiền
+      const phase1Text = `${donorName} đã donate ${spokenAmount}!`;
+      await this.speakSinglePhrase(phase1Text, item.volume);
+
+      // Giai đoạn 2: Đọc lời nhắn (nếu có)
+      const cleanMsg = this.sanitizeTTSText(item.message);
+      if (cleanMsg) {
+        await new Promise(resolve => setTimeout(resolve, 600)); // Nghỉ nhẹ tự nhiên giữa tên và lời nhắn
+        await this.speakSinglePhrase(cleanMsg, item.volume);
+      }
+
+      // Giãn cách an toàn trước khi kết thúc item
+      await new Promise(resolve => setTimeout(resolve, 500));
+      item.resolve();
+    } catch (err) {
+      console.warn('[SoundManager TTS] Lỗi xử lý item trong queue:', err);
+      item.resolve();
+    } finally {
+      this._isTtsProcessing = false;
+      // Nếu còn item trong hàng đợi, tiếp tục xử lý
+      if (this._ttsQueue.length > 0) {
+        setTimeout(() => this._processTtsQueue(), 300);
+      }
     }
   },
 
@@ -238,7 +318,9 @@ const SoundManager = {
       gain.connect(ctx.destination);
       osc.start();
       osc.stop(ctx.currentTime + 0.028);
-    } catch (_) { }
+    } catch {
+      // Audio tick error ignored
+    }
   },
 
   playWheelWinSound(isPenalty) {
@@ -272,7 +354,9 @@ const SoundManager = {
           osc.stop(ctx.currentTime + i * 0.08 + 0.45);
         });
       }
-    } catch (_) { }
+    } catch {
+      // Wheel win audio error ignored
+    }
   },
 
   async speakGachaReward({ name, amount, rewardLabel, seconds, message, volume = 1.0 }) {
@@ -282,7 +366,7 @@ const SoundManager = {
     const spokenAmount = this.formatAmountForSpeech(amount);
     const sec = Number(seconds || 0);
 
-    let timePhrase = '';
+    let timePhrase;
     if (sec > 0) {
       timePhrase = `được cộng thêm ${sec} giây`;
     } else if (sec < 0) {
@@ -301,3 +385,6 @@ const SoundManager = {
     }
   }
 };
+
+window.SoundManager = SoundManager;
+
