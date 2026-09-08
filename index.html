@@ -200,6 +200,46 @@
                 </section>
             </div>
 
+            <!-- MÀN HÌNH THÔNG BÁO DONATE THÀNH CÔNG -->
+            <div id="successSection" class="donate-section" style="display: none;">
+                <section class="pad donate-success-card">
+                    <div class="donate-success-icon-wrap">
+                        <div class="donate-success-icon-pulse"></div>
+                        <div class="donate-success-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="36" height="36">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                <polyline points="22 4 12 14.01 9 11.01"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <h3 class="donate-success-title">Donate Thành Công!</h3>
+                    <p class="donate-success-desc">Hệ thống đã nhận được tiền ủng hộ của bạn. Cảm ơn bạn đã luôn đồng hành cùng Streamer!</p>
+                    
+                    <div class="donate-success-receipt">
+                        <div class="receipt-row">
+                            <span class="receipt-label">Số tiền ủng hộ:</span>
+                            <span class="receipt-value receipt-amount" id="successAmountDisplay">0 ₫</span>
+                        </div>
+                        <div class="receipt-row">
+                            <span class="receipt-label">Mã giao dịch:</span>
+                            <span class="receipt-value receipt-code" id="successCodeDisplay">---</span>
+                        </div>
+                        <div class="receipt-row" id="successMessageRow" style="display: none;">
+                            <span class="receipt-label">Lời nhắn:</span>
+                            <span class="receipt-value receipt-msg" id="successMessageDisplay"></span>
+                        </div>
+                    </div>
+
+                    <button id="btnContinueDonate" class="btn-primary donate-btn-continue">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                        <span>Tiếp tục ủng hộ</span>
+                    </button>
+                </section>
+            </div>
+
             <div id="leaderboardSection" class="donate-section" style="display: none;">
                 <div class="donate-form-title">
                     <svg viewBox="0 0 24 24" fill="none" stroke="#ffff00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
@@ -243,15 +283,18 @@
         </div>
     </main>
 
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
     <script src="./assets/js/config.js?v=20260905_1"></script>
     <script src="./assets/js/core/storage.js?v=20260905_1"></script>
     <script src="./assets/js/core/api-client.js?v=20260907_2"></script>
     <script src="./assets/js/utils/formatters.js?v=20260905_1"></script>
+    <script src="./assets/js/utils/sound.js?v=20260908_1"></script>
     <script src="./assets/js/utils/parallax.js?v=20260905_1"></script>
     <script src="./assets/js/utils/confirm-modal.js?v=20260906_1"></script>
     <script src="./assets/js/services/user.service.js?v=20260905_1"></script>
     <script src="./assets/js/services/auth.service.js?v=20260905_1"></script>
-    <script src="./assets/js/services/donate.service.js?v=20260905_1"></script>
-    <script src="./assets/js/pages/home.js?v=20260905_1"></script>
+    <script src="./assets/js/services/donate.service.js?v=20260907_3"></script>
+    <script src="./assets/js/services/tts.service.js?v=20260908_1"></script>
+    <script src="./assets/js/pages/home.js?v=20260907_3"></script>
 </body>
 </html>

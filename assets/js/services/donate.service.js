@@ -67,6 +67,10 @@ const DonateService = {
       { requiresAuth: false }
     );
     return response.data || { items: [], next_cursor: null, has_more: false };
+  },
+
+  checkStatus(orderCode) {
+    return apiClient.get(CONFIG.ENDPOINTS.DONATE.STATUS(orderCode), { requiresAuth: false });
   }
 };
 

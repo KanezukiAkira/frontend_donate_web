@@ -4,6 +4,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const isPinned = urlParams.has('preview') || urlParams.has('pin') || urlParams.has('demo') || urlParams.has('stay');
   const isTtsEnabled = urlParams.get('tts') !== '0';
   const ttsVolume = parseFloat(urlParams.get('tts_volume') || urlParams.get('volume') || '1.0');
+  const ttsVoice = urlParams.get('voice') || urlParams.get('tts_voice') || 'vi-VN-HoaiMyNeural';
+
+  if (typeof SoundManager !== 'undefined' && typeof SoundManager.setVoice === 'function') {
+    SoundManager.setVoice(ttsVoice);
+  }
 
   // Regular Donate Alert Elements
   const alertBox = document.getElementById('alertBox') || document.getElementById('alert-container');
@@ -83,7 +88,8 @@ document.addEventListener('DOMContentLoaded', () => {
             name: donorName,
             amount: current.amount,
             message: current.message,
-            volume: ttsVolume
+            volume: ttsVolume,
+            voice: ttsVoice
           }).catch(() => { });
         }, 700);
       }
@@ -98,7 +104,8 @@ document.addEventListener('DOMContentLoaded', () => {
           name: donorName,
           amount: current.amount,
           message: current.message,
-          volume: ttsVolume
+          volume: ttsVolume,
+          voice: ttsVoice
         });
       } catch (err) {
         console.warn('Lỗi TTS donate:', err);

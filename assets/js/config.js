@@ -24,6 +24,7 @@ const CONFIG = {
       TEST_ALERT: '/donate/test-alert',
       CLEANUP: '/donate/cleanup',
       HISTORY: '/donate/history',
+      STATUS: (code) => `/donate/status/${code}`,
     },
     SUBATHON: {
       CREATE: '/subathon',
@@ -59,6 +60,10 @@ const CONFIG = {
       TEST: (id) => `/gacha/${id}/test`,
       HISTORY: '/gacha/history',
       WIDGET_JSON: (token) => `/gacha/widget/${token}`,
+    },
+    TTS: {
+      GENERATE: '/tts',
+      VOICES: '/tts/voices',
     }
   },
 
@@ -68,9 +73,9 @@ const CONFIG = {
   },
 
   POLL_INTERVALS: {
-    DONATE_WIDGET: 60000,
+    DONATE_WIDGET: 10000,
     SUBATHON_TICK: 1000,
-    SUBATHON_SYNC: 60000,
+    SUBATHON_SYNC: 10000,
   },
 
   STORAGE_KEYS: {

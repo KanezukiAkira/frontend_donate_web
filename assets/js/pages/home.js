@@ -7,8 +7,79 @@ document.addEventListener('DOMContentLoaded', () => {
   const registerSection = document.getElementById('registerSection');
   const donateSection = document.getElementById('donateSection');
   const qrSection = document.getElementById('qrSection');
+  const successSection = document.getElementById('successSection');
+  const successAmountDisplay = document.getElementById('successAmountDisplay');
+  const successCodeDisplay = document.getElementById('successCodeDisplay');
+  const successMessageRow = document.getElementById('successMessageRow');
+  const successMessageDisplay = document.getElementById('successMessageDisplay');
+  const btnContinueDonate = document.getElementById('btnContinueDonate');
   const leaderboardSection = document.getElementById('leaderboardSection');
   const historySection = document.getElementById('historySection');
+
+  let activePaymentPusherChannel = null;
+  let activePaymentPollInterval = null;
+  let currentActivePaymentCode = null;
+
+  function stopPaymentTracking() {
+    if (activePaymentPollInterval) {
+      clearInterval(activePaymentPollInterval);
+      activePaymentPollInterval = null;
+    }
+    if (activePaymentPusherChannel && typeof Pusher !== 'undefined') {
+      try {
+        activePaymentPusherChannel.unbind_all();
+      } catch { }
+      activePaymentPusherChannel = null;
+    }
+    currentActivePaymentCode = null;
+  }
+
+  async function handleDonationSuccess({ paymentCode, amount, message }) {
+    stopPaymentTracking();
+
+    if (qrSection) qrSection.style.display = 'none';
+    if (donateSection) donateSection.style.display = 'none';
+
+    if (successSection) {
+      if (successAmountDisplay) {
+        successAmountDisplay.textContent = typeof Formatters !== 'undefined'
+          ? Formatters.currency(amount)
+          : `${new Intl.NumberFormat('vi-VN').format(amount)} ₫`;
+      }
+      if (successCodeDisplay) {
+        successCodeDisplay.textContent = paymentCode;
+      }
+      if (successMessageRow && successMessageDisplay) {
+        if (message && message.trim()) {
+          successMessageDisplay.textContent = message.trim();
+          successMessageRow.style.display = 'flex';
+        } else {
+          successMessageRow.style.display = 'none';
+        }
+      }
+      successSection.style.display = 'block';
+    }
+
+    if (typeof SoundManager !== 'undefined' && SoundManager.playDonateChime) {
+      try {
+        SoundManager.playDonateChime();
+      } catch { }
+    }
+
+    if (typeof Toast !== 'undefined' && Toast.success) {
+      Toast.success('Thanh toán thành công! Cảm ơn bạn đã ủng hộ Streamer!');
+    }
+
+    if (typeof UserService !== 'undefined' && Storage.getAccessToken()) {
+      try {
+        const updatedMe = await UserService.getMe();
+        if (updatedMe) {
+          Storage.setUser(updatedMe);
+          updateAuthUI();
+        }
+      } catch { }
+    }
+  }
 
   const navHomeLink = document.getElementById('navHomeLink');
   const navLeaderboardLink = document.getElementById('navLeaderboardLink');
@@ -62,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (registerSection) registerSection.style.display = 'none';
 
       if (currentTab === 'home') {
-        if (donateSection && (!qrSection || qrSection.style.display !== 'block')) {
+        if (donateSection && (!qrSection || qrSection.style.display !== 'block') && (!successSection || successSection.style.display !== 'block')) {
           donateSection.style.display = 'block';
         }
       }
@@ -71,8 +142,10 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       document.body.classList.remove('is-logged-in');
 
+      stopPaymentTracking();
       if (donateSection) donateSection.style.display = 'none';
       if (qrSection) qrSection.style.display = 'none';
+      if (successSection) successSection.style.display = 'none';
       if (registerSection) registerSection.style.display = 'none';
 
       if (currentTab === 'home') {
@@ -293,7 +366,47 @@ document.addEventListener('DOMContentLoaded', () => {
         if (qrImage) qrImage.src = qrUrl;
 
         if (donateSection) donateSection.style.display = 'none';
+        if (successSection) successSection.style.display = 'none';
         if (qrSection) qrSection.style.display = 'block';
+
+        // Khởi động lắng nghe kết quả thanh toán
+        stopPaymentTracking();
+        currentActivePaymentCode = paymentCode;
+        const totalVnd = amount * 1000;
+
+        // 1. Pusher Realtime (Kênh payment-{paymentCode})
+        const pusherKey = CONFIG.PUSHER?.APP_KEY;
+        if (pusherKey && typeof Pusher !== 'undefined') {
+          try {
+            const pusher = new Pusher(pusherKey, { cluster: CONFIG.PUSHER?.CLUSTER || 'ap1' });
+            activePaymentPusherChannel = pusher.subscribe(`payment-${paymentCode}`);
+            activePaymentPusherChannel.bind('success', () => {
+              handleDonationSuccess({
+                paymentCode,
+                amount: totalVnd,
+                message
+              });
+            });
+          } catch (pErr) {
+            console.warn('[Pusher] Lỗi kết nối payment channel:', pErr);
+          }
+        }
+
+        // 2. Polling Fallback mỗi 10s phòng khi WebSocket bị chặn
+        activePaymentPollInterval = setInterval(async () => {
+          try {
+            if (typeof DonateService !== 'undefined' && DonateService.checkStatus) {
+              const statusData = await DonateService.checkStatus(paymentCode);
+              if (statusData && (statusData.is_completed || statusData.status === 'completed')) {
+                handleDonationSuccess({
+                  paymentCode,
+                  amount: statusData.amount || totalVnd,
+                  message
+                });
+              }
+            }
+          } catch { }
+        }, 10000);
       } catch (err) {
         console.error('Lỗi khi tạo mã donate:', err);
       } finally {
@@ -308,8 +421,21 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnBackToDonate) {
     btnBackToDonate.addEventListener('click', (e) => {
       e.preventDefault();
+      stopPaymentTracking();
+      if (qrSection) qrSection.style.display = 'none';
+      if (successSection) successSection.style.display = 'none';
+      if (donateSection) donateSection.style.display = 'block';
+    });
+  }
+
+  if (btnContinueDonate) {
+    btnContinueDonate.addEventListener('click', (e) => {
+      e.preventDefault();
+      stopPaymentTracking();
+      if (successSection) successSection.style.display = 'none';
       if (qrSection) qrSection.style.display = 'none';
       if (donateSection) donateSection.style.display = 'block';
+      if (donateForm) donateForm.reset();
     });
   }
 
@@ -329,18 +455,22 @@ document.addEventListener('DOMContentLoaded', () => {
       if (historySection) historySection.style.display = 'none';
       updateAuthUI();
     } else if (tab === 'leaderboard') {
+      stopPaymentTracking();
       if (donateSection) donateSection.style.display = 'none';
       if (loginSection) loginSection.style.display = 'none';
       if (registerSection) registerSection.style.display = 'none';
       if (qrSection) qrSection.style.display = 'none';
+      if (successSection) successSection.style.display = 'none';
       if (historySection) historySection.style.display = 'none';
       if (leaderboardSection) leaderboardSection.style.display = 'block';
       loadLeaderboard(isMonthlyLeaderboard);
     } else if (tab === 'history') {
+      stopPaymentTracking();
       if (donateSection) donateSection.style.display = 'none';
       if (loginSection) loginSection.style.display = 'none';
       if (registerSection) registerSection.style.display = 'none';
       if (qrSection) qrSection.style.display = 'none';
+      if (successSection) successSection.style.display = 'none';
       if (leaderboardSection) leaderboardSection.style.display = 'none';
       if (historySection) historySection.style.display = 'block';
       loadDonationHistory();

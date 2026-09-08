@@ -204,8 +204,30 @@
               </div>
             </div>
             <span class="form-hint">
-              Thêm link trên làm Browser Source trong OBS (khuyến nghị 600x260px) để hiển thị thông báo popup kèm âm thanh và giọng đọc TTS khi có donate.
+              Thêm link trên làm Browser Source trong OBS (khuyến nghị 800x600px) để hiển thị thông báo popup kèm âm thanh và giọng đọc TTS khi có donate.
             </span>
+
+            <!-- Cấu hình giọng đọc TTS cho OBS Overlay -->
+            <div class="tts-voice-config-box" style="margin-top: 14px; padding: 12px 14px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 8px;">
+                <label for="obsVoiceSelect" style="font-size: 0.85rem; font-weight: 600; color: #e2e8f0; display: inline-flex; align-items: center; gap: 6px;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+                  Giọng đọc TTS (Edge-TTS Neural)
+                </label>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                  <select id="obsVoiceSelect" class="form-control form-control-sm" style="background: rgba(15, 23, 42, 0.8); color: #f8fafc; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 6px; padding: 5px 10px; font-size: 0.82rem; cursor: pointer; min-width: 220px;">
+                    <option value="vi-VN-HoaiMyNeural" selected>Hoài My (Nữ) [vi-VN] ★ Khuyên dùng</option>
+                  </select>
+                  <button type="button" id="btnPreviewVoice" class="btn btn-sm btn-ghost" style="padding: 5px 12px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 5px;" title="Nghe thử giọng này">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                    <span>Nghe thử</span>
+                  </button>
+                </div>
+              </div>
+              <p id="obsVoiceDesc" style="font-size: 0.78rem; color: #94a3b8; margin: 0;">
+                Giọng nữ truyền cảm, mượt mà và tự nhiên nhất cho donate stream. Link OBS bên trên sẽ tự động cập nhật theo giọng bạn chọn. (Nếu giọng đọc này bị lỗi, hệ thống sẽ tự động chuyển sang giọng đọc khác).
+              </p>
+            </div>
 
             <div class="obs-specs-accordion" style="margin-top:12px;">
               <button type="button" id="toggleObsSpecsBtn" class="btn-obs-specs-toggle" aria-expanded="false">
@@ -1203,6 +1225,7 @@
   <script src="../assets/js/services/subathon.service.js?v=20260905_1"></script>
   <script src="../assets/js/services/goal.service.js?v=20260905_1"></script>
   <script src="../assets/js/services/gacha.service.js?v=20260905_1"></script>
+  <script src="../assets/js/services/tts.service.js?v=20260908_1"></script>
   <script src="../assets/js/pages/admin/admin-overview.js?v=20260907_1"></script>
   <script src="../assets/js/pages/admin/admin-subathon.js?v=20260907_1"></script>
   <script src="../assets/js/pages/admin/admin-goals.js?v=20260907_1"></script>

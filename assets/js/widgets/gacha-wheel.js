@@ -9,6 +9,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   const isPinned = urlParams.has('preview') || urlParams.has('pin') || urlParams.has('demo') || urlParams.has('stay');
   const isTtsEnabled = urlParams.get('tts') !== '0';
   const ttsVolume = parseFloat(urlParams.get('tts_volume') || urlParams.get('volume') || '1.0');
+  const ttsVoice = urlParams.get('voice') || urlParams.get('tts_voice') || 'vi-VN-HoaiMyNeural';
+
+  if (typeof SoundManager !== 'undefined' && typeof SoundManager.setVoice === 'function') {
+    SoundManager.setVoice(ttsVoice);
+  }
 
   // DOM Elements
   const obsStatusPill = document.getElementById('obsStatusPill');
@@ -396,24 +401,37 @@ document.addEventListener('DOMContentLoaded', async () => {
       await new Promise(r => setTimeout(r, 600));
       try {
         let ttsText = '';
+        const spokenAmount = (typeof SoundManager !== 'undefined' && SoundManager.formatAmountForSpeech)
+          ? SoundManager.formatAmountForSpeech(data.amount)
+          : amountStr;
+
         if (wheelType === 'time') {
           const sec = Number(wonReward.value ?? wonReward.seconds ?? 0);
           const timeDesc = sec >= 0 ? `cộng ${sec} giây` : `trừ ${Math.abs(sec)} giây`;
-          ttsText = `Cảm ơn ${donorName} đã donate ${amountStr}. Kết quả vòng quay: được ${timeDesc}!`;
+          ttsText = `${donorName} đã donate ${spokenAmount}. Kết quả vòng quay: ${timeDesc}!`;
         } else {
           const prize = wonReward.label || wonReward.value || 'phần thưởng';
-          ttsText = `Cảm ơn ${donorName} đã donate ${amountStr}. Kết quả vòng quay: ${prize}!`;
+          ttsText = `${donorName} đã donate ${spokenAmount}. Kết quả vòng quay: ${prize}!`;
+        }
+
+        const cleanDonorMsg = (data.message && typeof SoundManager !== 'undefined' && SoundManager.sanitizeTTSText)
+          ? SoundManager.sanitizeTTSText(data.message)
+          : (data.message || '').trim();
+        if (cleanDonorMsg) {
+          ttsText += ` Lời nhắn: ${cleanDonorMsg}`;
+        }
+
+        // Đảm bảo toàn bộ câu đọc không vượt quá 180 ký tự để Google TTS không trả lỗi 400
+        if (typeof SoundManager !== 'undefined' && SoundManager.sanitizeTTSText) {
+          ttsText = SoundManager.sanitizeTTSText(ttsText);
+        } else if (ttsText.length > 180) {
+          ttsText = ttsText.substring(0, 177) + '...';
         }
 
         if (SoundManager.speakText) {
-          await SoundManager.speakText(ttsText, ttsVolume);
-        } else if (SoundManager.speakDonation) {
-          await SoundManager.speakDonation({
-            name: donorName,
-            amount: data.amount,
-            message: ttsText,
-            volume: ttsVolume
-          });
+          await SoundManager.speakText(ttsText, ttsVolume, { voice: ttsVoice });
+        } else if (SoundManager.speakSinglePhrase) {
+          await SoundManager.speakSinglePhrase(ttsText, ttsVolume, { voice: ttsVoice });
         }
       } catch (err) {
         console.warn('Lỗi TTS Gacha:', err);

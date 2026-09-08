@@ -21,7 +21,8 @@ class ApiClient {
       isFormData = false,
       isUrlEncoded = false,
       requiresAuth = true,
-      retryCount = 0
+      retryCount = 0,
+      responseType = 'json'
     } = options;
 
     const url = endpoint.startsWith('http') ? endpoint : `${CONFIG.API_BASE_URL}${endpoint}`;
@@ -127,6 +128,16 @@ class ApiClient {
         return null;
       }
 
+      // Xử lý dữ liệu nhị phân (Binary: Blob, ArrayBuffer) khi được yêu cầu
+      if (response.ok) {
+        if (responseType === 'blob') {
+          return await response.blob();
+        }
+        if (responseType === 'arraybuffer') {
+          return await response.arrayBuffer();
+        }
+      }
+
       let data = null;
       const contentType = response.headers.get('content-type') || '';
       const text = await response.text();
@@ -150,6 +161,10 @@ class ApiClient {
         error.status = response.status;
         error.data = data;
         throw error;
+      }
+
+      if (responseType === 'text') {
+        return text;
       }
 
       return data;

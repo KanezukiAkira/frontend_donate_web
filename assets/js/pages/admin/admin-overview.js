@@ -45,6 +45,14 @@ const AdminOverview = (() => {
     }
   }
 
+  function updateAlertWidgetUrl(voiceId) {
+    const alertWidgetUrl = document.getElementById('alertWidgetUrl');
+    if (!alertWidgetUrl) return;
+    const selectedVoice = voiceId || localStorage.getItem('obs_selected_tts_voice') || 'vi-VN-HoaiMyNeural';
+    const voiceParam = selectedVoice ? `?voice=${encodeURIComponent(selectedVoice)}` : '';
+    alertWidgetUrl.value = `${origin}/widgets/donate-alert.html${voiceParam}`;
+  }
+
   function init() {
     const alertWidgetUrl = document.getElementById('alertWidgetUrl');
     const subathonWidgetUrl = document.getElementById('subathonWidgetUrl');
@@ -53,10 +61,73 @@ const AdminOverview = (() => {
     const toggleObsSpecsBtn = document.getElementById('toggleObsSpecsBtn');
     const obsSpecsCollapse = document.getElementById('obsSpecsCollapse');
     const testDonateAlertBtn = document.getElementById('testDonateAlertBtn');
+    const obsVoiceSelect = document.getElementById('obsVoiceSelect');
+    const btnPreviewVoice = document.getElementById('btnPreviewVoice');
+    const obsVoiceDesc = document.getElementById('obsVoiceDesc');
 
-    if (alertWidgetUrl) {
-      alertWidgetUrl.value = `${origin}/widgets/donate-alert.html`;
+    let voicesList = [];
+    const savedVoice = localStorage.getItem('obs_selected_tts_voice') || 'vi-VN-HoaiMyNeural';
+
+    async function loadVoices() {
+      if (typeof TtsService === 'undefined' || !obsVoiceSelect) return;
+      try {
+        voicesList = await TtsService.getVoices();
+        if (Array.isArray(voicesList) && voicesList.length > 0) {
+          obsVoiceSelect.innerHTML = voicesList.map(v => {
+            const isSelected = v.id === savedVoice ? 'selected' : '';
+            const star = v.recommended ? ' ★ Khuyên dùng' : '';
+            return `<option value="${v.id}" ${isSelected}>${v.name} (${v.language})${star}</option>`;
+          }).join('');
+
+          const current = voicesList.find(v => v.id === obsVoiceSelect.value);
+          if (current && obsVoiceDesc) {
+            obsVoiceDesc.textContent = `${current.description || ''} (Nếu giọng đọc này bị lỗi, hệ thống sẽ tự động chuyển sang giọng đọc khác)`;
+          }
+        }
+      } catch (err) {
+        console.warn('Lỗi tải danh sách voices trong admin overview:', err);
+      }
     }
+
+    loadVoices();
+    updateAlertWidgetUrl(savedVoice);
+
+    obsVoiceSelect?.addEventListener('change', () => {
+      const chosen = obsVoiceSelect.value;
+      localStorage.setItem('obs_selected_tts_voice', chosen);
+      updateAlertWidgetUrl(chosen);
+
+      const voiceObj = voicesList.find(v => v.id === chosen);
+      if (voiceObj && obsVoiceDesc) {
+        obsVoiceDesc.textContent = `${voiceObj.description || ''} (Nếu giọng đọc này bị lỗi, hệ thống sẽ tự động chuyển sang giọng đọc khác)`;
+      }
+      if (typeof SoundManager !== 'undefined' && typeof SoundManager.setVoice === 'function') {
+        SoundManager.setVoice(chosen);
+      }
+    });
+
+    btnPreviewVoice?.addEventListener('click', async () => {
+      const chosenVoice = obsVoiceSelect?.value || 'vi-VN-HoaiMyNeural';
+      const origHtml = btnPreviewVoice.innerHTML;
+      btnPreviewVoice.disabled = true;
+      btnPreviewVoice.innerHTML = `
+        <span style="display:inline-block;width:12px;height:12px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;"></span>
+        <span>Đang đọc...</span>
+      `;
+      try {
+        if (typeof TtsService !== 'undefined') {
+          await TtsService.play({
+            text: 'Cảm ơn bạn đã donate ủng hộ buổi livestream!',
+            voice: chosenVoice
+          });
+        }
+      } catch (err) {
+        console.warn('Lỗi nghe thử giọng:', err);
+      } finally {
+        btnPreviewVoice.innerHTML = origHtml;
+        btnPreviewVoice.disabled = false;
+      }
+    });
 
     updateSubathonOverviewWidget(null);
 

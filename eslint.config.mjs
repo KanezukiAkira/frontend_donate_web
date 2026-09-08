@@ -23,6 +23,7 @@ export default [
         SubathonService: "readonly",
         GoalService: "readonly",
         GachaService: "readonly",
+        TtsService: "readonly",
         Pusher: "readonly"
       }
     },

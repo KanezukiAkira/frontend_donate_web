@@ -1388,3 +1388,172 @@ nav > a.active {
     color: rgba(255, 255, 255, 0.55);
     font-size: 14px;
 }
+
+/* MÀN HÌNH DONATE THÀNH CÔNG */
+.donate-success-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+    padding: 18px 8px;
+    animation: successEntrance 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes successEntrance {
+    0% {
+        opacity: 0;
+        transform: scale(0.92) translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.donate-success-icon-wrap {
+    position: relative;
+    width: 68px;
+    height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2px;
+}
+
+.donate-success-icon-pulse {
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.45) 0%, rgba(16, 185, 129, 0) 70%);
+    animation: successPulse 2s infinite ease-out;
+}
+
+@keyframes successPulse {
+    0% {
+        transform: scale(0.85);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.15);
+        opacity: 0.3;
+    }
+    100% {
+        transform: scale(0.85);
+        opacity: 0.8;
+    }
+}
+
+.donate-success-icon {
+    position: relative;
+    width: 62px;
+    height: 62px;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.4));
+    border: 1.5px solid rgba(16, 185, 129, 0.6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #34d399;
+    box-shadow: 0 0 24px rgba(16, 185, 129, 0.45);
+}
+
+.donate-success-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.01em;
+    margin: 0;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.donate-success-desc {
+    font-size: 14.5px;
+    color: rgba(255, 255, 255, 0.82);
+    line-height: 1.5;
+    margin: 0;
+    max-width: 380px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.donate-success-receipt {
+    width: 100%;
+    max-width: 390px;
+    background: rgba(18, 14, 28, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    margin-top: 4px;
+}
+
+.receipt-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.receipt-row:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.receipt-label {
+    color: rgba(255, 255, 255, 0.65);
+    font-weight: 500;
+}
+
+.receipt-value {
+    color: #ffffff;
+    font-weight: 700;
+    text-align: right;
+    word-break: break-word;
+}
+
+.receipt-amount {
+    color: #34d399;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.receipt-code {
+    font-family: 'JetBrains Mono', monospace, inherit;
+    color: #facc15;
+    font-size: 13.5px;
+    background: rgba(250, 204, 21, 0.12);
+    border: 1px solid rgba(250, 204, 21, 0.3);
+    padding: 2px 8px;
+    border-radius: 6px;
+}
+
+.receipt-msg {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.06);
+    padding: 6px 10px;
+    border-radius: 8px;
+    max-width: 220px;
+    text-align: left;
+}
+
+.donate-btn-continue {
+    width: 100%;
+    max-width: 390px;
+    margin-top: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 13px 24px;
+    font-size: 15.5px;
+    font-weight: 700;
+}
