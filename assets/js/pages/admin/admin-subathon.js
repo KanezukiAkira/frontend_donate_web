@@ -244,17 +244,35 @@ const AdminSubathon = (() => {
         return;
       }
 
-      logsTableBody.innerHTML = logs.map(log => `
-        <tr>
-          <td class="font-mono text-muted">${Formatters.dateTime(log.created_at)}</td>
-          <td><span class="badge ${log.change_type === 'DONATION' ? 'badge-live' : 'badge-paused'}">${log.change_type}</span></td>
-          <td class="font-mono font-bold ${log.seconds_delta > 0 ? 'text-emerald' : 'text-rose'}">
-            ${Formatters.secondsDelta(log.seconds_delta)}
-          </td>
-          <td class="font-mono">${Formatters.duration(log.new_remaining_seconds)}</td>
-          <td class="text-muted">${log.note || '--'}</td>
-        </tr>
-      `).join('');
+      logsTableBody.innerHTML = logs.map(log => {
+        const eventType = log.event_type || log.change_type;
+        const delta = Number(log.seconds_delta) || 0;
+        const deltaClass = delta > 0 ? 'text-emerald' : (delta < 0 ? 'text-rose' : 'text-muted');
+
+        let remainingDisplay = '--';
+        if (log.new_remaining_seconds !== undefined && log.new_remaining_seconds !== null) {
+          remainingDisplay = Formatters.duration(log.new_remaining_seconds);
+        } else if (log.new_target_end_at && log.created_at) {
+          const tEnd = typeof Formatters !== 'undefined' && Formatters.parseUtc7Date ? Formatters.parseUtc7Date(log.new_target_end_at) : new Date(log.new_target_end_at);
+          const tCreated = typeof Formatters !== 'undefined' && Formatters.parseUtc7Date ? Formatters.parseUtc7Date(log.created_at) : new Date(log.created_at);
+          if (tEnd && tCreated) {
+            const remSec = Math.max(0, Math.round((tEnd.getTime() - tCreated.getTime()) / 1000));
+            remainingDisplay = Formatters.duration(remSec);
+          }
+        }
+
+        return `
+          <tr>
+            <td class="font-mono text-muted">${Formatters.dateTime(log.created_at)}</td>
+            <td>${Formatters.subathonEventType(eventType)}</td>
+            <td class="font-mono font-bold ${deltaClass}">
+              ${Formatters.secondsDelta(delta)}
+            </td>
+            <td class="font-mono">${remainingDisplay}</td>
+            <td class="text-muted">${log.note || '--'}</td>
+          </tr>
+        `;
+      }).join('');
     } catch (err) {
       console.error('Lỗi tải audit logs:', err);
     }

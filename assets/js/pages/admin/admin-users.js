@@ -23,7 +23,7 @@ const AdminUsers = (() => {
           <td><span class="badge ${(u.role || '').toUpperCase() === 'ADMIN' ? 'badge-admin' : 'badge-user'}">${(u.role || '').toUpperCase()}</span></td>
           <td><span class="badge ${u.is_active ? 'badge-live' : 'badge-ended'}">${u.is_active ? 'Hoạt động' : 'Bị khóa'}</span></td>
           <td class="font-bold stat-gold">${typeof Formatters !== 'undefined' ? Formatters.currency(u.total_donated ?? 0) : `${u.total_donated ?? 0} ₫`}</td>
-          <td class="text-muted font-mono">${typeof Formatters !== 'undefined' ? Formatters.dateTime(u.created_at) : new Date(u.created_at).toLocaleString('vi-VN')}</td>
+          <td class="text-muted font-mono">${typeof Formatters !== 'undefined' ? Formatters.dateTime(u.created_at) : (u.created_at ? new Date(u.created_at).toLocaleString('vi-VN') : '--')}</td>
         </tr>
       `).join('');
     } catch (err) {

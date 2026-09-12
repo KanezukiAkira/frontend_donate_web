@@ -351,8 +351,12 @@ const AdminGacha = (() => {
       }
 
       gachaHistoryTableBody.innerHTML = logs.map(log => {
-        const timeStr = log.created_at ? new Date(log.created_at).toLocaleString('vi-VN') : '--';
-        const formattedAmount = Number(log.amount).toLocaleString('vi-VN') + ' ₫';
+        const timeStr = typeof Formatters !== 'undefined'
+          ? Formatters.dateTime(log.created_at)
+          : (log.created_at ? new Date(log.created_at).toLocaleString('vi-VN') : '--');
+        const formattedAmount = typeof Formatters !== 'undefined'
+          ? Formatters.currency(log.amount)
+          : Number(log.amount).toLocaleString('vi-VN') + ' ₫';
         const isTime = log.wheel_type === 'time';
         const typeBadge = isTime
           ? `<span class="gacha-type-badge type-time" style="font-size:0.7rem;padding:2px 6px;display:inline-flex;align-items:center;gap:4px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="10" height="10"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5"/></svg>TIME</span>`
@@ -362,7 +366,7 @@ const AdminGacha = (() => {
 
         return `
           <tr>
-            <td style="font-size:0.8rem;color:#94a3b8;white-space:nowrap;">${timeStr}</td>
+            <td class="font-mono text-muted">${timeStr}</td>
             <td style="font-weight:700;">${log.donor_name}</td>
             <td style="font-weight:800;color:#facc15;">${formattedAmount}</td>
             <td style="font-weight:600;">${log.wheel_name || '--'}</td>

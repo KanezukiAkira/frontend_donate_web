@@ -17,7 +17,7 @@ const AdminDonations = (() => {
       : '<span class="text-muted" style="font-style:italic;">Không có lời nhắn</span>';
     const initial = (item.full_name || 'A').charAt(0).toUpperCase();
     const formattedAmount = typeof Formatters !== 'undefined' ? Formatters.currency(amount) : `${amount} ₫`;
-    const formattedDate = typeof Formatters !== 'undefined' ? Formatters.dateTime(item.created_at) : new Date(item.created_at).toLocaleString('vi-VN');
+    const formattedDate = typeof Formatters !== 'undefined' ? Formatters.dateTime(item.created_at) : (item.created_at ? new Date(item.created_at).toLocaleString('vi-VN') : '--');
 
     return `
       <tr data-id="${item.id}">

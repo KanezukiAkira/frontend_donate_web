@@ -118,17 +118,17 @@ const AdminGoals = (() => {
 
       const cur = typeof Formatters !== 'undefined' ? Formatters.currency(item.current_amount) : `${item.current_amount} ₫`;
       const tgt = typeof Formatters !== 'undefined' ? Formatters.currency(item.target_amount) : `${item.target_amount} ₫`;
-      const dt = typeof Formatters !== 'undefined' ? Formatters.dateTime(item.created_at) : new Date(item.created_at).toLocaleString('vi-VN');
+      const dt = typeof Formatters !== 'undefined' ? Formatters.dateTime(item.created_at) : (item.created_at ? new Date(item.created_at).toLocaleString('vi-VN') : '--');
 
       return `
         <tr>
-          <td>#${item.id}</td>
+          <td class="font-mono text-muted">#${item.id}</td>
           <td><strong>${item.title}</strong></td>
           <td class="text-gold font-bold">${cur}</td>
           <td>${tgt}</td>
           <td><span class="tag-pill">${item.percentage}%</span></td>
           <td>${stBadge}</td>
-          <td class="text-muted text-sm">${dt}</td>
+          <td class="font-mono text-muted">${dt}</td>
         </tr>
       `;
     }).join('');
