@@ -270,10 +270,14 @@ const AdminGacha = (() => {
             if (!rollData.server_time) {
               rollData.server_time = Date.now() / 1000;
             }
+            rollData.spin_index = rollData.spin_index || 1;
+            rollData.total_spins = rollData.total_spins || 1;
+            rollData.is_test = true;
+
             if (typeof BroadcastChannel !== 'undefined') {
               try {
                 const ch = new BroadcastChannel('gacha-test');
-                ch.postMessage({ _type: 'gacha-roll', payload: rollData });
+                ch.postMessage({ _type: 'gacha-roll', payload: rollData, _source: 'admin_broadcast' });
                 ch.close();
               } catch (e) {
                 console.warn('BroadcastChannel error:', e);

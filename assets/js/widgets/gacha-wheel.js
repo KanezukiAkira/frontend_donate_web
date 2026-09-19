@@ -42,19 +42,60 @@ document.addEventListener('DOMContentLoaded', async () => {
   let currentWheelAngle = 0;
   let confettiParticles = [];
   let fxAnimationId = null;
-  const recentSpinSignatures = new Map(); // signature -> timestamp (ms)
+  const recentSpinsHistory = []; // { data, sig, timestamp }
 
   function getSpinSignature(data) {
     if (!data) return '';
-    const spinIdx = data.spin_index !== undefined ? `_s${data.spin_index}` : '';
+    const spinIndex = data.spin_index || 1;
+    const spinIdx = `_s${spinIndex}`;
     if (data.id) return `id_${data.id}${spinIdx}`;
-    if (data.log_id) return `log_${data.log_id}`;
+    if (data.roll_id) return `roll_${data.roll_id}${spinIdx}`;
+    if (data.log_id) return `log_${data.log_id}${spinIdx}`;
     if (data.donation_id) return `donation_${data.donation_id}${spinIdx}`;
     if (data.server_time) {
-      const st = Math.round(Number(data.server_time) * 100);
+      // Gom nhóm 3 giây để triệt tiêu sai lệch làm tròn số thực giữa Pusher và API HTTP response
+      const st = Math.floor(Number(data.server_time) / 3);
       return `st_${data.wheel_id || ''}_${st}_${data.won_index ?? ''}${spinIdx}`;
     }
-    return `fb_${data.wheel_id || ''}_${data.donor_name || ''}_${data.amount || ''}_${data.won_index ?? ''}_${(data.message || '').substring(0, 30)}${spinIdx}`;
+    const wonRewardVal = data.won_reward ? (data.won_reward.id || data.won_reward.value || data.won_reward.label || '') : '';
+    return `fb_${data.wheel_id || ''}_${data.donor_name || ''}_${data.amount || ''}_${data.won_index ?? ''}_${wonRewardVal}${spinIdx}`;
+  }
+
+  function isDuplicateSpin(existing, incoming) {
+    if (!existing || !incoming) return false;
+
+    // 1. So khớp chữ ký chính xác
+    const sigA = getSpinSignature(existing);
+    const sigB = getSpinSignature(incoming);
+    if (sigA && sigB && sigA === sigB) return true;
+
+    // 2. So khớp ID định danh rõ ràng nếu có
+    if (existing.id && incoming.id && String(existing.id) === String(incoming.id)) return true;
+    if (existing.roll_id && incoming.roll_id && String(existing.roll_id) === String(incoming.roll_id)) return true;
+
+    // 3. So khớp ngữ nghĩa (Semantic deduplication): cùng wheel, cùng ô trúng, cùng tên donor, cùng spin_index
+    const spinA = existing.spin_index || 1;
+    const spinB = incoming.spin_index || 1;
+    const wheelA = String(existing.wheel_id || '');
+    const wheelB = String(incoming.wheel_id || '');
+    const wonA = existing.won_index !== undefined ? Number(existing.won_index) : -1;
+    const wonB = incoming.won_index !== undefined ? Number(incoming.won_index) : -2;
+
+    if (wheelA && wheelB && wheelA === wheelB && wonA === wonB && spinA === spinB) {
+      const donorA = (existing.donor_name || '').trim().toLowerCase();
+      const donorB = (incoming.donor_name || '').trim().toLowerCase();
+      if (donorA === donorB) {
+        if (existing.server_time && incoming.server_time) {
+          if (Math.abs(Number(existing.server_time) - Number(incoming.server_time)) < 15) {
+            return true;
+          }
+        } else {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 
   function enqueueSpin(data) {
@@ -65,37 +106,42 @@ document.addEventListener('DOMContentLoaded', async () => {
       return false;
     }
 
-    const sig = getSpinSignature(data);
-    const now = Date.now();
+    // Đảm bảo các trường tiêu chuẩn luôn có giá trị mặc định đồng nhất
+    if (data.spin_index === undefined) data.spin_index = 1;
+    if (data.total_spins === undefined) data.total_spins = 1;
 
-    // Dọn dẹp cache signature cũ quá 60 giây
-    for (const [key, ts] of recentSpinSignatures.entries()) {
-      if (now - ts > 60000) {
-        recentSpinSignatures.delete(key);
-      }
+    const now = Date.now();
+    const sig = getSpinSignature(data);
+
+    // Dọn dẹp cache lịch sử cũ quá 45 giây
+    while (recentSpinsHistory.length > 0 && (now - recentSpinsHistory[0].timestamp > 45000)) {
+      recentSpinsHistory.shift();
     }
 
-    // 1. Kiểm tra nếu đã xử lý trong 60 giây gần đây (chống trùng lặp giữa Pusher và BroadcastChannel)
-    if (sig && recentSpinSignatures.has(sig)) {
-      console.log('[Gacha Widget] Bỏ qua lượt quay trùng lặp (đã xử lý gần đây):', sig);
+    // 1. Kiểm tra nếu đã xử lý trong 45 giây gần đây (chống trùng lặp giữa Pusher và BroadcastChannel)
+    const isRecentDup = recentSpinsHistory.some(item => isDuplicateSpin(item.data, data));
+    if (isRecentDup) {
+      console.log('[Gacha Widget] Bỏ qua lượt quay trùng lặp (đã xử lý gần đây):', sig || data);
       return false;
     }
 
     // 2. Kiểm tra nếu đang quay chính lượt này
-    if (currentSpin && getSpinSignature(currentSpin) === sig) {
-      console.log('[Gacha Widget] Bỏ qua lượt quay trùng lặp (đang quay):', sig);
+    if (currentSpin && isDuplicateSpin(currentSpin, data)) {
+      console.log('[Gacha Widget] Bỏ qua lượt quay trùng lặp (đang quay):', sig || data);
       return false;
     }
 
     // 3. Kiểm tra nếu đã có trong hàng đợi chờ quay
-    if (spinQueue.some(item => getSpinSignature(item) === sig)) {
-      console.log('[Gacha Widget] Bỏ qua lượt quay trùng lặp (đang chờ trong hàng đợi):', sig);
+    if (spinQueue.some(item => isDuplicateSpin(item, data))) {
+      console.log('[Gacha Widget] Bỏ qua lượt quay trùng lặp (đang chờ trong hàng đợi):', sig || data);
       return false;
     }
 
-    if (sig) {
-      recentSpinSignatures.set(sig, now);
-    }
+    recentSpinsHistory.push({
+      data,
+      sig,
+      timestamp: now
+    });
 
     spinQueue.push(data);
     processQueue();
@@ -627,22 +673,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       const pusher = new Pusher(pusherKey, { cluster: CONFIG.PUSHER?.CLUSTER || 'ap1' });
 
-      // Lắng nghe kênh riêng của widget token
+      // Nếu có token riêng, chỉ lắng nghe kênh riêng của vòng quay này
       if (token) {
         const widgetChannel = pusher.subscribe(`obs-gacha-${token}`);
         widgetChannel.bind('gacha-roll', (data) => {
           enqueueSpin(data);
         });
+      } else {
+        // Chỉ lắng nghe kênh tổng dự phòng nếu widget được mở không có token trong URL
+        const generalChannel = pusher.subscribe('obs-channel');
+        generalChannel.bind('gacha-roll', (data) => {
+          enqueueSpin(data);
+        });
+        generalChannel.bind('gacha-gacha-roll', (data) => {
+          enqueueSpin(data);
+        });
       }
-
-      // Kênh tổng dự phòng
-      const generalChannel = pusher.subscribe('obs-channel');
-      generalChannel.bind('gacha-roll', (data) => {
-        enqueueSpin(data);
-      });
-      generalChannel.bind('gacha-gacha-roll', (data) => {
-        enqueueSpin(data);
-      });
 
       console.log('Đã kết nối Pusher Realtime cho Gacha Wheel Widget.');
     } catch (err) {
