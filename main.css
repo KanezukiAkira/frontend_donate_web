@@ -9,38 +9,38 @@
        Để tạo giao diện cho VTuber khác, chỉ cần thay đổi các mã màu trong khối này!
        ========================================================================== */
 
-    /* --- 1. TÔNG MÀU CHỦ ĐẠO (PRIMARY ACCENT) - Kanezuki Akira: Ruby Red --- */
-    --theme-primary: #e11d48;
-    --theme-primary-hover: #f43f5e;
-    --theme-primary-active: #be123c;
-    --theme-primary-light: #fda4af;
-    --theme-primary-dark: #9f1239;
+    /* --- 1. TÔNG MÀU CHỦ ĐẠO (PRIMARY ACCENT) - Tani Kami: Vàng Hoàng Kim (Gold / Amber) --- */
+    --theme-primary: #f59e0b;
+    --theme-primary-hover: #fbbf24;
+    --theme-primary-active: #d97706;
+    --theme-primary-light: #fef3c7;
+    --theme-primary-dark: #b45309;
     
     /* Kênh RGB của màu chủ đạo (dùng để áp dụng độ trong suốt rgba linh hoạt) */
-    --theme-primary-rgb: 225, 29, 72;
-    --theme-primary-hover-rgb: 244, 63, 94;
-    --theme-primary-active-rgb: 190, 18, 60;
-    --theme-primary-light-rgb: 253, 164, 175;
+    --theme-primary-rgb: 245, 158, 11;
+    --theme-primary-hover-rgb: 251, 191, 36;
+    --theme-primary-active-rgb: 217, 119, 6;
+    --theme-primary-light-rgb: 254, 243, 199;
 
-    /* --- 2. TÔNG MÀU PHỤ / KIM LOẠI (SECONDARY / ACCENT METAL) - Ánh Bạc (Silver) --- */
-    --theme-secondary: #cbd5e1;
-    --theme-secondary-hover: #f8fafc;
-    --theme-secondary-muted: #94a3b8;
-    --theme-secondary-rgb: 203, 213, 225;
-    --theme-secondary-muted-rgb: 148, 163, 184;
+    /* --- 2. TÔNG MÀU PHỤ / KIM LOẠI (SECONDARY / ACCENT METAL) - Ánh Vàng Nhạt (Warm Gold) --- */
+    --theme-secondary: #fef08a;
+    --theme-secondary-hover: #ffffff;
+    --theme-secondary-muted: #d4d4d8;
+    --theme-secondary-rgb: 254, 240, 138;
+    --theme-secondary-muted-rgb: 212, 212, 216;
 
     /* --- 3. MÀU NỀN TỔNG THỂ & TINT CARD GLASSMORPHISM --- */
-    --theme-bg-body: #0b0710;
-    --theme-bg-rgb: 11, 7, 16;
+    --theme-bg-body: #0d0a06;
+    --theme-bg-rgb: 13, 10, 6;
     
     /* Màu nền đổ bóng và gradient thẻ kính (Glassmorphism Tint) */
-    --theme-tint-card-start: rgba(35, 14, 25, 0.65);
-    --theme-tint-card-end: rgba(20, 10, 22, 0.75);
-    --theme-tint-card-hover-start: rgba(46, 16, 32, 0.82);
-    --theme-tint-card-hover-end: rgba(26, 12, 28, 0.88);
-    --theme-tint-popup-start: rgba(28, 12, 22, 0.97);
-    --theme-tint-popup-end: rgba(16, 8, 18, 0.98);
-    --theme-tint-header-start: rgba(16, 8, 18, 0.95);
+    --theme-tint-card-start: rgba(36, 26, 12, 0.65);
+    --theme-tint-card-end: rgba(20, 14, 8, 0.75);
+    --theme-tint-card-hover-start: rgba(48, 34, 16, 0.82);
+    --theme-tint-card-hover-end: rgba(28, 18, 10, 0.88);
+    --theme-tint-popup-start: rgba(36, 26, 12, 0.97);
+    --theme-tint-popup-end: rgba(18, 13, 7, 0.98);
+    --theme-tint-header-start: rgba(18, 13, 7, 0.95);
 
     /* --- 4. GRADIENTS TIÊU CHUẨN --- */
     --theme-gradient-primary: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-primary-active) 100%);
@@ -2044,7 +2044,7 @@ nav > a.active {
 }
 
 .gacha-switch input:checked + .gacha-slider {
-    background: linear-gradient(135deg, var(--accent-red, #e11d48) 0%, var(--accent-red-hover, #f43f5e) 100%);
+    background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-primary-hover) 100%);
     border-color: rgba(var(--theme-primary-hover-rgb), 0.65);
     box-shadow: 0 0 16px rgba(var(--theme-primary-rgb), 0.5);
 }
@@ -2083,7 +2083,7 @@ nav > a.active {
 }
 
 .gacha-select-label svg {
-    color: var(--accent-red-hover, #f43f5e);
+    color: var(--theme-primary-hover);
     flex-shrink: 0;
 }
 
@@ -2135,7 +2135,7 @@ nav > a.active {
 }
 
 .gacha-custom-select .gacha-select-icon {
-    color: var(--accent-red-hover, #f43f5e);
+    color: var(--theme-primary-hover);
     flex-shrink: 0;
 }
 
@@ -2197,7 +2197,7 @@ nav > a.active {
 
 .gacha-custom-select.is-open .gacha-select-arrow {
     transform: rotate(180deg);
-    color: var(--accent-red-hover, #f43f5e);
+    color: var(--theme-primary-hover);
 }
 
 /* Dropdown Menu (Glassmorphism Popup) */
@@ -2323,7 +2323,7 @@ nav > a.active {
 }
 
 .gacha-option-check {
-    color: var(--accent-red-hover, #f43f5e);
+    color: var(--theme-primary-hover);
     flex-shrink: 0;
     filter: drop-shadow(0 0 6px rgba(var(--theme-primary-hover-rgb), 0.8));
 }
@@ -2363,7 +2363,7 @@ nav > a.active {
 }
 
 .gacha-calc-tag svg {
-    color: var(--accent-red-hover, #f43f5e);
+    color: var(--theme-primary-hover);
     flex-shrink: 0;
 }
 
@@ -2462,7 +2462,7 @@ nav > a.active {
     padding: 10px 12px;
     border-radius: 10px;
     border: 1px solid rgba(var(--theme-secondary-rgb), 0.08);
-    border-left: 3px solid var(--accent-red, #e11d48);
+    border-left: 3px solid var(--theme-primary);
     display: flex;
     align-items: flex-start;
     gap: 9px;

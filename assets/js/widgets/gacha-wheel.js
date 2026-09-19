@@ -588,8 +588,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (obsStatusPill) {
     if (isPinned) {
       if (obsStatusText) obsStatusText.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13" style="vertical-align:middle;margin-right:4px;"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"/></svg>Chế độ xem thử (Ghim) • Xóa ?preview=1 khi bắt đầu stream';
-      obsStatusPill.style.borderColor = 'rgba(225, 29, 72, 0.6)';
-      obsStatusPill.style.color = '#fda4af';
+      obsStatusPill.style.borderColor = '#facc15';
+      obsStatusPill.style.color = '#facc15';
     } else {
       setTimeout(() => {
         obsStatusPill.classList.add('fade-out');
