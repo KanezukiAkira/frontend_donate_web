@@ -81,7 +81,7 @@ const AdminOverview = (() => {
 
           const current = voicesList.find(v => v.id === obsVoiceSelect.value);
           if (current && obsVoiceDesc) {
-            obsVoiceDesc.textContent = `${current.description || ''} (Nếu giọng đọc này bị lỗi, hệ thống sẽ tự động chuyển sang giọng đọc khác)`;
+            obsVoiceDesc.textContent = current.description || '';
           }
         }
       } catch (err) {
@@ -99,7 +99,7 @@ const AdminOverview = (() => {
 
       const voiceObj = voicesList.find(v => v.id === chosen);
       if (voiceObj && obsVoiceDesc) {
-        obsVoiceDesc.textContent = `${voiceObj.description || ''} (Nếu giọng đọc này bị lỗi, hệ thống sẽ tự động chuyển sang giọng đọc khác)`;
+        obsVoiceDesc.textContent = voiceObj.description || '';
       }
       if (typeof SoundManager !== 'undefined' && typeof SoundManager.setVoice === 'function') {
         SoundManager.setVoice(chosen);

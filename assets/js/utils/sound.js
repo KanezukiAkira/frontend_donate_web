@@ -3,10 +3,26 @@ const SoundManager = {
   currentAudio: null,
 
   init() {
+    this.unlockAudio();
+  },
+
+  unlockAudio() {
+    this._googleBlockedUntil = 0;
     try {
-      this.getAudioContext();
+      const ctx = this.getAudioContext();
+      if (ctx && ctx.state === 'suspended') {
+        ctx.resume().catch(() => { });
+      }
     } catch {
       // AudioContext init error ignored
+    }
+    try {
+      const dummy = new Audio();
+      dummy.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA';
+      dummy.volume = 0.01;
+      dummy.play().catch(() => { });
+    } catch {
+      // Dummy audio error ignored
     }
   },
 
@@ -91,10 +107,18 @@ const SoundManager = {
   sanitizeTTSText(text) {
     if (!text || typeof text !== 'string') return '';
     let cleaned = text.trim();
+    // Loại bỏ thẻ HTML/XML
+    cleaned = cleaned.replace(/<[^>]+>/g, ' ');
+    // Giảm bớt ký tự lặp lại spam
     cleaned = cleaned.replace(/(.)\1{2,}/g, '$1$1');
     cleaned = cleaned.replace(/(ha|he|hi|ho|kk|kaka){3,}/gi, 'hahaha');
-    if (cleaned.length > 250) {
-      cleaned = cleaned.substring(0, 247) + '...';
+    if (cleaned.length > 180) {
+      cleaned = cleaned.substring(0, 177) + '...';
+    }
+    cleaned = cleaned.trim();
+    // Nếu tin nhắn chỉ toàn emoji, dấu chấm, ký hiệu không chứa từ ngữ phát âm được
+    if (!/[\p{L}\p{N}]/u.test(cleaned)) {
+      return '';
     }
     return cleaned;
   },
@@ -105,9 +129,13 @@ const SoundManager = {
   _defaultVoice: 'vi-VN-HoaiMyNeural',
 
   setVoice(voiceId) {
-    if (voiceId && typeof voiceId === 'string') {
+    if (voiceId) {
       this._defaultVoice = voiceId;
     }
+  },
+
+  getVoice() {
+    return this._defaultVoice;
   },
 
   stopTTS(clearQueue = false) {
@@ -123,11 +151,6 @@ const SoundManager = {
         // Audio pause error ignored
       }
     }
-    if (typeof TtsService !== 'undefined' && typeof TtsService.stop === 'function') {
-      try {
-        TtsService.stop();
-      } catch { }
-    }
     if ('speechSynthesis' in window) {
       try {
         window.speechSynthesis.cancel();
@@ -138,9 +161,8 @@ const SoundManager = {
   },
 
   /**
-   * Phát một câu đơn với cơ chế Circuit Breaker & Fallback nhiều lớp:
-   * Ưu tiên Backend Proxy (Edge Neural) -> Fallback Google Direct -> Fallback Web Speech API (Offline).
-   * Tự động chuyển giọng/cơ chế nếu gặp lỗi máy chủ.
+   * Phát một câu đơn với cơ chế Circuit Breaker:
+   * Ưu tiên Backend Proxy -> Fallback Google Direct -> Fallback Web Speech API (Offline).
    * Tuyệt đối không kích hoạt Circuit Breaker nếu lỗi do chính sách Autoplay (NotAllowedError).
    */
   speakSinglePhrase(text, volume = 1.0, options = {}) {
@@ -204,7 +226,7 @@ const SoundManager = {
 
       const tripCircuitBreakerAndFallback = () => {
         clearTimeout(timeoutTimer);
-        // Khóa Google TTS trong 10 phút khi thực sự gặp lỗi mạng hoặc Google bị chặn IP (429/502)
+        // Chỉ khóa Google TTS 10 phút khi thực sự gặp lỗi mạng hoặc Google bị chặn IP (429/502)
         this._googleBlockedUntil = Date.now() + 10 * 60 * 1000;
         console.warn('[SoundManager TTS] Kích hoạt Circuit Breaker: Chuyển TTS sang Web Speech API bản địa.');
         this.speakWebSpeech(trimmed, volume).then(finish);
@@ -302,7 +324,7 @@ const SoundManager = {
 
   /**
    * Hàng đợi TTS Audio Queue (FIFO):
-   * Đưa request đọc donate vào hàng đợi tuần tự. Đảm bảo nếu nhận nhiều donate cùng lúc,
+   * Đưa request đọc donate vào hàng đợi tuần tự. Đảm bảo nếu nhận 5 donate cùng lúc,
    * từng giọng đọc sẽ phát lần lượt, không bao giờ bị đè hay cắt ngang lời nhau.
    */
   speakDonation({ name, amount, message, volume = 1.0, voice, rate, pitch }) {

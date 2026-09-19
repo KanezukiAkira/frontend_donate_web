@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           <td class="font-mono">${u.email}</td>
           <td><span class="badge ${u.role === 'ADMIN' ? 'badge-admin' : 'badge-user'}">${u.role}</span></td>
           <td><span class="badge ${u.is_active ? 'badge-active' : 'badge-ended'}">${u.is_active ? 'Hoạt động' : 'Bị khóa'}</span></td>
-          <td class="text-muted font-mono">${Formatters.dateTime(u.created_at)}</td>
+          <td class="text-muted font-mono">${typeof Formatters !== 'undefined' ? Formatters.dateTime(u.created_at) : (u.created_at ? new Date(u.created_at).toLocaleString('vi-VN') : '--')}</td>
         </tr>
       `).join('');
     } catch (err) {

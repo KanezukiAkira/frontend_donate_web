@@ -425,6 +425,66 @@ body.bento-admin-body {
   white-space: nowrap;
 }
 
+/* TTS Voice Config in OBS Overlay */
+.tts-voice-config-box {
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+}
+
+.tts-voice-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.tts-voice-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tts-voice-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.tts-voice-select {
+  background: rgba(15, 23, 42, 0.8);
+  color: #f8fafc;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  min-width: 220px;
+}
+
+.tts-voice-btn {
+  padding: 5px 12px;
+  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.tts-voice-desc {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  margin: 0;
+}
+
 .obs-specs-accordion {
   margin-top: 14px;
 }

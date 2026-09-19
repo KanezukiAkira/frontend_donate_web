@@ -1,8 +1,18 @@
 const DonateService = {
-  async createPending({ amount, message }) {
+  async createPending({ amount, message, is_gacha_mode, gacha_wheel_id }) {
+    const payload = {
+      amount: Number(amount),
+      message: message || ''
+    };
+    if (is_gacha_mode !== undefined) {
+      payload.is_gacha_mode = Boolean(is_gacha_mode);
+    }
+    if (gacha_wheel_id !== undefined && gacha_wheel_id !== null) {
+      payload.gacha_wheel_id = Number(gacha_wheel_id);
+    }
     const response = await apiClient.post(
       CONFIG.ENDPOINTS.DONATE.PENDING,
-      { amount: Number(amount), message: message || '' },
+      payload,
       { requiresAuth: true }
     );
     return response.data;
@@ -69,8 +79,12 @@ const DonateService = {
     return response.data || { items: [], next_cursor: null, has_more: false };
   },
 
-  checkStatus(orderCode) {
-    return apiClient.get(CONFIG.ENDPOINTS.DONATE.STATUS(orderCode), { requiresAuth: false });
+  async checkStatus(paymentCode) {
+    const endpoint = (CONFIG.ENDPOINTS?.DONATE?.STATUS)
+      ? CONFIG.ENDPOINTS.DONATE.STATUS(encodeURIComponent(paymentCode))
+      : `/donate/status/${encodeURIComponent(paymentCode)}`;
+    const response = await apiClient.get(endpoint, { requiresAuth: false });
+    return response.data;
   }
 };
 

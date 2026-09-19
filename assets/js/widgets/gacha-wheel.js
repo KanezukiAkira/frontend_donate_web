@@ -35,12 +35,72 @@ document.addEventListener('DOMContentLoaded', async () => {
   const resultSubtitle = document.getElementById('gachaResultSubtitle');
   const fxCanvas = document.getElementById('fxCanvas');
 
-  // Queues & State
+  // Queues & Deduplication State
   const spinQueue = [];
   let isSpinning = false;
+  let currentSpin = null;
   let currentWheelAngle = 0;
   let confettiParticles = [];
   let fxAnimationId = null;
+  const recentSpinSignatures = new Map(); // signature -> timestamp (ms)
+
+  function getSpinSignature(data) {
+    if (!data) return '';
+    const spinIdx = data.spin_index !== undefined ? `_s${data.spin_index}` : '';
+    if (data.id) return `id_${data.id}${spinIdx}`;
+    if (data.log_id) return `log_${data.log_id}`;
+    if (data.donation_id) return `donation_${data.donation_id}${spinIdx}`;
+    if (data.server_time) {
+      const st = Math.round(Number(data.server_time) * 100);
+      return `st_${data.wheel_id || ''}_${st}_${data.won_index ?? ''}${spinIdx}`;
+    }
+    return `fb_${data.wheel_id || ''}_${data.donor_name || ''}_${data.amount || ''}_${data.won_index ?? ''}_${(data.message || '').substring(0, 30)}${spinIdx}`;
+  }
+
+  function enqueueSpin(data) {
+    if (!data) return false;
+
+    // Kiểm tra widget_token nếu payload có cung cấp (chỉ nhận sự kiện cho vòng quay của widget này)
+    if (token && data.widget_token && data.widget_token !== token) {
+      return false;
+    }
+
+    const sig = getSpinSignature(data);
+    const now = Date.now();
+
+    // Dọn dẹp cache signature cũ quá 60 giây
+    for (const [key, ts] of recentSpinSignatures.entries()) {
+      if (now - ts > 60000) {
+        recentSpinSignatures.delete(key);
+      }
+    }
+
+    // 1. Kiểm tra nếu đã xử lý trong 60 giây gần đây (chống trùng lặp giữa Pusher và BroadcastChannel)
+    if (sig && recentSpinSignatures.has(sig)) {
+      console.log('[Gacha Widget] Bỏ qua lượt quay trùng lặp (đã xử lý gần đây):', sig);
+      return false;
+    }
+
+    // 2. Kiểm tra nếu đang quay chính lượt này
+    if (currentSpin && getSpinSignature(currentSpin) === sig) {
+      console.log('[Gacha Widget] Bỏ qua lượt quay trùng lặp (đang quay):', sig);
+      return false;
+    }
+
+    // 3. Kiểm tra nếu đã có trong hàng đợi chờ quay
+    if (spinQueue.some(item => getSpinSignature(item) === sig)) {
+      console.log('[Gacha Widget] Bỏ qua lượt quay trùng lặp (đang chờ trong hàng đợi):', sig);
+      return false;
+    }
+
+    if (sig) {
+      recentSpinSignatures.set(sig, now);
+    }
+
+    spinQueue.push(data);
+    processQueue();
+    return true;
+  }
 
   // Active wheel configuration (loaded from API or default fallback)
   let activeWheel = {
@@ -84,7 +144,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   function triggerConfetti() {
     if (!fxCanvas || !fxCtx) return;
     confettiParticles = [];
-    const colors = ['#f59e0b', '#fde047', '#38bdf8', '#a855f7', '#ec4899', '#10b981', '#ffffff'];
+    const colors = ['#e11d48', '#f43f5e', '#be123c', '#cbd5e1', '#f8fafc', '#94a3b8', '#ffffff'];
     const centerX = window.innerWidth / 2;
     const centerY = window.innerHeight / 2;
 
@@ -206,7 +266,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       wheelCtx.restore();
     });
 
-    // Outer Golden Ring with Light Studs
+    // Outer Metallic Ring with Light Studs
     wheelCtx.save();
     wheelCtx.strokeStyle = '#f59e0b';
     wheelCtx.lineWidth = 6;
@@ -256,10 +316,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (isSpinning || spinQueue.length === 0) return;
     isSpinning = true;
 
-    const current = spinQueue.shift();
-    await executeSpin(current);
+    currentSpin = spinQueue.shift();
+    try {
+      await executeSpin(currentSpin);
+    } catch (err) {
+      console.error('[Gacha Widget] Lỗi thực thi vòng quay:', err);
+    } finally {
+      currentSpin = null;
+      isSpinning = false;
+    }
 
-    isSpinning = false;
     if (spinQueue.length > 0) {
       setTimeout(processQueue, 600);
     }
@@ -281,7 +347,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateCenterCap(wheelType);
     if (donorNameEl) donorNameEl.textContent = donorName;
     if (donorAmountEl) donorAmountEl.textContent = amountStr;
-    if (tierBadge) tierBadge.textContent = `GÓI ${amountStr}`;
+    if (tierBadge) {
+      if (data.total_spins && data.total_spins > 1) {
+        tierBadge.textContent = `LƯỢT ${data.spin_index || 1}/${data.total_spins} • GÓI ${amountStr}`;
+      } else {
+        tierBadge.textContent = `GÓI ${amountStr}`;
+      }
+    }
 
     if (data.message && data.message.trim()) {
       if (donorMessageEl) donorMessageEl.textContent = data.message.trim();
@@ -397,7 +469,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Giọng đọc TTS công bố kết quả sau khi vòng quay dừng
-    if (isTtsEnabled && typeof SoundManager !== 'undefined') {
+    // Quy tắc: Với donate nhiều lượt quay (multi-spins), chỉ đọc TTS 1 lần ở lượt 1 để chống spam TTS
+    const shouldSpeak = isTtsEnabled && typeof SoundManager !== 'undefined' && (data.should_speak_tts !== false);
+
+    if (shouldSpeak) {
       await new Promise(r => setTimeout(r, 600));
       try {
         let ttsText = '';
@@ -405,13 +480,25 @@ document.addEventListener('DOMContentLoaded', async () => {
           ? SoundManager.formatAmountForSpeech(data.amount)
           : amountStr;
 
-        if (wheelType === 'time') {
-          const sec = Number(wonReward.value ?? wonReward.seconds ?? 0);
-          const timeDesc = sec >= 0 ? `cộng ${sec} giây` : `trừ ${Math.abs(sec)} giây`;
-          ttsText = `${donorName} đã donate ${spokenAmount}. Kết quả vòng quay: ${timeDesc}!`;
+        if (data.total_spins && data.total_spins > 1) {
+          // Thông báo tổng hợp 1 lần duy nhất cho toàn bộ các lượt quay
+          ttsText = `Khán giả ${donorName} đã ủng hộ và kích hoạt ${data.total_spins} lượt quay Gacha!`;
+          if (data.remainder_amount && data.remainder_amount > 0) {
+            const spokenRemainder = (typeof SoundManager !== 'undefined' && SoundManager.formatAmountForSpeech)
+              ? SoundManager.formatAmountForSpeech(data.remainder_amount)
+              : `${data.remainder_amount} đồng`;
+            ttsText += ` Phần dư ${spokenRemainder} đã được cộng vào Subathon!`;
+          }
         } else {
-          const prize = wonReward.label || wonReward.value || 'phần thưởng';
-          ttsText = `${donorName} đã donate ${spokenAmount}. Kết quả vòng quay: ${prize}!`;
+          // Lượt quay đơn thông thường
+          if (wheelType === 'time') {
+            const sec = Number(wonReward.value ?? wonReward.seconds ?? 0);
+            const timeDesc = sec >= 0 ? `cộng ${sec} giây` : `trừ ${Math.abs(sec)} giây`;
+            ttsText = `${donorName} đã donate ${spokenAmount}. Kết quả vòng quay: ${timeDesc}!`;
+          } else {
+            const prize = wonReward.label || wonReward.value || 'phần thưởng';
+            ttsText = `${donorName} đã donate ${spokenAmount}. Kết quả vòng quay: ${prize}!`;
+          }
         }
 
         const cleanDonorMsg = (data.message && typeof SoundManager !== 'undefined' && SoundManager.sanitizeTTSText)
@@ -438,7 +525,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
       await new Promise(r => setTimeout(r, 2000));
     } else {
-      await new Promise(r => setTimeout(r, 4500));
+      // Khi không đọc TTS (ví dụ lượt 2, 3, 4, 5 hoặc streamer tắt TTS):
+      // Dừng lại 2 giây để người xem thấy rõ kết quả rồi chuyển lượt kế tiếp
+      await new Promise(r => setTimeout(r, 2000));
     }
 
     // Nếu ở chế độ preview/pin thì giữ nguyên giao diện để streamer căn chỉnh OBS
@@ -458,7 +547,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const chosenIndex = fake.won_index !== undefined ? fake.won_index : Math.min(2, sampleRewards.length - 1);
     const chosenReward = sampleRewards[chosenIndex] || sampleRewards[0];
 
-    spinQueue.push({
+    enqueueSpin({
+      id: fake.id || `demo_${Date.now()}_${Math.random()}`,
       wheel_id: activeWheel.id || 1,
       wheel_name: activeWheel.name,
       wheel_type: activeWheel.wheel_type,
@@ -473,7 +563,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         : `Phần thưởng: ${chosenReward.label || chosenReward.value}`,
       isPinned: fake.isPinned || false
     });
-    processQueue();
   }
 
   // Tải cấu hình khởi tạo từ backend nếu có token
@@ -499,8 +588,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (obsStatusPill) {
     if (isPinned) {
       if (obsStatusText) obsStatusText.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13" style="vertical-align:middle;margin-right:4px;"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"/></svg>Chế độ xem thử (Ghim) • Xóa ?preview=1 khi bắt đầu stream';
-      obsStatusPill.style.borderColor = '#facc15';
-      obsStatusPill.style.color = '#facc15';
+      obsStatusPill.style.borderColor = 'rgba(225, 29, 72, 0.6)';
+      obsStatusPill.style.color = '#fda4af';
     } else {
       setTimeout(() => {
         obsStatusPill.classList.add('fade-out');
@@ -542,24 +631,17 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (token) {
         const widgetChannel = pusher.subscribe(`obs-gacha-${token}`);
         widgetChannel.bind('gacha-roll', (data) => {
-          spinQueue.push(data);
-          processQueue();
+          enqueueSpin(data);
         });
       }
 
       // Kênh tổng dự phòng
       const generalChannel = pusher.subscribe('obs-channel');
       generalChannel.bind('gacha-roll', (data) => {
-        if (token && data.widget_token && data.widget_token !== token) return;
-        // Kiểm tra tránh trùng lặp nếu cả 2 kênh đều bắt được
-        const exists = spinQueue.some(item =>
-          item.server_time === data.server_time &&
-          item.donor_name === data.donor_name
-        );
-        if (!exists) {
-          spinQueue.push(data);
-          processQueue();
-        }
+        enqueueSpin(data);
+      });
+      generalChannel.bind('gacha-gacha-roll', (data) => {
+        enqueueSpin(data);
       });
 
       console.log('Đã kết nối Pusher Realtime cho Gacha Wheel Widget.');
@@ -574,8 +656,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     gachaChannel.onmessage = (event) => {
       const data = event.data;
       if (data && data._type === 'gacha-roll' && data.payload) {
-        spinQueue.push(data.payload);
-        processQueue();
+        enqueueSpin(data.payload);
       }
     };
   }

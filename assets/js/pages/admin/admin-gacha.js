@@ -267,11 +267,21 @@ const AdminGacha = (() => {
           });
           if (res) {
             const rollData = res.data !== undefined ? res.data : res;
+            if (!rollData.server_time) {
+              rollData.server_time = Date.now() / 1000;
+            }
             if (typeof BroadcastChannel !== 'undefined') {
-              const ch = new BroadcastChannel('gacha-test');
-              ch.postMessage({ _type: 'gacha-roll', payload: rollData });
+              try {
+                const ch = new BroadcastChannel('gacha-test');
+                ch.postMessage({ _type: 'gacha-roll', payload: rollData });
+                ch.close();
+              } catch (e) {
+                console.warn('BroadcastChannel error:', e);
+              }
             }
             loadGachaHistory();
+            btn.innerHTML = 'Đã phát OBS!';
+            await new Promise(r => setTimeout(r, 1200));
           }
         } catch (err) {
           console.error('Lỗi quay thử:', err);

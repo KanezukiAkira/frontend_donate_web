@@ -3,33 +3,193 @@
 
 :root {
     color-scheme: dark;
-    --white: #F3F4F5;
-    --black: #19191E;
+
+    /* ==========================================================================
+       THEME PRESETS & DESIGN TOKENS (HỆ THỐNG BIẾN ROOT TÙY BIẾN CHO VTUBER)
+       Để tạo giao diện cho VTuber khác, chỉ cần thay đổi các mã màu trong khối này!
+       ========================================================================== */
+
+    /* --- 1. TÔNG MÀU CHỦ ĐẠO (PRIMARY ACCENT) - Kanezuki Akira: Ruby Red --- */
+    --theme-primary: #e11d48;
+    --theme-primary-hover: #f43f5e;
+    --theme-primary-active: #be123c;
+    --theme-primary-light: #fda4af;
+    --theme-primary-dark: #9f1239;
+    
+    /* Kênh RGB của màu chủ đạo (dùng để áp dụng độ trong suốt rgba linh hoạt) */
+    --theme-primary-rgb: 225, 29, 72;
+    --theme-primary-hover-rgb: 244, 63, 94;
+    --theme-primary-active-rgb: 190, 18, 60;
+    --theme-primary-light-rgb: 253, 164, 175;
+
+    /* --- 2. TÔNG MÀU PHỤ / KIM LOẠI (SECONDARY / ACCENT METAL) - Ánh Bạc (Silver) --- */
+    --theme-secondary: #cbd5e1;
+    --theme-secondary-hover: #f8fafc;
+    --theme-secondary-muted: #94a3b8;
+    --theme-secondary-rgb: 203, 213, 225;
+    --theme-secondary-muted-rgb: 148, 163, 184;
+
+    /* --- 3. MÀU NỀN TỔNG THỂ & TINT CARD GLASSMORPHISM --- */
+    --theme-bg-body: #0b0710;
+    --theme-bg-rgb: 11, 7, 16;
+    
+    /* Màu nền đổ bóng và gradient thẻ kính (Glassmorphism Tint) */
+    --theme-tint-card-start: rgba(35, 14, 25, 0.65);
+    --theme-tint-card-end: rgba(20, 10, 22, 0.75);
+    --theme-tint-card-hover-start: rgba(46, 16, 32, 0.82);
+    --theme-tint-card-hover-end: rgba(26, 12, 28, 0.88);
+    --theme-tint-popup-start: rgba(28, 12, 22, 0.97);
+    --theme-tint-popup-end: rgba(16, 8, 18, 0.98);
+    --theme-tint-header-start: rgba(16, 8, 18, 0.95);
+
+    /* --- 4. GRADIENTS TIÊU CHUẨN --- */
+    --theme-gradient-primary: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-primary-active) 100%);
+    --theme-gradient-hover: linear-gradient(135deg, var(--theme-primary-hover) 0%, var(--theme-primary) 100%);
+    --theme-gradient-primary-full: linear-gradient(135deg, var(--theme-primary-hover) 0%, var(--theme-primary) 50%, var(--theme-primary-active) 100%);
+    --theme-gradient-card: linear-gradient(135deg, var(--theme-tint-card-start) 0%, var(--theme-tint-card-end) 100%);
+    --theme-gradient-card-active: linear-gradient(135deg, var(--theme-tint-card-hover-start) 0%, var(--theme-tint-card-hover-end) 100%);
+    --theme-gradient-popup: linear-gradient(135deg, var(--theme-tint-popup-start) 0%, var(--theme-tint-popup-end) 100%);
+
+    /* --- 5. BÓNG ĐỔ & PHÁT SÁNG (GLOW & SHADOW EFFECTS) --- */
+    --theme-glow-sm: 0 0 16px rgba(var(--theme-primary-rgb), 0.25);
+    --theme-glow-md: 0 0 24px rgba(var(--theme-primary-rgb), 0.4);
+    --theme-glow-lg: 0 0 36px rgba(var(--theme-primary-rgb), 0.55);
+    --theme-card-shadow: 0 16px 40px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(var(--theme-secondary-rgb), 0.18);
+    --theme-card-shadow-hover: 0 20px 48px rgba(0, 0, 0, 0.45), 0 0 24px rgba(var(--theme-primary-rgb), 0.22), inset 0 1px 0 rgba(var(--theme-secondary-rgb), 0.25);
+    --theme-btn-shadow: 0 6px 20px rgba(var(--theme-primary-rgb), 0.35);
+    --theme-btn-hover-shadow: 0 8px 26px rgba(var(--theme-primary-rgb), 0.55);
+
+    /* --- 6. HỆ THỐNG MÀU CHỮ (TYPOGRAPHY) --- */
     --text-primary: #ffffff;
     --text-secondary: rgba(255, 255, 255, 0.72);
     --text-muted: rgba(255, 255, 255, 0.5);
-    --accent-red: #d35f5f;
-    --accent-red-hover: #f87171;
-    --accent-glow: rgba(211, 95, 95, 0.45);
+    --text-accent: var(--theme-primary-hover);
 
-    --card-bg: rgba(28, 16, 32, 0.46);
-    --card-bg-hover: rgba(38, 20, 42, 0.56);
-    --card-border: 1px solid rgba(255, 255, 255, 0.16);
-    --card-border-hover: 1px solid rgba(255, 255, 255, 0.3);
+    /* --- 7. MÀU TRẠNG THÁI & CHỈ SỐ (ACCENTS & STATUS) --- */
+    --accent-gold: #fde047;
+    --accent-gold-rgb: 253, 224, 71;
+    --accent-cyan: #38bdf8;
+    --accent-cyan-rgb: 56, 189, 248;
+    --accent-pink: #f472b6;
+    --accent-pink-rgb: 244, 114, 182;
+    --accent-success: #10b981;
+    --accent-success-rgb: 16, 185, 129;
+
+    /* --- 8. TƯƠNG THÍCH NGƯỢC (LEGACY ALIASES CHO CODE CŨ) --- */
+    --white: #F3F4F5;
+    --black: #19191E;
+    --accent-red: var(--theme-primary);
+    --accent-red-hover: var(--theme-primary-hover);
+    --accent-red-dark: var(--theme-primary-active);
+    --accent-glow: rgba(var(--theme-primary-rgb), 0.45);
+
+    --silver: var(--theme-secondary);
+    --silver-light: var(--theme-secondary-hover);
+    --silver-dark: var(--theme-secondary-muted);
+    --silver-glow: rgba(var(--theme-secondary-rgb), 0.35);
+
+    --card-bg: var(--theme-tint-card-start);
+    --card-bg-hover: var(--theme-tint-card-hover-start);
+    --card-border: 1px solid rgba(var(--theme-secondary-rgb), 0.18);
+    --card-border-hover: 1px solid rgba(var(--theme-primary-rgb), 0.45);
     --card-radius: 28px;
-    --card-shadow: 0 16px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    --card-shadow: var(--theme-card-shadow);
     --glass-blur: blur(18px) saturate(1.25);
 
     --input-bg: rgba(255, 255, 255, 0.08);
     --input-bg-hover: rgba(255, 255, 255, 0.12);
-    --input-bg-focus: rgba(255, 255, 255, 0.14);
-    --input-border: 1px solid rgba(255, 255, 255, 0.14);
-    --input-border-hover: 1px solid rgba(255, 255, 255, 0.28);
-    --input-border-focus: 1px solid rgba(255, 255, 255, 0.45);
+    --input-bg-focus: rgba(var(--theme-primary-rgb), 0.12);
+    --input-border: 1px solid rgba(var(--theme-secondary-rgb), 0.18);
+    --input-border-hover: 1px solid rgba(var(--theme-secondary-rgb), 0.35);
+    --input-border-focus: 1px solid rgba(var(--theme-primary-rgb), 0.6);
     --input-radius: 20px;
     --input-height: 48px;
 
     --font-family: 'Mulish', 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* ==========================================================================
+   EXAMPLE THEME PRESETS (MẪU TÙY BIẾN CHO CÁC VTUBER KHÁC)
+   Cách dùng: Thêm thuộc tính data-theme="..." vào thẻ <html> hoặc <body>
+   Ví dụ: <html data-theme="purple"> hoặc <body data-theme="cyan">
+   ========================================================================== */
+
+/* --- VTUBER THEME: TÍM HUYỀN ẢO (PURPLE NEON) --- */
+:root[data-theme="purple"], [data-theme="purple"] {
+    --theme-primary: #a855f7;
+    --theme-primary-hover: #c084fc;
+    --theme-primary-active: #9333ea;
+    --theme-primary-light: #e9d5ff;
+    --theme-primary-dark: #7e22ce;
+    --theme-primary-rgb: 168, 85, 247;
+    --theme-primary-hover-rgb: 192, 132, 252;
+    --theme-primary-active-rgb: 147, 51, 234;
+    --theme-primary-light-rgb: 233, 213, 255;
+
+    --theme-secondary: #cbd5e1;
+    --theme-secondary-hover: #f8fafc;
+    --theme-secondary-muted: #94a3b8;
+    --theme-secondary-rgb: 203, 213, 225;
+
+    --theme-bg-body: #0a0612;
+    --theme-tint-card-start: rgba(28, 14, 38, 0.65);
+    --theme-tint-card-end: rgba(16, 9, 24, 0.75);
+    --theme-tint-card-hover-start: rgba(38, 18, 52, 0.82);
+    --theme-tint-card-hover-end: rgba(22, 11, 32, 0.88);
+    --theme-tint-popup-start: rgba(24, 12, 34, 0.97);
+    --theme-tint-popup-end: rgba(14, 7, 20, 0.98);
+}
+
+/* --- VTUBER THEME: XANH BĂNG TUYẾT / CYAN (CYAN & FROST) --- */
+:root[data-theme="cyan"], [data-theme="cyan"] {
+    --theme-primary: #06b6d4;
+    --theme-primary-hover: #22d3ee;
+    --theme-primary-active: #0891b2;
+    --theme-primary-light: #cffafe;
+    --theme-primary-dark: #0e7490;
+    --theme-primary-rgb: 6, 182, 212;
+    --theme-primary-hover-rgb: 34, 211, 238;
+    --theme-primary-active-rgb: 8, 145, 178;
+    --theme-primary-light-rgb: 207, 250, 254;
+
+    --theme-secondary: #e2e8f0;
+    --theme-secondary-hover: #ffffff;
+    --theme-secondary-muted: #94a3b8;
+    --theme-secondary-rgb: 226, 232, 240;
+
+    --theme-bg-body: #040d12;
+    --theme-tint-card-start: rgba(8, 28, 36, 0.65);
+    --theme-tint-card-end: rgba(6, 18, 24, 0.75);
+    --theme-tint-card-hover-start: rgba(12, 38, 48, 0.82);
+    --theme-tint-card-hover-end: rgba(8, 24, 32, 0.88);
+    --theme-tint-popup-start: rgba(10, 32, 42, 0.97);
+    --theme-tint-popup-end: rgba(6, 16, 22, 0.98);
+}
+
+/* --- VTUBER THEME: VÀNG HOÀNG KIM / NẮNG SỚM (GOLD / AMBER) --- */
+:root[data-theme="gold"], [data-theme="gold"] {
+    --theme-primary: #f59e0b;
+    --theme-primary-hover: #fbbf24;
+    --theme-primary-active: #d97706;
+    --theme-primary-light: #fef3c7;
+    --theme-primary-dark: #b45309;
+    --theme-primary-rgb: 245, 158, 11;
+    --theme-primary-hover-rgb: 251, 191, 36;
+    --theme-primary-active-rgb: 217, 119, 6;
+    --theme-primary-light-rgb: 254, 243, 199;
+
+    --theme-secondary: #fef08a;
+    --theme-secondary-hover: #ffffff;
+    --theme-secondary-muted: #d4d4d8;
+    --theme-secondary-rgb: 254, 240, 138;
+
+    --theme-bg-body: #100c05;
+    --theme-tint-card-start: rgba(36, 26, 10, 0.65);
+    --theme-tint-card-end: rgba(22, 16, 8, 0.75);
+    --theme-tint-card-hover-start: rgba(48, 34, 14, 0.82);
+    --theme-tint-card-hover-end: rgba(30, 22, 10, 0.88);
+    --theme-tint-popup-start: rgba(38, 28, 12, 0.97);
+    --theme-tint-popup-end: rgba(20, 14, 6, 0.98);
 }
 
 * {
@@ -44,7 +204,7 @@ html, body {
     min-height: 100vh;
     font-family: var(--font-family);
     color: var(--text-primary);
-    background-color: #0b0710;
+    background-color: var(--theme-bg-body);
     overflow-x: hidden;
     overflow-y: auto;
     -webkit-font-smoothing: antialiased;
@@ -72,10 +232,10 @@ a {
 
 header {
     position: fixed;
-    top: 0;
+    top: 15px;
     left: 0;
     width: 100%;
-    height: 80px;
+    height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -93,77 +253,120 @@ header {
 
 .logo img {
     position: absolute;
-    height: 80px;
-    width: 80px;
-    overflow: hidden;
+    height: 52px;
+    width: auto;
+    max-width: 140px;
     object-fit: contain;
-    top: 0px;
+    top: -2px;
     left: 0px;
     image-rendering: -webkit-optimize-contrast;
     transform: translateZ(0);
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.45));
 }
 
-nav {
-    display: flex;
+/* ============================================================
+   MAGIC NAVIGATION MENU (DESKTOP)
+   ============================================================ */
+nav#mainNav {
+    position: relative;
+    display: inline-flex;
     align-items: center;
-    gap: 20px;
+    gap: 4px;
+    padding: 5px 8px;
+    background: rgba(18, 10, 24, 0.75);
+    backdrop-filter: blur(20px) saturate(1.4);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    border: 1px solid rgba(var(--theme-secondary-rgb), 0.18);
+    border-radius: 9999px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(var(--theme-primary-rgb), 0.15);
 }
 
-nav > a {
-    color: #ffff00;
-    background-color: rgba(238, 255, 0, 0.1);
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.18);
+.magic-indicator {
+    position: absolute;
+    top: 5px;
+    bottom: 5px;
+    left: 0;
+    width: 0;
     border-radius: 9999px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    padding: 8px 18px;
+    background: linear-gradient(135deg, rgba(var(--theme-primary-rgb), 0.38) 0%, rgba(var(--theme-primary-hover-rgb), 0.22) 100%);
+    border: 1px solid rgba(var(--theme-primary-hover-rgb), 0.7);
+    box-shadow: 0 0 20px rgba(var(--theme-primary-rgb), 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+    transform: translate3d(0, 0, 0);
+    transition: transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                width 0.34s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                opacity 0.25s ease;
+}
+
+nav#mainNav > a,
+nav#mainNav .nav-logout-btn {
+    position: relative;
+    z-index: 2;
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    font-size: 14.5px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-nav > a:hover {
-    background-color: rgba(238, 255, 0, 0.2);
-    box-shadow: 0 6px 20px rgba(238, 255, 0, 0.25);
-    transform: translateY(-1px);
-    border-color: rgba(255, 255, 255, 0.35);
-}
-
-.nav-logout-btn {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-
-    color: #ffff00;
-    background-color: rgba(238, 255, 0, 0.1);
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    padding: 7px 18px;
     border-radius: 9999px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    padding: 8px 18px;
-    display: inline-flex;
-    align-items: center;
     font-size: 14.5px;
     font-weight: 600;
+    color: var(--text-secondary);
+    text-decoration: none;
+    background: transparent;
+    border: 1px solid transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     user-select: none;
+    transition: color 0.25s ease, transform 0.25s ease;
 }
 
-.nav-logout-btn:hover {
-    background-color: rgba(238, 255, 0, 0.2);
-    box-shadow: 0 6px 20px rgba(238, 255, 0, 0.25);
-    transform: translateY(calc(-50% - 1px));
-    border-color: rgba(255, 255, 255, 0.35);
+nav#mainNav > a:hover,
+nav#mainNav .nav-logout-btn:hover {
+    color: #ffffff;
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+    transform: none;
+}
+
+nav#mainNav > a.active {
+    color: #ffffff;
+    font-weight: 700;
+    text-shadow: 0 0 12px rgba(var(--theme-primary-hover-rgb), 0.7);
+}
+
+nav#mainNav > a .nav-icon,
+nav#mainNav .nav-logout-btn .nav-icon {
+    width: 17px;
+    height: 17px;
+    flex-shrink: 0;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), stroke 0.25s ease;
+}
+
+nav#mainNav > a.active .nav-icon {
+    transform: scale(1.15);
+    stroke: var(--theme-primary-light);
+}
+
+nav#mainNav .nav-logout-btn {
+    display: none;
+    position: relative;
+    top: auto;
+    right: auto;
+    transform: none;
+    color: var(--theme-primary-light);
+}
+
+body.is-logged-in nav#mainNav .nav-logout-btn {
+    display: inline-flex;
+}
+
+nav#mainNav .nav-logout-btn:hover {
+    color: #ffffff;
+    transform: none;
 }
 
 .mobile-menu-btn {
@@ -575,16 +778,17 @@ body.is-logged-in #loginSection,
     align-items: center;
     justify-content: center;
     gap: 10px;
-    background: rgba(255, 255, 255, 0.09);
-    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-primary-active) 50%, var(--theme-primary-dark) 100%);
+    border: 1px solid rgba(var(--theme-secondary-rgb), 0.35);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     color: #ffffff;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 700;
+    letter-spacing: 0.3px;
     font-family: inherit;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 18px rgba(var(--theme-primary-rgb), 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.3);
     transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     margin-top: 4px;
 }
@@ -597,10 +801,10 @@ body.is-logged-in #loginSection,
 }
 
 .donate-btn-submit:hover {
-    background: rgba(255, 255, 255, 0.18);
-    border-color: rgba(255, 255, 255, 0.38);
+    background: var(--theme-gradient-primary-full);
+    border-color: rgba(248, 250, 252, 0.6);
     transform: translateY(-1px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 16px rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 26px rgba(var(--theme-primary-rgb), 0.55), 0 0 16px rgba(var(--theme-secondary-rgb), 0.35);
 }
 
 .donate-btn-submit:active {
@@ -711,6 +915,166 @@ body.is-logged-in #loginSection,
     background: rgba(255, 255, 255, 0.18);
     border-color: rgba(255, 255, 255, 0.35);
     transform: translateY(-1px);
+}
+
+/* ==========================================================
+   DONATE SUCCESS CARD & RECEIPT
+========================================================== */
+.donate-success-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+    padding: 18px 8px;
+    animation: successEntrance 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes successEntrance {
+    0% {
+        opacity: 0;
+        transform: scale(0.92) translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.donate-success-icon-wrap {
+    position: relative;
+    width: 68px;
+    height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2px;
+}
+
+.donate-success-icon-pulse {
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.45) 0%, rgba(16, 185, 129, 0) 70%);
+    animation: successPulse 2s infinite ease-out;
+}
+
+@keyframes successPulse {
+    0% {
+        transform: scale(0.85);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.15);
+        opacity: 0.3;
+    }
+    100% {
+        transform: scale(0.85);
+        opacity: 0.8;
+    }
+}
+
+.donate-success-icon {
+    position: relative;
+    width: 62px;
+    height: 62px;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.4));
+    border: 1.5px solid rgba(16, 185, 129, 0.6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #34d399;
+    box-shadow: 0 0 24px rgba(16, 185, 129, 0.45);
+}
+
+.donate-success-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.01em;
+    margin: 0;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.donate-success-desc {
+    font-size: 14.5px;
+    color: rgba(255, 255, 255, 0.82);
+    line-height: 1.5;
+    margin: 0;
+    max-width: 380px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.donate-success-receipt {
+    width: 100%;
+    max-width: 390px;
+    background: rgba(18, 14, 28, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    margin-top: 4px;
+}
+
+.receipt-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.receipt-row:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.receipt-label {
+    color: rgba(255, 255, 255, 0.65);
+    font-weight: 500;
+}
+
+.receipt-value {
+    color: #ffffff;
+    font-weight: 700;
+    text-align: right;
+    word-break: break-word;
+}
+
+.receipt-amount {
+    color: #34d399;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.receipt-code {
+    font-family: 'JetBrains Mono', monospace, inherit;
+    color: #fca5a5;
+    font-size: 13.5px;
+    background: rgba(var(--theme-primary-hover-rgb), 0.12);
+    padding: 2px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(var(--theme-primary-hover-rgb), 0.25);
+}
+
+.donate-btn-continue {
+    width: 100%;
+    max-width: 390px;
+    margin-top: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 13px 24px;
+    font-size: 15.5px;
+    font-weight: 700;
 }
 
 .side-controls {
@@ -877,9 +1241,9 @@ icon.autorenew {
 }
 
 .nav-admin-btn {
-    background: rgba(168, 85, 247, 0.2);
-    border: 1px solid rgba(168, 85, 247, 0.4);
-    color: #d8b4fe !important;
+    background: rgba(var(--theme-primary-rgb), 0.18);
+    border: 1px solid rgba(var(--theme-primary-rgb), 0.45);
+    color: var(--theme-primary-light) !important;
     padding: 4px 10px;
     border-radius: 9999px;
     font-size: 12px;
@@ -889,15 +1253,17 @@ icon.autorenew {
 }
 
 .nav-admin-btn:hover {
-    background: rgba(168, 85, 247, 0.35);
+    background: rgba(var(--theme-primary-rgb), 0.35);
+    border-color: rgba(var(--theme-secondary-rgb), 0.5);
     color: #ffffff !important;
     transform: translateY(-1px);
+    box-shadow: 0 0 12px rgba(var(--theme-primary-rgb), 0.4);
 }
 
 .btn-logout {
-    background: rgba(239, 68, 68, 0.18);
-    border: 1px solid rgba(239, 68, 68, 0.35);
-    color: #fca5a5;
+    background: rgba(var(--theme-secondary-rgb), 0.12);
+    border: 1px solid rgba(var(--theme-secondary-rgb), 0.25);
+    color: var(--silver-light);
     padding: 5px 12px;
     border-radius: 9999px;
     font-size: 12.5px;
@@ -916,173 +1282,264 @@ icon.autorenew {
 }
 
 .btn-logout:hover {
-    background: rgba(239, 68, 68, 0.32);
+    background: rgba(var(--theme-primary-rgb), 0.25);
+    border-color: rgba(var(--theme-primary-rgb), 0.45);
     color: #ffffff;
     transform: translateY(-1px);
 }
 
+.mobile-magic-bar {
+    display: none;
+}
+
 @media (max-width: 768px) {
     header {
-        height: 70px;
+        height: 66px;
+    }
+
+    header {
+        position: fixed;
+        top: 10px;
+        left: 0;
+        width: 100%;
+        height: 72px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 100;
+        pointer-events: none;
     }
 
     #header {
         width: 92%;
-        justify-content: space-between;
+        height: 100%;
+        justify-content: center;
         align-items: center;
+    }
+
+    .logo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        pointer-events: auto;
     }
 
     .logo img {
         position: relative;
-        height: 56px;
-        width: 56px;
+        height: 68px;
+        width: auto;
+        max-width: 220px;
         top: auto;
         left: auto;
         transform: none;
+        object-fit: contain;
+        filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 16px rgba(var(--theme-primary-rgb), 0.3));
+        transition: transform 0.25s ease;
+    }
+
+    .logo img:active {
+        transform: scale(0.96);
     }
 
     .mobile-menu-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        position: relative;
-        right: auto;
-        top: auto;
-        transform: none;
-        padding: 8px 16px;
-        color: #ffff00;
-        background-color: rgba(238, 255, 0, 0.12);
-        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
-        backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
-        border: 1px solid rgba(245, 197, 24, 0.4);
-        border-radius: 9999px;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-        font-size: 14px;
-        font-weight: 700;
-        font-family: inherit;
-        cursor: pointer;
-        z-index: 102;
-        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .mobile-menu-btn:hover,
-    .mobile-menu-btn.active {
-        background-color: rgba(238, 255, 0, 0.25);
-        box-shadow: 0 0 20px rgba(245, 197, 24, 0.35);
-        border-color: rgba(245, 197, 24, 0.7);
-    }
-
-    .menu-icon {
-        width: 16px;
-        height: 12px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        position: relative;
-    }
-
-    .menu-icon .bar {
-        display: block;
-        width: 100%;
-        height: 2px;
-        background-color: #ffff00;
-        border-radius: 2px;
-        transition: transform 0.25s ease, opacity 0.25s ease;
-    }
-
-    .mobile-menu-btn.active .menu-icon .bar:nth-child(1) {
-        transform: translateY(5px) rotate(45deg);
-    }
-    .mobile-menu-btn.active .menu-icon .bar:nth-child(2) {
-        opacity: 0;
-    }
-    .mobile-menu-btn.active .menu-icon .bar:nth-child(3) {
-        transform: translateY(-5px) rotate(-45deg);
-    }
-
-    .menu-text {
-        line-height: 1;
-        letter-spacing: 0.3px;
+        display: none !important;
     }
 
     nav#mainNav {
-        position: absolute;
-        top: calc(100% + 10px);
+        display: none !important;
+    }
+
+    main {
+        padding-bottom: 96px !important;
+    }
+
+    /* Mobile Magic Navigation Bar (Curved Notch Dock) */
+    .mobile-magic-bar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: fixed;
+        bottom: 0;
         left: 0;
         right: 0;
         width: 100%;
+        padding: 0 12px 14px;
+        z-index: 999;
+        pointer-events: none;
+        transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+    }
+
+    body.keyboard-open .mobile-magic-bar {
+        transform: translateY(130%);
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .magic-dock {
+        position: relative;
+        width: 100%;
+        max-width: 440px;
+        height: 72px;
+        background: rgba(18, 10, 24, 0.94);
+        backdrop-filter: blur(24px) saturate(1.5);
+        -webkit-backdrop-filter: blur(24px) saturate(1.5);
+        border-radius: 26px;
+        border: 1px solid rgba(var(--theme-secondary-rgb), 0.16);
+        box-shadow: 0 14px 35px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(var(--theme-primary-rgb), 0.2);
+        pointer-events: auto;
+        display: flex;
+        align-items: center;
+        padding: 0;
+    }
+
+    .magic-dock-list {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        position: relative;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .magic-dock-item {
+        position: relative;
+        flex: 1 1 0;
+        min-width: 0;
+        height: 100%;
+        z-index: 2;
+        list-style: none;
+    }
+
+    .magic-dock-link {
+        position: relative;
         display: flex;
         flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
-        padding: 16px;
-        background: rgba(20, 13, 28, 0.301);
-        backdrop-filter: blur(24px) saturate(1.4);
-        -webkit-backdrop-filter: blur(24px) saturate(1.4);
-        border: 1px solid rgba(255, 255, 255, 0.16);
-        border-radius: 20px;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(245, 197, 24, 0.18);
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .magic-dock-icon {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        color: var(--text-secondary);
+        transform: translateY(0);
+        transition: transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.25s ease, filter 0.25s ease;
+    }
+
+    .magic-dock-icon svg {
+        width: 22px;
+        height: 22px;
+        transition: stroke 0.25s ease;
+    }
+
+    .magic-dock-title {
+        position: absolute;
+        bottom: 7px;
+        left: 0;
+        right: 0;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.2px;
+        color: var(--theme-primary-light);
         opacity: 0;
         visibility: hidden;
+        transform: translateY(6px);
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease, visibility 0.25s ease;
         pointer-events: none;
-        transform: translateY(-10px) scale(0.97);
-        transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-        z-index: 101;
-        box-sizing: border-box;
+        white-space: nowrap;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
     }
 
-    nav#mainNav.open {
+    /* Active Item State: Khi nhấn/active mới đưa cao lên 1 ít, lọt vào giữa vòng tròn */
+    .magic-dock-item.active .magic-dock-icon {
+        transform: translateY(-10px) scale(1.02);
+        color: #ffffff;
+        filter: drop-shadow(0 0 10px rgba(var(--theme-primary-hover-rgb), 0.85));
+    }
+
+    .magic-dock-item.active .magic-dock-icon svg {
+        stroke: #ffffff;
+    }
+
+    .magic-dock-item.active .magic-dock-title {
+        transform: translateY(0);
         opacity: 1;
         visibility: visible;
-        pointer-events: auto;
-        transform: translateY(0) scale(1);
     }
 
-    nav#mainNav > a {
-        width: 100%;
+    /* Hiệu ứng đàn hồi khi chạm vào */
+    .magic-dock-item:active .magic-dock-icon {
+        transform: translateY(-10px) scale(0.92);
+    }
+
+    /* Nút Đăng xuất trên mobile dock */
+    .magic-dock-item#mobileDockAuthItem {
+        display: none;
+    }
+
+    body.is-logged-in .magic-dock-item#mobileDockAuthItem {
+        display: block;
+    }
+
+    /* Magic Indicator: Vòng tròn hốc giếng lõm lún sâu 3D đón lấy icon khi đưa cao lên */
+    .magic-dock-indicator {
+        position: absolute;
+        top: 5px;
+        left: 0;
+        width: 25%;
+        height: 42px;
+        display: flex;
         justify-content: center;
-        padding: 12px 18px;
-        font-size: 15px;
-        border-radius: 14px;
-        box-sizing: border-box;
+        align-items: center;
+        pointer-events: none;
+        z-index: 1;
+        transition: transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    nav#mainNav .nav-logout-btn {
-        position: static;
-        transform: none;
-        width: 100%;
+    .indicator-bubble {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: linear-gradient(180deg, rgba(16, 8, 18, 0.95) 0%, rgba(var(--theme-primary-active-rgb), 0.4) 60%, rgba(var(--theme-primary-rgb), 0.6) 100%);
+        border: 1.5px solid rgba(var(--theme-primary-hover-rgb), 0.55);
+        border-top: 1.5px solid rgba(0, 0, 0, 0.9);
+        box-shadow: 
+            inset 0 5px 12px rgba(0, 0, 0, 0.9),
+            inset 0 -3px 8px rgba(var(--theme-primary-rgb), 0.5),
+            0 0 18px rgba(var(--theme-primary-rgb), 0.4),
+            0 1px 1px rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
         justify-content: center;
-        padding: 12px 18px;
-        font-size: 15px;
-        border-radius: 14px;
-        box-sizing: border-box;
-        margin-top: 4px;
-        border-top: 1px solid rgba(255, 255, 255, 0.12);
-        color: #f87171;
-        background-color: rgba(239, 68, 68, 0.12);
-        border-color: rgba(239, 68, 68, 0.3);
-    }
-
-    nav#mainNav .nav-logout-btn:hover {
-        background-color: rgba(239, 68, 68, 0.22);
-        box-shadow: 0 0 16px rgba(239, 68, 68, 0.3);
-        transform: none;
     }
 }
 
 @media (max-width: 540px) {
     header {
-        height: 64px;
+        top: 8px;
+        height: 70px;
     }
 
     .logo img {
-        height: 50px;
-        width: 50px;
+        height: 64px;
+        width: auto;
+        max-width: 210px;
     }
 
     main {
-        padding: 78px 14px 30px;
+        padding: 90px 14px 96px;
     }
 
     .donate-card,
@@ -1111,11 +1568,11 @@ icon.autorenew {
 }
 
 nav > a.active {
-    background-color: rgba(238, 255, 0, 0.28);
-    box-shadow: 0 0 20px rgba(238, 255, 0, 0.45);
-    border-color: rgba(238, 255, 0, 0.7);
+    background-color: rgba(var(--theme-primary-rgb), 0.28);
+    box-shadow: 0 0 20px rgba(var(--theme-primary-rgb), 0.45), 0 0 10px rgba(var(--theme-secondary-rgb), 0.2);
+    border-color: rgba(var(--theme-secondary-rgb), 0.6);
     color: #ffffff;
-    text-shadow: 0 0 8px rgba(238, 255, 0, 0.5);
+    text-shadow: 0 0 8px rgba(var(--theme-primary-rgb), 0.5);
 }
 
 .donate-section-subtitle {
@@ -1151,10 +1608,10 @@ nav > a.active {
 }
 
 .lb-period-btn.active {
-    background: rgba(238, 255, 0, 0.2);
-    border-color: #ffff00;
-    color: #ffff00;
-    box-shadow: 0 0 14px rgba(238, 255, 0, 0.3);
+    background: rgba(var(--theme-primary-rgb), 0.22);
+    border-color: var(--theme-primary);
+    color: #ffffff;
+    box-shadow: 0 0 14px rgba(var(--theme-primary-rgb), 0.35);
 }
 
 .lb-list-container {
@@ -1182,19 +1639,20 @@ nav > a.active {
 }
 
 .lb-item.rank-1 {
-    background: linear-gradient(135deg, rgba(238, 255, 0, 0.16), rgba(255, 170, 0, 0.07));
-    border-color: rgba(238, 255, 0, 0.45);
-    box-shadow: 0 4px 18px rgba(238, 255, 0, 0.15);
+    background: linear-gradient(135deg, rgba(var(--theme-primary-rgb), 0.22), rgba(var(--theme-primary-active-rgb), 0.1));
+    border-color: rgba(var(--theme-primary-rgb), 0.55);
+    box-shadow: 0 4px 20px rgba(var(--theme-primary-rgb), 0.25), inset 0 1px 0 rgba(248, 250, 252, 0.25);
 }
 
 .lb-item.rank-2 {
-    background: linear-gradient(135deg, rgba(200, 220, 240, 0.12), rgba(150, 170, 190, 0.06));
-    border-color: rgba(200, 220, 240, 0.35);
+    background: linear-gradient(135deg, rgba(var(--theme-secondary-rgb), 0.18), rgba(var(--theme-secondary-muted-rgb), 0.08));
+    border-color: rgba(var(--theme-secondary-rgb), 0.45);
+    box-shadow: 0 4px 18px rgba(var(--theme-secondary-rgb), 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .lb-item.rank-3 {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(180, 83, 9, 0.06));
-    border-color: rgba(245, 158, 11, 0.35);
+    background: linear-gradient(135deg, rgba(var(--theme-secondary-muted-rgb), 0.14), rgba(71, 85, 105, 0.08));
+    border-color: rgba(var(--theme-secondary-muted-rgb), 0.35);
 }
 
 .lb-rank-badge {
@@ -1210,19 +1668,23 @@ nav > a.active {
 }
 
 .rank-1 .lb-rank-badge {
-    background: #facc15;
-    color: #111827;
-    box-shadow: 0 0 12px rgba(250, 204, 21, 0.5);
+    background: var(--theme-gradient-hover);
+    color: #ffffff;
+    border: 1px solid rgba(248, 250, 252, 0.4);
+    box-shadow: 0 0 14px rgba(var(--theme-primary-rgb), 0.6);
 }
 
 .rank-2 .lb-rank-badge {
-    background: #cbd5e1;
+    background: linear-gradient(135deg, var(--theme-secondary-hover) 0%, var(--theme-secondary) 100%);
     color: #0f172a;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 0 12px rgba(var(--theme-secondary-rgb), 0.4);
 }
 
 .rank-3 .lb-rank-badge {
-    background: #d97706;
+    background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
     color: #ffffff;
+    border: 1px solid rgba(var(--theme-secondary-rgb), 0.35);
 }
 
 .lb-rank-badge.rank-other {
@@ -1243,8 +1705,9 @@ nav > a.active {
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: rgba(238, 255, 0, 0.2);
-    color: #ffff00;
+    background: rgba(var(--theme-primary-rgb), 0.18);
+    color: var(--theme-primary-light);
+    border: 1px solid rgba(var(--theme-secondary-rgb), 0.3);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1266,16 +1729,16 @@ nav > a.active {
     font-family: 'Outfit', monospace;
     font-weight: 700;
     font-size: 15.5px;
-    color: #facc15;
-    text-shadow: 0 0 8px rgba(250, 204, 21, 0.35);
+    color: var(--theme-primary-light);
+    text-shadow: 0 0 8px rgba(var(--theme-primary-rgb), 0.4);
     flex-shrink: 0;
 }
 
 .current-user-rank-box {
     margin-top: 15px;
     padding: 14px 18px;
-    background: rgba(238, 255, 0, 0.08);
-    border: 1px dashed rgba(238, 255, 0, 0.4);
+    background: rgba(var(--theme-primary-rgb), 0.1);
+    border: 1px dashed rgba(var(--theme-secondary-rgb), 0.45);
     border-radius: 18px;
     display: flex;
     align-items: center;
@@ -1287,7 +1750,7 @@ nav > a.active {
     font-size: 11.5px;
     text-transform: uppercase;
     letter-spacing: 0.6px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--silver);
     margin-bottom: 2px;
 }
 
@@ -1299,18 +1762,19 @@ nav > a.active {
 
 .current-user-rank-score {
     font-size: 13px;
-    color: #facc15;
+    color: var(--theme-primary-light);
     font-weight: 600;
 }
 
 .current-user-rank-pill {
     padding: 6px 14px;
-    background: #facc15;
-    color: #111827;
+    background: var(--theme-gradient-primary);
+    color: #ffffff;
+    border: 1px solid rgba(var(--theme-secondary-rgb), 0.4);
     border-radius: 9999px;
     font-weight: 800;
     font-size: 13.5px;
-    box-shadow: 0 0 10px rgba(250, 204, 21, 0.4);
+    box-shadow: 0 0 12px rgba(var(--theme-primary-rgb), 0.4);
     flex-shrink: 0;
 }
 
@@ -1365,11 +1829,11 @@ nav > a.active {
 
 .history-message {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.85);
+    color: rgba(255, 255, 255, 0.88);
     background: rgba(0, 0, 0, 0.28);
     padding: 8px 12px;
     border-radius: 10px;
-    border-left: 3px solid #facc15;
+    border-left: 3px solid var(--theme-primary);
     word-break: break-word;
 }
 
@@ -1392,171 +1856,669 @@ nav > a.active {
     font-size: 14px;
 }
 
-/* MÀN HÌNH DONATE THÀNH CÔNG */
-.donate-success-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 16px;
-    padding: 18px 8px;
-    animation: successEntrance 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes successEntrance {
-    0% {
-        opacity: 0;
-        transform: scale(0.92) translateY(10px);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
-}
-
-.donate-success-icon-wrap {
-    position: relative;
-    width: 68px;
-    height: 68px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 2px;
-}
-
-.donate-success-icon-pulse {
-    position: absolute;
-    inset: -6px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(16, 185, 129, 0.45) 0%, rgba(16, 185, 129, 0) 70%);
-    animation: successPulse 2s infinite ease-out;
-}
-
-@keyframes successPulse {
-    0% {
-        transform: scale(0.85);
-        opacity: 0.8;
-    }
-    50% {
-        transform: scale(1.15);
-        opacity: 0.3;
-    }
-    100% {
-        transform: scale(0.85);
-        opacity: 0.8;
-    }
-}
-
-.donate-success-icon {
-    position: relative;
-    width: 62px;
-    height: 62px;
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.4));
-    border: 1.5px solid rgba(16, 185, 129, 0.6);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #34d399;
-    box-shadow: 0 0 24px rgba(16, 185, 129, 0.45);
-}
-
-.donate-success-title {
-    font-size: 24px;
-    font-weight: 800;
-    color: #ffffff;
-    letter-spacing: -0.01em;
-    margin: 0;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
-}
-
-.donate-success-desc {
-    font-size: 14.5px;
-    color: rgba(255, 255, 255, 0.82);
-    line-height: 1.5;
-    margin: 0;
-    max-width: 380px;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
-}
-
-.donate-success-receipt {
+/* ==========================================================================
+   GACHA DONATE SECTION & LIVE CALCULATOR (RUBY & SILVER THEME)
+   ========================================================================== */
+.gacha-donate-container {
+    margin: 14px 0 6px 0;
     width: 100%;
-    max-width: 390px;
-    background: rgba(18, 14, 28, 0.72);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    backdrop-filter: blur(12px);
-    border-radius: 16px;
-    padding: 16px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-    margin-top: 4px;
 }
 
-.receipt-row {
+.gacha-toggle-card {
+    position: relative;
+    background: linear-gradient(135deg, var(--theme-tint-card-start) 0%, var(--theme-tint-card-end) 100%);
+    border: 1px solid rgba(var(--theme-secondary-rgb), 0.18);
+    border-radius: var(--input-radius, 20px);
+    padding: 14px 18px;
+    backdrop-filter: blur(16px) saturate(1.3);
+    -webkit-backdrop-filter: blur(16px) saturate(1.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+}
+
+.gacha-toggle-card:hover {
+    border-color: rgba(var(--theme-primary-rgb), 0.42);
+    box-shadow: 0 6px 26px rgba(var(--theme-primary-rgb), 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.gacha-toggle-card.is-active,
+.gacha-toggle-card:has(#gachaOptInToggle:checked) {
+    border-color: rgba(var(--theme-primary-rgb), 0.55);
+    background: linear-gradient(135deg, var(--theme-tint-card-hover-start) 0%, var(--theme-tint-card-hover-end) 100%);
+    box-shadow: 0 10px 32px rgba(var(--theme-primary-rgb), 0.22), 0 0 0 1px rgba(var(--theme-primary-rgb), 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.gacha-toggle-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.gacha-toggle-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+    flex: 1;
+}
+
+.gacha-toggle-icon {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    background: rgba(var(--theme-primary-rgb), 0.12);
+    border: 1px solid rgba(var(--theme-primary-rgb), 0.28);
+    color: var(--theme-primary-hover);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 16px rgba(var(--theme-primary-rgb), 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gacha-wheel-svg {
+    width: 22px;
+    height: 22px;
+    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.gacha-toggle-card:hover .gacha-toggle-icon {
+    background: rgba(var(--theme-primary-rgb), 0.2);
+    border-color: rgba(var(--theme-primary-rgb), 0.45);
+    color: #ffffff;
+    box-shadow: 0 0 20px rgba(var(--theme-primary-rgb), 0.4);
+}
+
+.gacha-toggle-card:hover .gacha-wheel-svg {
+    transform: rotate(45deg);
+}
+
+.gacha-toggle-card.is-active .gacha-toggle-icon,
+.gacha-toggle-card:has(#gachaOptInToggle:checked) .gacha-toggle-icon {
+    background: linear-gradient(135deg, rgba(var(--theme-primary-rgb), 0.35), rgba(var(--theme-primary-active-rgb), 0.25));
+    border-color: rgba(var(--theme-primary-hover-rgb), 0.65);
+    color: #ffffff;
+    box-shadow: 0 0 22px rgba(var(--theme-primary-rgb), 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    animation: gachaIconPulse 3s infinite ease-in-out;
+}
+
+@keyframes gachaIconPulse {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(var(--theme-primary-rgb), 0.5)); }
+    50% { transform: scale(1.04); filter: drop-shadow(0 0 14px rgba(var(--theme-primary-hover-rgb), 0.8)); }
+}
+
+.gacha-toggle-texts {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.gacha-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.gacha-toggle-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.2px;
+    font-family: var(--font-family);
+}
+
+.gacha-live-pill {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--theme-primary-light);
+    background: rgba(var(--theme-primary-rgb), 0.16);
+    border: 1px solid rgba(var(--theme-primary-rgb), 0.35);
+    padding: 2px 7px;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.gacha-live-pill svg circle {
+    animation: gachaLiveDot 1.8s infinite ease-in-out;
+}
+
+@keyframes gachaLiveDot {
+    0%, 100% { opacity: 0.6; transform: scale(0.9); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+.gacha-toggle-desc {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.65);
+    line-height: 1.35;
+}
+
+/* Custom Toggle Switch */
+.gacha-switch {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 26px;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.gacha-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.gacha-slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(var(--theme-secondary-rgb), 0.22);
+    border-radius: 34px;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gacha-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gacha-switch input:checked + .gacha-slider {
+    background: linear-gradient(135deg, var(--accent-red, #e11d48) 0%, var(--accent-red-hover, #f43f5e) 100%);
+    border-color: rgba(var(--theme-primary-hover-rgb), 0.65);
+    box-shadow: 0 0 16px rgba(var(--theme-primary-rgb), 0.5);
+}
+
+.gacha-switch input:checked + .gacha-slider:before {
+    transform: translateX(22px);
+    background-color: #ffffff;
+}
+
+/* Collapsible Details Panel */
+.gacha-collapse-panel {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(var(--theme-secondary-rgb), 0.12);
+    animation: gachaFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes gachaFadeIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Wheel Select Dropdown */
+.gacha-wheel-select-wrap {
+    margin-bottom: 12px;
+}
+
+.gacha-select-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 7px;
+}
+
+.gacha-select-label svg {
+    color: var(--accent-red-hover, #f43f5e);
+    flex-shrink: 0;
+}
+
+/* Custom Gacha Dropdown (Glassmorphism) */
+.gacha-custom-select {
+    position: relative;
+    width: 100%;
+}
+
+.gacha-custom-select-trigger {
+    width: 100%;
+    min-height: 46px;
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(var(--theme-secondary-rgb), 0.18);
+    border-radius: 14px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: inherit;
+    color: #ffffff;
+    text-align: left;
+}
+
+.gacha-custom-select-trigger:hover {
+    background: rgba(255, 255, 255, 0.11);
+    border-color: rgba(var(--theme-secondary-rgb), 0.35);
+}
+
+.gacha-custom-select.is-open .gacha-custom-select-trigger,
+.gacha-custom-select-trigger:focus {
+    outline: none;
+    background: rgba(var(--theme-primary-rgb), 0.12);
+    border-color: rgba(var(--theme-primary-rgb), 0.65);
+    box-shadow: 0 0 16px rgba(var(--theme-primary-rgb), 0.3);
+}
+
+.gacha-custom-select-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    flex: 1;
+}
+
+.gacha-custom-select .gacha-select-icon {
+    color: var(--accent-red-hover, #f43f5e);
+    flex-shrink: 0;
+}
+
+.gacha-selected-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    flex-wrap: wrap;
+}
+
+.gacha-selected-name {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #ffffff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.gacha-selected-badge {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: 2px 7px;
+    border-radius: 9999px;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.gacha-selected-badge.time {
+    color: #38bdf8;
+    background: rgba(56, 189, 248, 0.15);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.gacha-selected-badge.reward {
+    color: #f472b6;
+    background: rgba(244, 114, 182, 0.15);
+    border: 1px solid rgba(244, 114, 182, 0.3);
+}
+
+.gacha-selected-cost {
+    font-size: 13px;
+    font-weight: 800;
+    color: #fde047;
+    font-family: 'Outfit', sans-serif;
+    white-space: nowrap;
+}
+
+.gacha-custom-select .gacha-select-arrow {
+    color: rgba(255, 255, 255, 0.5);
+    flex-shrink: 0;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease;
+}
+
+.gacha-custom-select.is-open .gacha-select-arrow {
+    transform: rotate(180deg);
+    color: var(--accent-red-hover, #f43f5e);
+}
+
+/* Dropdown Menu (Glassmorphism Popup) */
+.gacha-custom-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, var(--theme-tint-popup-start) 0%, var(--theme-tint-popup-end) 100%);
+    border: 1px solid rgba(var(--theme-primary-rgb), 0.45);
+    border-radius: 16px;
+    backdrop-filter: blur(20px) saturate(1.4);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75), 0 0 24px rgba(var(--theme-primary-rgb), 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    z-index: 100;
+    overflow: hidden;
+    padding: 6px;
+    display: none;
+    animation: gachaDropdownOpen 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gacha-custom-select.is-open .gacha-custom-dropdown-menu {
+    display: block;
+}
+
+@keyframes gachaDropdownOpen {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Option Items inside custom dropdown */
+.gacha-custom-option {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    font-size: 14px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    border: 1px solid transparent;
 }
 
-.receipt-row:last-child {
-    padding-bottom: 0;
-    border-bottom: none;
+.gacha-custom-option:hover {
+    background: rgba(var(--theme-primary-rgb), 0.16);
+    border-color: rgba(var(--theme-primary-rgb), 0.35);
+    transform: translateX(2px);
 }
 
-.receipt-label {
-    color: rgba(255, 255, 255, 0.65);
-    font-weight: 500;
+.gacha-custom-option.is-selected {
+    background: linear-gradient(135deg, rgba(var(--theme-primary-rgb), 0.28) 0%, rgba(var(--theme-primary-active-rgb), 0.18) 100%);
+    border-color: rgba(var(--theme-primary-hover-rgb), 0.6);
+    box-shadow: 0 0 14px rgba(var(--theme-primary-rgb), 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
-.receipt-value {
-    color: #ffffff;
+.gacha-option-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+    flex: 1;
+}
+
+.gacha-option-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.gacha-option-name {
+    font-size: 13.5px;
     font-weight: 700;
-    text-align: right;
-    word-break: break-word;
+    color: #ffffff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.receipt-amount {
-    color: #34d399;
-    font-size: 18px;
+.gacha-option-badge {
+    font-size: 9.5px;
     font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 2px 6px;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
 }
 
-.receipt-code {
-    font-family: 'JetBrains Mono', monospace, inherit;
-    color: #facc15;
+.gacha-option-badge.time {
+    color: #38bdf8;
+    background: rgba(56, 189, 248, 0.14);
+    border: 1px solid rgba(56, 189, 248, 0.32);
+}
+
+.gacha-option-badge.reward {
+    color: #f472b6;
+    background: rgba(244, 114, 182, 0.14);
+    border: 1px solid rgba(244, 114, 182, 0.32);
+}
+
+.gacha-option-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.gacha-option-cost {
     font-size: 13.5px;
-    background: rgba(250, 204, 21, 0.12);
-    border: 1px solid rgba(250, 204, 21, 0.3);
-    padding: 2px 8px;
-    border-radius: 6px;
+    font-weight: 800;
+    color: #fde047;
+    font-family: 'Outfit', sans-serif;
 }
 
-.receipt-msg {
-    font-size: 13.5px;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.9);
-    background: rgba(255, 255, 255, 0.06);
-    padding: 6px 10px;
-    border-radius: 8px;
-    max-width: 220px;
-    text-align: left;
+.gacha-option-check {
+    color: var(--accent-red-hover, #f43f5e);
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 6px rgba(var(--theme-primary-hover-rgb), 0.8));
 }
 
-.donate-btn-continue {
-    width: 100%;
-    max-width: 390px;
-    margin-top: 6px;
+/* Live Calculator Preview Box */
+.gacha-calc-preview {
+    background: rgba(12, 6, 14, 0.68);
+    border: 1px solid rgba(var(--theme-secondary-rgb), 0.14);
+    border-radius: 16px;
+    padding: 14px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 4px 18px rgba(0, 0, 0, 0.24);
+}
+
+.gacha-calc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    gap: 8px;
+}
+
+.gacha-calc-tag {
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--theme-primary-light);
+    background: rgba(var(--theme-primary-rgb), 0.16);
+    padding: 3px 9px;
+    border-radius: 9999px;
+    border: 1px solid rgba(var(--theme-primary-rgb), 0.32);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.gacha-calc-tag svg {
+    color: var(--accent-red-hover, #f43f5e);
+    flex-shrink: 0;
+}
+
+.gacha-calc-wheel-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+    max-width: 190px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.gacha-calc-wheel-name svg {
+    color: var(--silver, #cbd5e1);
+    flex-shrink: 0;
+}
+
+.gacha-calc-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.gacha-calc-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(var(--theme-secondary-rgb), 0.1);
+    border-radius: 12px;
+    padding: 10px 6px;
+    text-align: center;
+    transition: all 0.25s ease;
+}
+
+.gacha-calc-col:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(var(--theme-secondary-rgb), 0.2);
+}
+
+.gacha-calc-col-head {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    color: rgba(255, 255, 255, 0.55);
+    margin-bottom: 4px;
+}
+
+.gacha-calc-col-head svg {
+    flex-shrink: 0;
+}
+
+.gacha-calc-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.gacha-calc-val {
+    font-size: 14px;
+    font-weight: 800;
+    color: #ffffff;
+    font-family: 'Outfit', sans-serif;
+}
+
+/* Primary Highlight micro-card (Lượt quay) */
+.gacha-calc-col.highlight {
+    background: linear-gradient(135deg, rgba(var(--theme-primary-rgb), 0.22) 0%, rgba(var(--theme-primary-active-rgb), 0.14) 100%);
+    border-color: rgba(var(--theme-primary-rgb), 0.48);
+    box-shadow: 0 0 16px rgba(var(--theme-primary-rgb), 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.gacha-calc-col.highlight .gacha-calc-col-head {
+    color: var(--theme-primary-light);
+}
+
+.gacha-calc-col.highlight .gacha-calc-val {
+    color: #ffffff;
+    font-size: 16px;
+    text-shadow: 0 0 12px rgba(var(--theme-primary-hover-rgb), 0.6);
+}
+
+/* Live Explanation / Calculation Banner */
+.gacha-calc-expl {
+    font-size: 12px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.82);
+    background: rgba(0, 0, 0, 0.36);
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(var(--theme-secondary-rgb), 0.08);
+    border-left: 3px solid var(--accent-red, #e11d48);
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+}
+
+.gacha-expl-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 13px 24px;
-    font-size: 15.5px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    color: var(--silver, #cbd5e1);
+}
+
+.gacha-expl-icon.info {
+    color: var(--silver, #cbd5e1);
+}
+
+.gacha-expl-icon.success {
+    color: var(--theme-primary-hover);
+    filter: drop-shadow(0 0 6px rgba(var(--theme-primary-hover-rgb), 0.5));
+}
+
+.gacha-expl-icon.warning {
+    color: #fbbf24;
+    filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.4));
+}
+
+.gacha-expl-text {
+    flex: 1;
+}
+
+.gacha-expl-text strong {
+    color: #ffffff;
     font-weight: 700;
 }
+
+@media (max-width: 480px) {
+    .gacha-toggle-card {
+        padding: 12px 14px;
+    }
+    .gacha-calc-grid {
+        gap: 6px;
+    }
+    .gacha-calc-col {
+        padding: 8px 4px;
+    }
+    .gacha-calc-val {
+        font-size: 13px;
+    }
+    .gacha-calc-col.highlight .gacha-calc-val {
+        font-size: 14.5px;
+    }
+    .gacha-calc-header {
+        flex-wrap: wrap;
+    }
+}
+
+

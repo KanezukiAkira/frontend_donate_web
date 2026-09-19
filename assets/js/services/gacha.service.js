@@ -5,6 +5,15 @@
 
 const GachaService = {
   /**
+   * Lấy danh sách vòng quay đang hoạt động công khai (dành cho người donate)
+   */
+  async getPublicActiveWheels() {
+    const endpoint = CONFIG.ENDPOINTS?.GACHA?.PUBLIC_ACTIVE || '/gacha/public-active';
+    const response = await apiClient.get(endpoint, { requiresAuth: false });
+    return response ? (response.data !== undefined ? response.data : response) : [];
+  },
+
+  /**
    * Lấy danh sách vòng quay của Streamer
    * @param {string|null} wheelType 'time' | 'reward' | null
    */

@@ -1,6 +1,6 @@
 const CONFIG = {
-  BACKEND_URL: 'https://backend-donate-web.onrender.com',
-  API_BASE_URL: 'https://backend-donate-web.onrender.com/api',
+  BACKEND_URL: 'https://backend-web-tani.onrender.com',
+  API_BASE_URL: 'https://backend-web-tani.onrender.com/api',
   // BACKEND_URL: "http://127.0.0.1:8000",
   // API_BASE_URL: "http://127.0.0.1:8000/api",
   
@@ -53,6 +53,7 @@ const CONFIG = {
     GACHA: {
       LIST: '/gacha',
       CREATE: '/gacha',
+      PUBLIC_ACTIVE: '/gacha/public-active',
       DETAIL: (id) => `/gacha/${id}`,
       UPDATE: (id) => `/gacha/${id}`,
       DELETE: (id) => `/gacha/${id}`,

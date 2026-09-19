@@ -155,15 +155,13 @@ const TtsService = {
   play(options, volumeLevel = 1.0) {
     return new Promise((resolve) => {
       const config = typeof options === 'string' ? { text: options } : { ...(options || {}) };
-      const chosenVoice = config.voice || this.DEFAULT_VOICE;
-      let audioUrl = this.getAudioUrl(config);
+      const audioUrl = this.getAudioUrl(config);
       if (!audioUrl) {
         return resolve();
       }
 
       this.stop();
 
-      let hasTriedFallbackVoice = false;
       const audio = new Audio();
       const safeVolume = Math.max(0, Math.min(1, typeof config.volumeLevel === 'number' ? config.volumeLevel : volumeLevel));
       audio.volume = safeVolume;
@@ -182,30 +180,7 @@ const TtsService = {
       };
 
       // Giới hạn an toàn 15 giây tránh treo audio
-      let timeoutId = setTimeout(cleanup, 15000);
-
-      const tryFallbackVoice = () => {
-        if (!hasTriedFallbackVoice) {
-          hasTriedFallbackVoice = true;
-          const fallbackVoiceId = (chosenVoice === this.DEFAULT_VOICE) ? this.FALLBACK_VOICE : this.DEFAULT_VOICE;
-          console.warn(`[TtsService] Giọng đọc ${chosenVoice} gặp sự cố, tự động chuyển sang giọng đọc dự phòng: ${fallbackVoiceId}`);
-          
-          clearTimeout(timeoutId);
-          timeoutId = setTimeout(cleanup, 15000);
-
-          const fallbackUrl = this.getAudioUrl({
-            ...config,
-            voice: fallbackVoiceId
-          });
-          audio.src = fallbackUrl;
-          audio.play().catch((err) => {
-            console.warn('[TtsService] Cả giọng đọc dự phòng cũng không thể phát:', err);
-            cleanup();
-          });
-          return;
-        }
-        cleanup();
-      };
+      const timeoutId = setTimeout(cleanup, 15000);
 
       audio.onended = () => {
         clearTimeout(timeoutId);
@@ -213,20 +188,20 @@ const TtsService = {
       };
 
       audio.onerror = (e) => {
-        console.warn('[TtsService] Lỗi tải audio từ máy chủ:', e);
-        tryFallbackVoice();
+        clearTimeout(timeoutId);
+        console.warn('[TtsService] Lỗi phát âm thanh:', e);
+        cleanup();
       };
 
       audio.src = audioUrl;
       audio.play().catch((playErr) => {
         if (playErr && playErr.name === 'NotAllowedError') {
           console.warn('[TtsService] Trình duyệt chặn autoplay (cần người dùng click tương tác trên trang).');
-          clearTimeout(timeoutId);
-          cleanup();
-          return;
+        } else {
+          console.warn('[TtsService] Lỗi audio.play():', playErr);
         }
-        console.warn('[TtsService] Lỗi audio.play():', playErr);
-        tryFallbackVoice();
+        clearTimeout(timeoutId);
+        cleanup();
       });
     });
   },
